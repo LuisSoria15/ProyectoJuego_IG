@@ -15,6 +15,7 @@ namespace ProyectoJuego
         public Form1()
         {
             InitializeComponent();
+
         }
     }
 }
