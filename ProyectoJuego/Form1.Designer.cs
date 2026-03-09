@@ -35,9 +35,10 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(897, 12);
+            this.button1.Location = new System.Drawing.Point(1233, 18);
+            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(84, 48);
+            this.button1.Size = new System.Drawing.Size(116, 72);
             this.button1.TabIndex = 0;
             this.button1.Text = "Cerrar";
             this.button1.UseVisualStyleBackColor = true;
@@ -51,15 +52,17 @@
             // 
             // FormMenu
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(108)))), ((int)(((byte)(185)))));
-            this.ClientSize = new System.Drawing.Size(993, 505);
+            this.ClientSize = new System.Drawing.Size(1365, 758);
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "FormMenu";
-            this.Text = "Form1";
             this.Load += new System.EventHandler(this.FormMenu_Load);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormMenu_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FormMenu_MouseMove);
             this.ResumeLayout(false);
 
         }

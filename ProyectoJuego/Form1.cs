@@ -17,6 +17,8 @@ namespace ProyectoJuego
             InitializeComponent();
 
         }
+        private Point mouseLoc;
+
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -27,6 +29,22 @@ namespace ProyectoJuego
         private void FormMenu_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void FormMenu_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                int dx = e.Location.X - mouseLoc.X;
+                int dy = e.Location.Y - mouseLoc.Y;
+                dx += this.Location.X;
+                dy += this.Location.Y;
+            }
+        }
+
+        private void FormMenu_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouseLoc = e.Location;
         }
     }
 }
