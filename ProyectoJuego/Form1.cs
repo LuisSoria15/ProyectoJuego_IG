@@ -21,6 +21,12 @@ namespace ProyectoJuego
         private void button1_Click(object sender, EventArgs e)
         {
             Close();
+
+        }
+
+        private void FormMenu_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

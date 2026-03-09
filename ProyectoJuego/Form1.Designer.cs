@@ -53,11 +53,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(108)))), ((int)(((byte)(185)))));
             this.ClientSize = new System.Drawing.Size(993, 505);
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FormMenu";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.FormMenu_Load);
             this.ResumeLayout(false);
 
         }
