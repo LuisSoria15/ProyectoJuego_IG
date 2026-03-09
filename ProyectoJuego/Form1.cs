@@ -39,6 +39,7 @@ namespace ProyectoJuego
                 int dy = e.Location.Y - mouseLoc.Y;
                 dx += this.Location.X;
                 dy += this.Location.Y;
+                this.Location = new Point(dx, dy);
             }
         }
 
