@@ -10,28 +10,33 @@ using System.Windows.Forms;
 
 namespace ProyectoJuego
 {
-    public partial class Form1 : Form
+    public partial class LeaderBoard : Form
     {
-        public Form1()
+        Form1 formPrincipal;
+        private Point mouseLoc;
+        public LeaderBoard(Form1 formPrincipal)
         {
             InitializeComponent();
-
+            this.formPrincipal = formPrincipal;
         }
-        private Point mouseLoc;
-
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Close();
 
         }
 
-        private void FormMenu_Load(object sender, EventArgs e)
+        private void btnCerrar_Click(object sender, EventArgs e)
         {
-
+            formPrincipal.Show();
+            this.Close();
         }
 
-        private void FormMenu_MouseMove(object sender, MouseEventArgs e)
+        private void LeaderBoard_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouseLoc = e.Location;
+        }
+
+        private void LeaderBoard_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -41,18 +46,6 @@ namespace ProyectoJuego
                 dy += this.Location.Y;
                 this.Location = new Point(dx, dy);
             }
-        }
-
-        private void FormMenu_MouseDown(object sender, MouseEventArgs e)
-        {
-            mouseLoc = e.Location;
-        }
-
-        private void btnLeaderboard_Click(object sender, EventArgs e)
-        {
-            LeaderBoard ventana = new LeaderBoard(this);
-            ventana.Show();
-            this.Hide();
         }
     }
 }
