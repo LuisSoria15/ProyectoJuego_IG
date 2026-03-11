@@ -54,5 +54,12 @@ namespace ProyectoJuego
             ventana.Show();
             this.Hide();
         }
+
+        private void btnJugar_Click(object sender, EventArgs e)
+        {
+            Categorias ventana = new Categorias(this);
+            ventana.Show();
+            this.Hide();
+        }
     }
 }

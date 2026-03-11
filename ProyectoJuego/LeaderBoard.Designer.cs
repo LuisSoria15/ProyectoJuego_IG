@@ -39,7 +39,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(278, 109);
+            this.label1.Location = new System.Drawing.Point(404, 117);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(90, 16);
             this.label1.TabIndex = 0;
@@ -51,11 +51,11 @@
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Nombre,
             this.Score});
-            this.dataGridView1.Location = new System.Drawing.Point(203, 274);
+            this.dataGridView1.Location = new System.Drawing.Point(196, 222);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(306, 150);
+            this.dataGridView1.Size = new System.Drawing.Size(513, 226);
             this.dataGridView1.TabIndex = 1;
             // 
             // Nombre
@@ -74,7 +74,7 @@
             // 
             // btnCerrar
             // 
-            this.btnCerrar.Location = new System.Drawing.Point(573, 59);
+            this.btnCerrar.Location = new System.Drawing.Point(791, 31);
             this.btnCerrar.Name = "btnCerrar";
             this.btnCerrar.Size = new System.Drawing.Size(84, 48);
             this.btnCerrar.TabIndex = 2;
@@ -86,7 +86,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(905, 607);
+            this.ClientSize = new System.Drawing.Size(941, 526);
             this.Controls.Add(this.btnCerrar);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.label1);
