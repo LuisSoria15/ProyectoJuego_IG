@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,11 +15,60 @@ namespace ProyectoJuego
     {
         Form1 formPrincipal;
         private Point mouseLoc;
+
+        // 1. Tu cadena de conexión a Clever Cloud
+        public string connectionString = "Server=bhuefshpv92bhb0wqb5n-mysql.services.clever-cloud.com;" +
+                                        "Port=3306;" +
+                                        "Database=bhuefshpv92bhb0wqb5n;" +
+                                        "User ID=u7mcmeqwvuwiyurk;" +
+                                        "Password=hwlYTA5OEtN6FXWbJowK;";
+
         public Categorias(Form1 formPrincipal)
         {
             InitializeComponent();
             this.formPrincipal = formPrincipal;
+
+            // Llamamos al método al cargar el form
+            CargarCategoriasEnBotones();
         }
+
+        // 2. Método para jalar las categorías y ponerlas en los botones
+        private void CargarCategoriasEnBotones()
+        {
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "SELECT nombre FROM categorias ORDER BY id ASC";
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        // Suponiendo que tienes botones llamados btnCat1, btnCat2, btnCat3
+                        // Usamos un contador para saber a qué botón asignarle el texto
+                        int i = 1;
+                        while (reader.Read())
+                        {
+                            string nombreCat = reader["nombre"].ToString();
+
+                            // Buscamos el botón por nombre dinámicamente o asígnalos directo:
+                            if (i == 1) btnAnimales.Text = nombreCat; // Animales
+                            if (i == 2) btnVideojuegos.Text = nombreCat; // Videojuegos
+                            if (i == 3) btnPaises.Text = nombreCat; // Paises
+
+                            i++;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al conectar con la nube: " + ex.Message);
+                }
+            }
+        }
+
+        // --- Tus métodos de movimiento de ventana y navegación ---
 
         private void btnCerrar_Click(object sender, EventArgs e)
         {
@@ -37,9 +87,7 @@ namespace ProyectoJuego
             {
                 int dx = e.Location.X - mouseLoc.X;
                 int dy = e.Location.Y - mouseLoc.Y;
-                dx += this.Location.X;
-                dy += this.Location.Y;
-                this.Location = new Point(dx, dy);
+                this.Location = new Point(this.Location.X + dx, this.Location.Y + dy);
             }
         }
 

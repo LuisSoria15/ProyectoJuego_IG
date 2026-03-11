@@ -16,6 +16,7 @@ namespace ProyectoJuego
         {
             InitializeComponent();
 
+
         }
         private Point mouseLoc;
 
