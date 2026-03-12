@@ -41,7 +41,6 @@ namespace ProyectoJuego
                 {
                     conn.Open();
                     string query = "SELECT nombre, imagen FROM categorias ORDER BY id ASC";
-                    string query = "SELECT imagen FROM categorias ORDER BY id ASC";
                     MySqlCommand cmd = new MySqlCommand(query, conn);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
