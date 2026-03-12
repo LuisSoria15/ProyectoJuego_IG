@@ -38,6 +38,12 @@
             this.btnCategoria5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
+            this.picBoxAnimales = new System.Windows.Forms.PictureBox();
+            this.picBoxJuegos = new System.Windows.Forms.PictureBox();
+            this.picBoxPaises = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxAnimales)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxJuegos)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxPaises)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -72,6 +78,7 @@
             // 
             // btnAnimales
             // 
+            this.btnAnimales.Location = new System.Drawing.Point(146, 294);
             this.btnAnimales.Location = new System.Drawing.Point(379, 230);
             this.btnAnimales.Name = "btnAnimales";
             this.btnAnimales.Size = new System.Drawing.Size(91, 35);
@@ -81,6 +88,7 @@
             // 
             // btnVideojuegos
             // 
+            this.btnVideojuegos.Location = new System.Drawing.Point(763, 271);
             this.btnVideojuegos.Location = new System.Drawing.Point(569, 230);
             this.btnVideojuegos.Name = "btnVideojuegos";
             this.btnVideojuegos.Size = new System.Drawing.Size(126, 35);
@@ -90,6 +98,7 @@
             // 
             // btnCategoria3
             // 
+            this.btnCategoria3.Location = new System.Drawing.Point(238, 444);
             this.btnCategoria3.Location = new System.Drawing.Point(214, 312);
             this.btnCategoria3.Name = "btnCategoria3";
             this.btnCategoria3.Size = new System.Drawing.Size(90, 36);
@@ -99,6 +108,7 @@
             // 
             // btnPaises
             // 
+            this.btnPaises.Location = new System.Drawing.Point(788, 428);
             this.btnPaises.Location = new System.Drawing.Point(476, 312);
             this.btnPaises.Name = "btnPaises";
             this.btnPaises.Size = new System.Drawing.Size(82, 36);
@@ -108,6 +118,7 @@
             // 
             // btnCategoria5
             // 
+            this.btnCategoria5.Location = new System.Drawing.Point(476, 229);
             this.btnCategoria5.Location = new System.Drawing.Point(717, 312);
             this.btnCategoria5.Name = "btnCategoria5";
             this.btnCategoria5.Size = new System.Drawing.Size(86, 36);
@@ -133,11 +144,38 @@
             this.button7.Text = "button7";
             this.button7.UseVisualStyleBackColor = true;
             // 
+            // picBoxAnimales
+            // 
+            this.picBoxAnimales.Location = new System.Drawing.Point(65, 182);
+            this.picBoxAnimales.Name = "picBoxAnimales";
+            this.picBoxAnimales.Size = new System.Drawing.Size(279, 106);
+            this.picBoxAnimales.TabIndex = 10;
+            this.picBoxAnimales.TabStop = false;
+            // 
+            // picBoxJuegos
+            // 
+            this.picBoxJuegos.Location = new System.Drawing.Point(741, 165);
+            this.picBoxJuegos.Name = "picBoxJuegos";
+            this.picBoxJuegos.Size = new System.Drawing.Size(165, 100);
+            this.picBoxJuegos.TabIndex = 11;
+            this.picBoxJuegos.TabStop = false;
+            // 
+            // picBoxPaises
+            // 
+            this.picBoxPaises.Location = new System.Drawing.Point(741, 321);
+            this.picBoxPaises.Name = "picBoxPaises";
+            this.picBoxPaises.Size = new System.Drawing.Size(165, 96);
+            this.picBoxPaises.TabIndex = 12;
+            this.picBoxPaises.TabStop = false;
+            // 
             // Categorias
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1002, 565);
+            this.Controls.Add(this.picBoxPaises);
+            this.Controls.Add(this.picBoxJuegos);
+            this.Controls.Add(this.picBoxAnimales);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.btnCategoria5);
@@ -154,6 +192,9 @@
             this.Load += new System.EventHandler(this.Categorias_Load);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Categorias_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Categorias_MouseMove);
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxAnimales)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxJuegos)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxPaises)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -171,5 +212,8 @@
         private System.Windows.Forms.Button btnCategoria5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.PictureBox picBoxAnimales;
+        private System.Windows.Forms.PictureBox picBoxJuegos;
+        private System.Windows.Forms.PictureBox picBoxPaises;
     }
 }

@@ -40,6 +40,7 @@ namespace ProyectoJuego
                 try
                 {
                     conn.Open();
+                    string query = "SELECT nombre, imagen FROM categorias ORDER BY id ASC";
                     string query = "SELECT imagen FROM categorias ORDER BY id ASC";
                     MySqlCommand cmd = new MySqlCommand(query, conn);
 
@@ -51,12 +52,23 @@ namespace ProyectoJuego
                         while (reader.Read())
                         {
                             string nombreCat = reader["nombre"].ToString();
+                            string URLimagen = reader["imagen"].ToString();
 
-                            // Buscamos el botón por nombre dinámicamente o asígnalos directo:
-                            if (i == 1) btnAnimales.Text = nombreCat; // Animales
-                            if (i == 2) btnVideojuegos.Text = nombreCat; // Videojuegos
-                            if (i == 3) btnPaises.Text = nombreCat; // Paises
-
+                            if (i == 1)
+                            {
+                                btnAnimales.Text = nombreCat;
+                                CargarImagenCategoria(URLimagen, picBoxAnimales); // Suponiendo que tienes uno para cada uno
+                            }
+                            if (i == 2)
+                            {
+                                btnVideojuegos.Text = nombreCat;
+                                CargarImagenCategoria(URLimagen, picBoxJuegos);
+                            }
+                            if (i == 3)
+                            {
+                                btnPaises.Text = nombreCat;
+                                CargarImagenCategoria(URLimagen, picBoxPaises);
+                            }
                             i++;
                         }
                     }
@@ -65,6 +77,21 @@ namespace ProyectoJuego
                 {
                     MessageBox.Show("Error al conectar con la nube: " + ex.Message);
                 }
+            }
+        }
+
+        private void CargarImagenCategoria(string urlImagen, PictureBox pbDestino)
+        {
+            try
+            {
+                // Esto le dice al PictureBox que descargue la imagen de la URL de la base de datos
+                pbDestino.LoadAsync(urlImagen);
+                pbDestino.SizeMode = PictureBoxSizeMode.Zoom; // Para que no se deforme
+            }
+            catch (Exception ex)
+            {
+                // Si el link está roto o no hay internet, puedes poner una imagen por defecto
+                Console.WriteLine("No se pudo cargar la imagen: " + ex.Message);
             }
         }
 
