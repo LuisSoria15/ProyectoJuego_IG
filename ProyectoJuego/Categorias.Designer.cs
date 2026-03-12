@@ -78,7 +78,6 @@
             // 
             // btnAnimales
             // 
-            this.btnAnimales.Location = new System.Drawing.Point(146, 294);
             this.btnAnimales.Location = new System.Drawing.Point(379, 230);
             this.btnAnimales.Name = "btnAnimales";
             this.btnAnimales.Size = new System.Drawing.Size(91, 35);
@@ -88,7 +87,6 @@
             // 
             // btnVideojuegos
             // 
-            this.btnVideojuegos.Location = new System.Drawing.Point(763, 271);
             this.btnVideojuegos.Location = new System.Drawing.Point(569, 230);
             this.btnVideojuegos.Name = "btnVideojuegos";
             this.btnVideojuegos.Size = new System.Drawing.Size(126, 35);
@@ -98,7 +96,6 @@
             // 
             // btnCategoria3
             // 
-            this.btnCategoria3.Location = new System.Drawing.Point(238, 444);
             this.btnCategoria3.Location = new System.Drawing.Point(214, 312);
             this.btnCategoria3.Name = "btnCategoria3";
             this.btnCategoria3.Size = new System.Drawing.Size(90, 36);
@@ -108,7 +105,6 @@
             // 
             // btnPaises
             // 
-            this.btnPaises.Location = new System.Drawing.Point(788, 428);
             this.btnPaises.Location = new System.Drawing.Point(476, 312);
             this.btnPaises.Name = "btnPaises";
             this.btnPaises.Size = new System.Drawing.Size(82, 36);
@@ -118,8 +114,7 @@
             // 
             // btnCategoria5
             // 
-            this.btnCategoria5.Location = new System.Drawing.Point(476, 229);
-            this.btnCategoria5.Location = new System.Drawing.Point(717, 312);
+            this.btnCategoria5.Location = new System.Drawing.Point(770, 312);
             this.btnCategoria5.Name = "btnCategoria5";
             this.btnCategoria5.Size = new System.Drawing.Size(86, 36);
             this.btnCategoria5.TabIndex = 7;
@@ -162,7 +157,7 @@
             // 
             // picBoxPaises
             // 
-            this.picBoxPaises.Location = new System.Drawing.Point(741, 321);
+            this.picBoxPaises.Location = new System.Drawing.Point(741, 366);
             this.picBoxPaises.Name = "picBoxPaises";
             this.picBoxPaises.Size = new System.Drawing.Size(165, 96);
             this.picBoxPaises.TabIndex = 12;
@@ -172,7 +167,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1002, 565);
+            this.ClientSize = new System.Drawing.Size(1000, 500);
             this.Controls.Add(this.picBoxPaises);
             this.Controls.Add(this.picBoxJuegos);
             this.Controls.Add(this.picBoxAnimales);
