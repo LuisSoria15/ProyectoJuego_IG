@@ -51,14 +51,24 @@ namespace ProyectoJuego
 
         private void btnLeaderboard_Click(object sender, EventArgs e)
         {
-            LeaderBoard ventana = new LeaderBoard(this);
+            
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            Categorias ventana = new Categorias(this);
             ventana.Show();
             this.Hide();
         }
 
-        private void btnJugar_Click(object sender, EventArgs e)
+        private void pictureBox3_Click(object sender, EventArgs e)
         {
-            Categorias ventana = new Categorias(this);
+            Close();
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            LeaderBoard ventana = new LeaderBoard(this);
             ventana.Show();
             this.Hide();
         }
