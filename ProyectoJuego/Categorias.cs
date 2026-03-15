@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 
 namespace ProyectoJuego
 {
@@ -126,6 +127,27 @@ namespace ProyectoJuego
         private void Categorias_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnAnimales_Click(object sender, EventArgs e)
+        {
+            Preguntas formPreguntas = new Preguntas(btnAnimales.Text, formPrincipal);
+            formPreguntas.Show();
+            this.Close();
+        }
+
+        private void btnVideojuegos_Click(object sender, EventArgs e)
+        {
+            Preguntas formPreguntas = new Preguntas(btnVideojuegos.Text, formPrincipal);
+            formPreguntas.Show();
+            this.Close();
+        }
+
+        private void btnPaises_Click(object sender, EventArgs e)
+        {
+            Preguntas formPreguntas = new Preguntas(btnPaises.Text, formPrincipal);
+            formPreguntas.Show();
+            this.Close();
         }
     }
 }
