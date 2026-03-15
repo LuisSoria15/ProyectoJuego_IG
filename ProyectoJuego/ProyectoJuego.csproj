@@ -116,6 +116,7 @@
     <Compile Include="LeaderBoard.Designer.cs">
       <DependentUpon>LeaderBoard.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modelo.cs" />
     <Compile Include="Preguntas.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -19,30 +19,96 @@ namespace ProyectoJuego
                                         "User ID=u7mcmeqwvuwiyurk;" +
                                         "Password=hwlYTA5OEtN6FXWbJowK;";
         private Form1 formPrincipal;
-        public Preguntas(string nombreCategoria, Form1 formPrincipal)
+        private Point mouseLoc;
+
+        private List<PreguntaJuego> listaPreguntas = new List<PreguntaJuego>();
+        private int indiceActual = 0;
+        private int idCategoriaSeleccionada;
+
+
+        public Preguntas(int idCategoria, Form1 formPrincipal)
         {
             InitializeComponent();
             this.formPrincipal = formPrincipal;
-            cargaPreguntas();
-        }
+            this.idCategoriaSeleccionada = idCategoria;
 
-        private Point mouseLoc;
+            btnOpcion1.Click += ValidarRespuesta_Click;
+            btnOpcion2.Click += ValidarRespuesta_Click;
+            btnOpcion3.Click += ValidarRespuesta_Click;
+            btnOpcion4.Click += ValidarRespuesta_Click;
+
+            // Conectamos también los PictureBoxes para cuando toquen imágenes
+            picOpcion1.Click += ValidarRespuesta_Click;
+            picOpcion2.Click += ValidarRespuesta_Click;
+            picOpcion3.Click += ValidarRespuesta_Click;
+            picOpcion4.Click += ValidarRespuesta_Click;
+
+            CargarTodasLasPreguntasDesdeBD(); // Carga la lista
+            MostrarPreguntaActual();
+        }
 
         private void Preguntas_Load(object sender, EventArgs e)
         {
 
         }
 
+        private void MostrarPreguntaActual()
+        {
+            // Verificar si ya terminamos el juego
+            if (indiceActual >= listaPreguntas.Count)
+            {
+                MessageBox.Show("¡Categoría terminada!");
+                formPrincipal.Show();
+                this.Close();
+                return;
+            }
+
+            // Obtener la pregunta que toca
+            PreguntaJuego preguntaActual = listaPreguntas[indiceActual];
+            pregunta.Text = preguntaActual.Enunciado;
+
+            // Apagar paneles
+            panelTexto.Visible = false;
+            panelImagen.Visible = false;
+            panelAudio.Visible = false;
+
+            // Lógica para llenar los controles (similar a la que ya tienes)
+            if (preguntaActual.Formato == "texto")
+            {
+                panelTexto.Visible = true;
+                // Asignar textos. Asegúrate de guardar cuál es la correcta en el Tag
+                btnOpcion1.Text = preguntaActual.Opciones[0].Contenido;
+                btnOpcion1.Tag = preguntaActual.Opciones[0].EsCorrecta;
+                btnOpcion2.Text = preguntaActual.Opciones[1].Contenido;
+                btnOpcion2.Tag = preguntaActual.Opciones[1].EsCorrecta;
+                btnOpcion3.Text = preguntaActual.Opciones[2].Contenido;
+                btnOpcion3.Tag = preguntaActual.Opciones[2].EsCorrecta;
+                btnOpcion4.Text = preguntaActual.Opciones[3].Contenido;
+                btnOpcion4.Tag = preguntaActual.Opciones[3].EsCorrecta;
+            }
+            else if (preguntaActual.Formato == "imagen")
+            {
+                panelImagen.Visible = true;
+                CargarImagen(preguntaActual.Opciones[0].Contenido, picOpcion1);
+                picOpcion1.Tag = preguntaActual.Opciones[0].EsCorrecta;
+                CargarImagen(preguntaActual.Opciones[1].Contenido, picOpcion2);
+                picOpcion2.Tag = preguntaActual.Opciones[1].EsCorrecta;
+                CargarImagen(preguntaActual.Opciones[2].Contenido, picOpcion3);
+                picOpcion3.Tag = preguntaActual.Opciones[2].EsCorrecta;
+                CargarImagen(preguntaActual.Opciones[3].Contenido, picOpcion4);
+                picOpcion4.Tag = preguntaActual.Opciones[3].EsCorrecta;
+            }
+            // ... igual para audio
+            else if(preguntaActual.Formato == "audio")
+            {
+
+            }
+        }
+
+
         private void Preguntas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                int dx = e.Location.X - mouseLoc.X;
-                int dy = e.Location.Y - mouseLoc.Y;
-                dx += this.Location.X;
-                dy += this.Location.Y;
-                this.Location = new Point(dx, dy);
-            }
+            
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -51,94 +117,8 @@ namespace ProyectoJuego
             Close();//funcionara diferente :p
         }
 
-        private void cargaPreguntas()
-        {
-            using (MySqlConnection conn = new MySqlConnection(connectionString))
-            {
-                try
-                {
-                    conn.Open();
-
-                    // 1. Modificamos la consulta para traer también el formato
-                    string queryPregunta = "SELECT enunciado, formato FROM preguntas WHERE categoria_id = 1 AND id = 2";
-                    MySqlCommand cmdPregunta = new MySqlCommand(queryPregunta, conn);
-
-                    string enunciado = "";
-                    string formato = "";
-
-                    // Volvemos a usar ExecuteReader porque ahora traemos 2 columnas
-                    using (MySqlDataReader readerPregunta = cmdPregunta.ExecuteReader())
-                    {
-                        if (readerPregunta.Read())
-                        {
-                            enunciado = readerPregunta["enunciado"].ToString();
-                            formato = readerPregunta["formato"].ToString();
-                        }
-                    }
-
-                    // Si encontramos la pregunta, procedemos con las opciones
-                    if (!string.IsNullOrEmpty(enunciado))
-                    {
-                        pregunta.Text = enunciado;
-
-                        // 2. Ocultamos todos los paneles primero para "limpiar" la pantalla
-                        // (Asegúrate de cambiar estos nombres por los nombres reales de tus paneles)
-                        panelTexto.Visible = false;
-                        panelImagen.Visible = false;
-                        panelAudio.Visible = false;
-
-                        string queryOpciones = "SELECT contenido FROM opciones WHERE pregunta_id = 2";
-                        MySqlCommand cmdOpciones = new MySqlCommand(queryOpciones, conn);
-
-                        using (MySqlDataReader readerOpciones = cmdOpciones.ExecuteReader())
-                        {
-                            int i = 1;
-                            while (readerOpciones.Read() && i <= 4)
-                            {
-                                string contenido = readerOpciones["contenido"].ToString();
-
-                                // 3. Dependiendo del formato, mostramos el panel y asignamos los datos
-                                if (formato == "texto")
-                                {
-                                    panelTexto.Visible = true;
-                                    if (i == 1) btnOpcion1.Text = contenido;
-                                    if (i == 2) btnOpcion2.Text = contenido;
-                                    if (i == 3) btnOpcion3.Text = contenido;
-                                    if (i == 4) btnOpcion4.Text = contenido;
-                                }
-                                else if (formato == "imagen")
-                                {
-                                    panelImagen.Visible = true;
-                                    // En Windows Forms, PictureBox tiene la propiedad ImageLocation 
-                                    // que carga automáticamente una imagen desde un enlace (URL)
-                                    if (i == 1) CargarImagen(contenido, picOpcion1);
-                                    if (i == 2) CargarImagen(contenido, picOpcion2);
-                                    if (i == 3) CargarImagen(contenido, picOpcion3);
-                                    if (i == 4) CargarImagen(contenido, picOpcion4);
-                                }
-                                else if (formato == "audio")
-                                {
-                                    panelAudio.Visible = true;
-                                    // Para el audio, podrías guardar el enlace en la propiedad "Tag" del botón
-                                    // Así, cuando le den clic a "Reproducir", sabes qué enlace usar.
-                                    if (i == 1) btnAudio1.Tag = contenido;
-                                    if (i == 2) btnAudio2.Tag = contenido;
-                                    if (i == 3) btnAudio3.Tag = contenido;
-                                    if (i == 4) btnAudio4.Tag = contenido;
-                                }
-                                i++;
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al cargar la pregunta: " + ex.Message);
-                }
-            }
-        }
-
-        private void CargarImagen(string url, PictureBox picBox)
+        // Solo agregas la palabra 'async' aquí
+        private async void CargarImagen(string url, PictureBox picBox)
         {
             try
             {
@@ -146,11 +126,10 @@ namespace ProyectoJuego
 
                 using (System.Net.WebClient webClient = new System.Net.WebClient())
                 {
-                    // Engañamos a Wikipedia diciendo que somos un navegador web
                     webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
 
-                    // Descargamos la imagen
-                    byte[] imageData = webClient.DownloadData(url);
+                    // Cambias a DownloadDataTaskAsync y le pones 'await'
+                    byte[] imageData = await webClient.DownloadDataTaskAsync(url);
 
                     using (System.IO.MemoryStream ms = new System.IO.MemoryStream(imageData))
                     {
@@ -161,8 +140,108 @@ namespace ProyectoJuego
             }
             catch (Exception ex)
             {
-                // Esto te dirá el error exacto si vuelve a fallar
                 MessageBox.Show($"Error al cargar la imagen: {ex.Message}");
+            }
+        }
+
+        private void ValidarRespuesta_Click(object sender, EventArgs e)
+        {
+            Control controlClickeado = (Control)sender; // Puede ser un Button o PictureBox
+
+            // Verificamos si la respuesta es correcta leyendo el Tag que le asignamos
+            if (controlClickeado.Tag != null && (bool)controlClickeado.Tag == true)
+            {
+                MessageBox.Show("¡Respuesta Correcta!");
+                // Aquí puedes sumar puntos a una variable global de puntuación
+            }
+            else
+            {
+                MessageBox.Show("Respuesta Incorrecta");
+            }
+
+            // Avanzamos a la siguiente pregunta
+            indiceActual++;
+            MostrarPreguntaActual();
+        }
+
+
+        private void CargarTodasLasPreguntasDesdeBD()
+        {
+            listaPreguntas.Clear(); // Limpiamos la lista por si se vuelve a llamar
+
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+
+                    // Usamos un JOIN para traer la pregunta y sus opciones juntas.
+                    string query = @"
+                SELECT 
+                    p.id AS PreguntaId, 
+                    p.enunciado, 
+                    p.formato,
+                    o.contenido, 
+                    o.es_correcta
+                FROM preguntas p
+                INNER JOIN opciones o ON p.id = o.pregunta_id
+                WHERE p.categoria_id = @categoriaId
+                ORDER BY p.id"; // El orden es vital para agrupar en el while
+
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+
+                    // Usar parámetros (@categoriaId) previene ataques de inyección SQL. 
+                    // Es una práctica de seguridad fundamental.
+                    cmd.Parameters.AddWithValue("@categoriaId", this.idCategoriaSeleccionada);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        PreguntaJuego preguntaActual = null;
+
+                        while (reader.Read())
+                        {
+                            int idPreguntaBD = Convert.ToInt32(reader["PreguntaId"]);
+
+                            // Si preguntaActual es nula o el ID cambió, estamos leyendo una pregunta nueva
+                            if (preguntaActual == null || preguntaActual.Id != idPreguntaBD)
+                            {
+                                preguntaActual = new PreguntaJuego
+                                {
+                                    Id = idPreguntaBD,
+                                    Enunciado = reader["enunciado"].ToString(),
+                                    Formato = reader["formato"].ToString()
+                                };
+                                listaPreguntas.Add(preguntaActual);
+                            }
+
+                            // En cada vuelta del while, leemos una opción y se la agregamos a la pregunta actual
+                            OpcionJuego nuevaOpcion = new OpcionJuego
+                            {
+                                Contenido = reader["contenido"].ToString(),
+                                //Convert.ToBoolean maneja bien el tinyint(1) de MySQL
+                                EsCorrecta = Convert.ToBoolean(reader["es_correcta"])
+                            };
+
+                            preguntaActual.Opciones.Add(nuevaOpcion);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al conectar con la base de datos: " + ex.Message);
+                }
+            }
+        }
+
+        private void Preguntas_MouseMove_1(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                int dx = e.Location.X - mouseLoc.X;
+                int dy = e.Location.Y - mouseLoc.Y;
+                dx += this.Location.X;
+                dy += this.Location.Y;
+                this.Location = new Point(dx, dy);
             }
         }
     }

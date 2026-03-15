@@ -59,20 +59,18 @@
             // pregunta
             // 
             this.pregunta.AutoSize = true;
-            this.pregunta.Location = new System.Drawing.Point(640, 63);
-            this.pregunta.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.pregunta.Location = new System.Drawing.Point(349, 34);
             this.pregunta.Name = "pregunta";
-            this.pregunta.Size = new System.Drawing.Size(121, 25);
+            this.pregunta.Size = new System.Drawing.Size(67, 13);
             this.pregunta.TabIndex = 0;
             this.pregunta.Text = "PREGUNTA";
             // 
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(1230, 22);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(6);
+            this.pictureBox1.Location = new System.Drawing.Point(671, 12);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(214, 126);
+            this.pictureBox1.Size = new System.Drawing.Size(117, 68);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
@@ -84,44 +82,47 @@
             this.panelTexto.Controls.Add(this.btnOpcion4);
             this.panelTexto.Controls.Add(this.btnOpcion3);
             this.panelTexto.Controls.Add(this.btnOpcion2);
-            this.panelTexto.Location = new System.Drawing.Point(32, 22);
-            this.panelTexto.Margin = new System.Windows.Forms.Padding(6);
+            this.panelTexto.Location = new System.Drawing.Point(46, 86);
             this.panelTexto.Name = "panelTexto";
-            this.panelTexto.Size = new System.Drawing.Size(420, 374);
+            this.panelTexto.Size = new System.Drawing.Size(260, 211);
             this.panelTexto.TabIndex = 2;
             // 
             // btnOpcion1
             // 
-            this.btnOpcion1.Location = new System.Drawing.Point(101, 62);
+            this.btnOpcion1.Location = new System.Drawing.Point(55, 34);
+            this.btnOpcion1.Margin = new System.Windows.Forms.Padding(2);
             this.btnOpcion1.Name = "btnOpcion1";
-            this.btnOpcion1.Size = new System.Drawing.Size(97, 50);
+            this.btnOpcion1.Size = new System.Drawing.Size(53, 27);
             this.btnOpcion1.TabIndex = 3;
             this.btnOpcion1.Text = "text1";
             this.btnOpcion1.UseVisualStyleBackColor = true;
             // 
             // btnOpcion4
             // 
-            this.btnOpcion4.Location = new System.Drawing.Point(269, 241);
+            this.btnOpcion4.Location = new System.Drawing.Point(147, 131);
+            this.btnOpcion4.Margin = new System.Windows.Forms.Padding(2);
             this.btnOpcion4.Name = "btnOpcion4";
-            this.btnOpcion4.Size = new System.Drawing.Size(87, 45);
+            this.btnOpcion4.Size = new System.Drawing.Size(47, 24);
             this.btnOpcion4.TabIndex = 2;
             this.btnOpcion4.Text = "text4";
             this.btnOpcion4.UseVisualStyleBackColor = true;
             // 
             // btnOpcion3
             // 
-            this.btnOpcion3.Location = new System.Drawing.Point(92, 241);
+            this.btnOpcion3.Location = new System.Drawing.Point(50, 131);
+            this.btnOpcion3.Margin = new System.Windows.Forms.Padding(2);
             this.btnOpcion3.Name = "btnOpcion3";
-            this.btnOpcion3.Size = new System.Drawing.Size(106, 45);
+            this.btnOpcion3.Size = new System.Drawing.Size(58, 24);
             this.btnOpcion3.TabIndex = 1;
             this.btnOpcion3.Text = "text3";
             this.btnOpcion3.UseVisualStyleBackColor = true;
             // 
             // btnOpcion2
             // 
-            this.btnOpcion2.Location = new System.Drawing.Point(269, 62);
+            this.btnOpcion2.Location = new System.Drawing.Point(147, 34);
+            this.btnOpcion2.Margin = new System.Windows.Forms.Padding(2);
             this.btnOpcion2.Name = "btnOpcion2";
-            this.btnOpcion2.Size = new System.Drawing.Size(100, 50);
+            this.btnOpcion2.Size = new System.Drawing.Size(55, 27);
             this.btnOpcion2.TabIndex = 0;
             this.btnOpcion2.Text = "text2";
             this.btnOpcion2.UseVisualStyleBackColor = true;
@@ -132,44 +133,47 @@
             this.panelImagen.Controls.Add(this.picOpcion4);
             this.panelImagen.Controls.Add(this.picOpcion3);
             this.panelImagen.Controls.Add(this.picOpcion1);
-            this.panelImagen.Location = new System.Drawing.Point(498, 130);
-            this.panelImagen.Margin = new System.Windows.Forms.Padding(6);
+            this.panelImagen.Location = new System.Drawing.Point(372, 159);
             this.panelImagen.Name = "panelImagen";
-            this.panelImagen.Size = new System.Drawing.Size(701, 382);
+            this.panelImagen.Size = new System.Drawing.Size(386, 222);
             this.panelImagen.TabIndex = 3;
             // 
             // picOpcion2
             // 
-            this.picOpcion2.Location = new System.Drawing.Point(539, 48);
+            this.picOpcion2.Location = new System.Drawing.Point(294, 26);
+            this.picOpcion2.Margin = new System.Windows.Forms.Padding(2);
             this.picOpcion2.Name = "picOpcion2";
-            this.picOpcion2.Size = new System.Drawing.Size(94, 67);
+            this.picOpcion2.Size = new System.Drawing.Size(51, 36);
             this.picOpcion2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picOpcion2.TabIndex = 3;
             this.picOpcion2.TabStop = false;
             // 
             // picOpcion4
             // 
-            this.picOpcion4.Location = new System.Drawing.Point(526, 242);
+            this.picOpcion4.Location = new System.Drawing.Point(287, 131);
+            this.picOpcion4.Margin = new System.Windows.Forms.Padding(2);
             this.picOpcion4.Name = "picOpcion4";
-            this.picOpcion4.Size = new System.Drawing.Size(94, 67);
+            this.picOpcion4.Size = new System.Drawing.Size(51, 36);
             this.picOpcion4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picOpcion4.TabIndex = 2;
             this.picOpcion4.TabStop = false;
             // 
             // picOpcion3
             // 
-            this.picOpcion3.Location = new System.Drawing.Point(526, 152);
+            this.picOpcion3.Location = new System.Drawing.Point(287, 82);
+            this.picOpcion3.Margin = new System.Windows.Forms.Padding(2);
             this.picOpcion3.Name = "picOpcion3";
-            this.picOpcion3.Size = new System.Drawing.Size(94, 67);
+            this.picOpcion3.Size = new System.Drawing.Size(51, 36);
             this.picOpcion3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picOpcion3.TabIndex = 1;
             this.picOpcion3.TabStop = false;
             // 
             // picOpcion1
             // 
-            this.picOpcion1.Location = new System.Drawing.Point(51, 48);
+            this.picOpcion1.Location = new System.Drawing.Point(28, 26);
+            this.picOpcion1.Margin = new System.Windows.Forms.Padding(2);
             this.picOpcion1.Name = "picOpcion1";
-            this.picOpcion1.Size = new System.Drawing.Size(250, 253);
+            this.picOpcion1.Size = new System.Drawing.Size(136, 137);
             this.picOpcion1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picOpcion1.TabIndex = 0;
             this.picOpcion1.TabStop = false;
@@ -180,62 +184,65 @@
             this.panelAudio.Controls.Add(this.btnAudio1);
             this.panelAudio.Controls.Add(this.btnAudio3);
             this.panelAudio.Controls.Add(this.btnAudio2);
-            this.panelAudio.Location = new System.Drawing.Point(199, 543);
-            this.panelAudio.Margin = new System.Windows.Forms.Padding(6);
+            this.panelAudio.Location = new System.Drawing.Point(94, 319);
             this.panelAudio.Name = "panelAudio";
-            this.panelAudio.Size = new System.Drawing.Size(389, 359);
+            this.panelAudio.Size = new System.Drawing.Size(212, 194);
             this.panelAudio.TabIndex = 3;
             // 
             // btnAudio4
             // 
-            this.btnAudio4.Location = new System.Drawing.Point(217, 146);
+            this.btnAudio4.Location = new System.Drawing.Point(118, 79);
+            this.btnAudio4.Margin = new System.Windows.Forms.Padding(2);
             this.btnAudio4.Name = "btnAudio4";
-            this.btnAudio4.Size = new System.Drawing.Size(117, 55);
+            this.btnAudio4.Size = new System.Drawing.Size(64, 30);
             this.btnAudio4.TabIndex = 3;
             this.btnAudio4.Text = "button9";
             this.btnAudio4.UseVisualStyleBackColor = true;
             // 
             // btnAudio1
             // 
-            this.btnAudio1.Location = new System.Drawing.Point(59, 16);
+            this.btnAudio1.Location = new System.Drawing.Point(32, 9);
+            this.btnAudio1.Margin = new System.Windows.Forms.Padding(2);
             this.btnAudio1.Name = "btnAudio1";
-            this.btnAudio1.Size = new System.Drawing.Size(105, 66);
+            this.btnAudio1.Size = new System.Drawing.Size(57, 36);
             this.btnAudio1.TabIndex = 2;
             this.btnAudio1.Text = "button8";
             this.btnAudio1.UseVisualStyleBackColor = true;
             // 
             // btnAudio3
             // 
-            this.btnAudio3.Location = new System.Drawing.Point(74, 146);
+            this.btnAudio3.Location = new System.Drawing.Point(40, 79);
+            this.btnAudio3.Margin = new System.Windows.Forms.Padding(2);
             this.btnAudio3.Name = "btnAudio3";
-            this.btnAudio3.Size = new System.Drawing.Size(115, 56);
+            this.btnAudio3.Size = new System.Drawing.Size(63, 30);
             this.btnAudio3.TabIndex = 1;
             this.btnAudio3.Text = "button7";
             this.btnAudio3.UseVisualStyleBackColor = true;
             // 
             // btnAudio2
             // 
-            this.btnAudio2.Location = new System.Drawing.Point(217, 37);
+            this.btnAudio2.Location = new System.Drawing.Point(118, 20);
+            this.btnAudio2.Margin = new System.Windows.Forms.Padding(2);
             this.btnAudio2.Name = "btnAudio2";
-            this.btnAudio2.Size = new System.Drawing.Size(111, 45);
+            this.btnAudio2.Size = new System.Drawing.Size(61, 24);
             this.btnAudio2.TabIndex = 0;
             this.btnAudio2.Text = "button6";
             this.btnAudio2.UseVisualStyleBackColor = true;
             // 
             // Preguntas
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1467, 969);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(800, 525);
             this.Controls.Add(this.panelAudio);
-            this.Controls.Add(this.panelImagen);
             this.Controls.Add(this.panelTexto);
             this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.panelImagen);
             this.Controls.Add(this.pregunta);
-            this.Margin = new System.Windows.Forms.Padding(6);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Preguntas";
             this.Text = "Preguntas";
             this.Load += new System.EventHandler(this.Preguntas_Load);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Preguntas_MouseMove_1);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panelTexto.ResumeLayout(false);
             this.panelImagen.ResumeLayout(false);

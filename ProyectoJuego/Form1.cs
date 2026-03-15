@@ -83,9 +83,5 @@ namespace ProyectoJuego
             ventana.Show();
             this.Hide();
         }
-        private void CentrarLabel(Label lbl)
-        {
-            lbl.Left = (this.ClientSize.Width - lbl.Width) / 2;
-        }
     }
 }

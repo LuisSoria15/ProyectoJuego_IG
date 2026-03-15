@@ -131,21 +131,24 @@ namespace ProyectoJuego
 
         private void btnAnimales_Click(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(btnAnimales.Text, formPrincipal);
+            // Pasamos el ID 1 en lugar del texto
+            Preguntas formPreguntas = new Preguntas(1, formPrincipal);
             formPreguntas.Show();
             this.Close();
         }
 
         private void btnVideojuegos_Click(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(btnVideojuegos.Text, formPrincipal);
+            // Pasamos el ID 2 en lugar del texto
+            Preguntas formPreguntas = new Preguntas(2, formPrincipal);
             formPreguntas.Show();
             this.Close();
         }
 
         private void btnPaises_Click(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(btnPaises.Text, formPrincipal);
+            // Pasamos el ID 3 en lugar del texto
+            Preguntas formPreguntas = new Preguntas(3, formPrincipal);
             formPreguntas.Show();
             this.Close();
         }
