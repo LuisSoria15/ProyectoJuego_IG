@@ -14,8 +14,19 @@ namespace ProyectoJuego
     {
         public Form1()
         {
+            
             InitializeComponent();
+            label1.Font = FontsManager.GetFipps(24);
 
+            //Forzamos al Label a ajustarse a la nueva fuente
+            label1.AutoSize = true;
+
+            // Lo centramos manualmente por código
+            // Esto calcula la mitad del formulario menos la mitad del label
+            label1.Location = new Point(
+                (this.ClientSize.Width - label1.Width) / 2,
+                label1.Location.Y // Mantenemos su altura original
+            );
 
         }
         private Point mouseLoc;
@@ -71,6 +82,10 @@ namespace ProyectoJuego
             LeaderBoard ventana = new LeaderBoard(this);
             ventana.Show();
             this.Hide();
+        }
+        private void CentrarLabel(Label lbl)
+        {
+            lbl.Left = (this.ClientSize.Width - lbl.Width) / 2;
         }
     }
 }
