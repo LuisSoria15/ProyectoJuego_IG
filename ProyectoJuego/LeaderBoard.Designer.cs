@@ -39,11 +39,12 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(404, 117);
+            this.label1.Location = new System.Drawing.Point(303, 95);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(90, 16);
+            this.label1.Size = new System.Drawing.Size(67, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Leader Board";
+            this.label1.Text = "Leaderboard";
             // 
             // dataGridView1
             // 
@@ -51,11 +52,12 @@
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Nombre,
             this.Score});
-            this.dataGridView1.Location = new System.Drawing.Point(196, 222);
+            this.dataGridView1.Location = new System.Drawing.Point(147, 180);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(513, 226);
+            this.dataGridView1.Size = new System.Drawing.Size(385, 184);
             this.dataGridView1.TabIndex = 1;
             // 
             // Nombre
@@ -74,9 +76,10 @@
             // 
             // btnCerrar
             // 
-            this.btnCerrar.Location = new System.Drawing.Point(791, 31);
+            this.btnCerrar.Location = new System.Drawing.Point(593, 25);
+            this.btnCerrar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnCerrar.Name = "btnCerrar";
-            this.btnCerrar.Size = new System.Drawing.Size(84, 48);
+            this.btnCerrar.Size = new System.Drawing.Size(63, 39);
             this.btnCerrar.TabIndex = 2;
             this.btnCerrar.Text = "Cerrar";
             this.btnCerrar.UseVisualStyleBackColor = true;
@@ -84,13 +87,14 @@
             // 
             // LeaderBoard
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(941, 526);
+            this.ClientSize = new System.Drawing.Size(706, 427);
             this.Controls.Add(this.btnCerrar);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "LeaderBoard";
             this.Text = "LeaderBoard";
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LeaderBoard_MouseDown);

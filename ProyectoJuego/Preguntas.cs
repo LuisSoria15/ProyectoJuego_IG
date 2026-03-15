@@ -35,5 +35,10 @@ namespace ProyectoJuego
                 this.Location = new Point(dx, dy);
             }
         }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            Close();//funcionara diferente :p
+        }
     }
 }
