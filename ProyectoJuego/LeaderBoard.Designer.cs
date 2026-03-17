@@ -28,23 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblTituloLeader = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.Nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Score = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnCerrar = new System.Windows.Forms.Button();
+            this.pbCerrar = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbCerrar)).BeginInit();
             this.SuspendLayout();
             // 
-            // label1
+            // lblTituloLeader
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(303, 95);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(67, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Leaderboard";
+            this.lblTituloLeader.AutoSize = true;
+            this.lblTituloLeader.Font = new System.Drawing.Font("Consolas", 28.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTituloLeader.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.lblTituloLeader.Location = new System.Drawing.Point(347, 57);
+            this.lblTituloLeader.Name = "lblTituloLeader";
+            this.lblTituloLeader.Size = new System.Drawing.Size(310, 55);
+            this.lblTituloLeader.TabIndex = 0;
+            this.lblTituloLeader.Text = "Leaderboard";
             // 
             // dataGridView1
             // 
@@ -52,12 +54,12 @@
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Nombre,
             this.Score});
-            this.dataGridView1.Location = new System.Drawing.Point(147, 180);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridView1.Location = new System.Drawing.Point(293, 164);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(385, 184);
+            this.dataGridView1.Size = new System.Drawing.Size(432, 430);
             this.dataGridView1.TabIndex = 1;
             // 
             // Nombre
@@ -74,32 +76,40 @@
             this.Score.Name = "Score";
             this.Score.Width = 125;
             // 
-            // btnCerrar
+            // pbCerrar
             // 
-            this.btnCerrar.Location = new System.Drawing.Point(593, 25);
-            this.btnCerrar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.btnCerrar.Name = "btnCerrar";
-            this.btnCerrar.Size = new System.Drawing.Size(63, 39);
-            this.btnCerrar.TabIndex = 2;
-            this.btnCerrar.Text = "Cerrar";
-            this.btnCerrar.UseVisualStyleBackColor = true;
-            this.btnCerrar.Click += new System.EventHandler(this.btnCerrar_Click);
+            this.pbCerrar.Image = global::ProyectoJuego.Properties.Resources.cerrar_normal1;
+            this.pbCerrar.Location = new System.Drawing.Point(928, 12);
+            this.pbCerrar.Name = "pbCerrar";
+            this.pbCerrar.Size = new System.Drawing.Size(95, 75);
+            this.pbCerrar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbCerrar.TabIndex = 3;
+            this.pbCerrar.TabStop = false;
+            this.pbCerrar.Click += new System.EventHandler(this.pbCerrar_Click);
+            this.pbCerrar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbCerrar_MouseDown);
+            this.pbCerrar.MouseEnter += new System.EventHandler(this.pbCerrar_MouseEnter);
+            this.pbCerrar.MouseLeave += new System.EventHandler(this.pbCerrar_MouseLeave);
+            this.pbCerrar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbCerrar_MouseUp);
             // 
             // LeaderBoard
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(706, 427);
-            this.Controls.Add(this.btnCerrar);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.ClientSize = new System.Drawing.Size(1034, 605);
+            this.Controls.Add(this.pbCerrar);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblTituloLeader);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "LeaderBoard";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "LeaderBoard";
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.LeaderBoard_Paint);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LeaderBoard_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.LeaderBoard_MouseMove);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbCerrar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -107,10 +117,10 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblTituloLeader;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Nombre;
         private System.Windows.Forms.DataGridViewTextBoxColumn Score;
-        private System.Windows.Forms.Button btnCerrar;
+        private System.Windows.Forms.PictureBox pbCerrar;
     }
 }

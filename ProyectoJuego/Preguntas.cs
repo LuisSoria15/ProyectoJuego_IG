@@ -19,15 +19,55 @@ namespace ProyectoJuego
                                         "User ID=u7mcmeqwvuwiyurk;" +
                                         "Password=hwlYTA5OEtN6FXWbJowK;";
         private Form1 formPrincipal;
+        private Point mouseLoc;
+
+        private int puntosActuales = 0;
+
+        private string textoPreguntaActual = "";
+
         public Preguntas(string nombreCategoria, Form1 formPrincipal)
         {
             InitializeComponent();
             this.formPrincipal = formPrincipal;
+
+            this.Size = formPrincipal.Size;
+
+            lblScore.Font = FontsManager.GetFipps(14); 
+            lblScore.AutoSize = false;
+            lblScore.Width = 300;
+            lblScore.Height = 60;
+            lblScore.BackColor = Color.Transparent;
+            lblScore.ForeColor = Color.Transparent; 
+            lblScore.Location = new Point(20, 20);
+
+            lblScore.Parent = this;
+            lblScore.BringToFront();
+           
+            lblScore.Paint += new PaintEventHandler(lblScore_Paint);
+
+            pregunta.Font = FontsManager.GetFipps(10);
+            pregunta.AutoSize = false;
+
+            pregunta.Width = this.ClientSize.Width - 100; 
+            pregunta.Height = 100;
+
+            pregunta.Location = new Point(50, 80);
+
+            pregunta.BackColor = Color.Transparent;
+            pregunta.ForeColor = Color.Transparent; 
+
+            pregunta.Paint += new PaintEventHandler(pregunta_Paint);
+
+            this.Opacity = 0.0;
+
+            Timer timerAparicion = new Timer();
+            timerAparicion.Interval = 15; 
+            timerAparicion.Tick += TimerAparicion_Tick;
+            timerAparicion.Start();
+
             cargaPreguntas();
         }
-
-        private Point mouseLoc;
-
+        
         private void Preguntas_Load(object sender, EventArgs e)
         {
 
@@ -44,11 +84,41 @@ namespace ProyectoJuego
                 this.Location = new Point(dx, dy);
             }
         }
+        private void Preguntas_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouseLoc = e.Location;
+        }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void pbCerrar_Click(object sender, EventArgs e)
         {
             formPrincipal.Show();
-            Close();//funcionara diferente :p
+            Close();
+        }
+
+        private void pregunta_Paint(object sender, PaintEventArgs e)
+        {
+            if (string.IsNullOrEmpty(textoPreguntaActual)) return;
+
+            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
+
+            Brush brochaColor = new SolidBrush(Color.Black);
+            Brush brochaBorde = new SolidBrush(Color.White);
+
+            StringFormat formato = new StringFormat();
+            formato.Alignment = StringAlignment.Center;
+            formato.LineAlignment = StringAlignment.Center;
+
+            float x = 0;
+            float y = 0;
+            float w = pregunta.Width;
+            float h = pregunta.Height;
+
+            e.Graphics.DrawString(textoPreguntaActual, pregunta.Font, brochaBorde, new RectangleF(x - 2, y, w, h), formato);
+            e.Graphics.DrawString(textoPreguntaActual, pregunta.Font, brochaBorde, new RectangleF(x + 2, y, w, h), formato);
+            e.Graphics.DrawString(textoPreguntaActual, pregunta.Font, brochaBorde, new RectangleF(x, y - 2, w, h), formato);
+            e.Graphics.DrawString(textoPreguntaActual, pregunta.Font, brochaBorde, new RectangleF(x, y + 2, w, h), formato);
+
+            e.Graphics.DrawString(textoPreguntaActual, pregunta.Font, brochaColor, new RectangleF(x, y, w, h), formato);
         }
 
         private void cargaPreguntas()
@@ -79,7 +149,14 @@ namespace ProyectoJuego
                     // Si encontramos la pregunta, procedemos con las opciones
                     if (!string.IsNullOrEmpty(enunciado))
                     {
-                        pregunta.Text = enunciado;
+                        //pregunta.Text = enunciado; //tengo que quitar esto para dibuje la pregunta con el diseno del juego sorry
+
+                        textoPreguntaActual = enunciado;
+
+                        pregunta.Text = "";
+
+                        pregunta.Invalidate();
+
 
                         // 2. Ocultamos todos los paneles primero para "limpiar" la pantalla
                         // (Asegúrate de cambiar estos nombres por los nombres reales de tus paneles)
@@ -136,6 +213,7 @@ namespace ProyectoJuego
                     MessageBox.Show("Error al cargar la pregunta: " + ex.Message);
                 }
             }
+            lblScore.Invalidate();
         }
 
         private void CargarImagen(string url, PictureBox picBox)
@@ -163,6 +241,74 @@ namespace ProyectoJuego
             {
                 // Esto te dirá el error exacto si vuelve a fallar
                 MessageBox.Show($"Error al cargar la imagen: {ex.Message}");
+            }
+        }
+
+        private void pbCerrar_MouseUp(object sender, MouseEventArgs e)
+        {
+            pbCerrar.Top -= 4;
+        }
+
+        private void pbCerrar_MouseDown(object sender, MouseEventArgs e)
+        {
+            pbCerrar.Left += 4;
+        }
+
+        private void pbCerrar_MouseEnter(object sender, EventArgs e)
+        {
+            pbCerrar.Image = Properties.Resources.cerrar_resplandor;
+            pbCerrar.Cursor = Cursors.Hand;
+        }
+
+        private void pbCerrar_MouseLeave(object sender, EventArgs e)
+        {
+            pbCerrar.Image = Properties.Resources.cerrar_normal;
+        }
+
+        private void lblScore_Paint(object sender, PaintEventArgs e)
+        {
+           string texto = "PUNTOS: " + puntosActuales.ToString();
+
+            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
+
+            Brush brochaBorde = new SolidBrush(Color.Black);
+            Brush brochaColor = new SolidBrush(Color.Gold);
+
+            float x = 5;
+            float y = 5;
+
+            e.Graphics.DrawString(texto, lblScore.Font, brochaBorde, x - 2, y);
+            e.Graphics.DrawString(texto, lblScore.Font, brochaBorde, x + 2, y);
+            e.Graphics.DrawString(texto, lblScore.Font, brochaBorde, x, y - 2);
+            e.Graphics.DrawString(texto, lblScore.Font, brochaBorde, x, y + 2);
+
+            e.Graphics.DrawString(texto, lblScore.Font, brochaBorde, x + 3, y + 3);
+
+            e.Graphics.DrawString(texto, lblScore.Font, brochaColor, x, y);
+        }
+
+        //quien haga lo de validar si la pregunta es correcta, solo mande a llamar esta funcion
+        //con los puntos a darle por pregunta bien contestada
+        //Ejemplo:
+        //          SumarPuntos(100); //suponiendo que se le agrega 100 puntos
+        private void SumarPuntos(int cantidad)
+        {
+            puntosActuales += cantidad;
+
+            lblScore.Invalidate();
+        }
+
+        private void TimerAparicion_Tick(object sender, EventArgs e)
+        {
+           if (this.Opacity < 1.0)
+            {
+                this.Opacity += 0.05; 
+            }
+            else
+            {
+                Timer timer = (Timer)sender;
+                timer.Stop();
+                timer.Dispose();
             }
         }
     }
