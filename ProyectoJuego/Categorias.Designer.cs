@@ -28,240 +28,196 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.btnRegresar = new System.Windows.Forms.Button();
-            this.btnCerrar = new System.Windows.Forms.Button();
-            this.btnAnimales = new System.Windows.Forms.Button();
-            this.btnVideojuegos = new System.Windows.Forms.Button();
-            this.btnCategoria3 = new System.Windows.Forms.Button();
-            this.btnPaises = new System.Windows.Forms.Button();
-            this.btnCategoria5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
-            this.picBoxAnimales = new System.Windows.Forms.PictureBox();
-            this.picBoxJuegos = new System.Windows.Forms.PictureBox();
+            this.lblTitulo = new System.Windows.Forms.Label();
+            this.pbRegresar = new System.Windows.Forms.PictureBox();
+            this.pbCerrar = new System.Windows.Forms.PictureBox();
+            this.picBoxMarcas = new System.Windows.Forms.PictureBox();
+            this.picBoxCanciones = new System.Windows.Forms.PictureBox();
+            this.picBoxSeries = new System.Windows.Forms.PictureBox();
+            this.picBoxPeliculas = new System.Windows.Forms.PictureBox();
             this.picBoxPaises = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.picBoxAnimales)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picBoxJuegos)).BeginInit();
+            this.picBoxJuegos = new System.Windows.Forms.PictureBox();
+            this.picBoxAnimales = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pbRegresar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbCerrar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxMarcas)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxCanciones)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxSeries)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxPeliculas)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picBoxPaises)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxJuegos)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxAnimales)).BeginInit();
             this.SuspendLayout();
             // 
-            // label1
+            // lblTitulo
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Ravie", 28.2F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(394, 17);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(525, 88);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Categorias";
+            this.lblTitulo.AutoSize = true;
+            this.lblTitulo.Font = new System.Drawing.Font("Ravie", 28.2F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTitulo.Location = new System.Drawing.Point(287, 11);
+            this.lblTitulo.Name = "lblTitulo";
+            this.lblTitulo.Size = new System.Drawing.Size(0, 62);
+            this.lblTitulo.TabIndex = 0;
             // 
-            // btnRegresar
+            // pbRegresar
             // 
-            this.btnRegresar.Location = new System.Drawing.Point(20, 31);
-            this.btnRegresar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnRegresar.Name = "btnRegresar";
-            this.btnRegresar.Size = new System.Drawing.Size(108, 39);
-            this.btnRegresar.TabIndex = 1;
-            this.btnRegresar.Text = "Regresar";
-            this.btnRegresar.UseVisualStyleBackColor = true;
-            this.btnRegresar.Click += new System.EventHandler(this.btnRegresar_Click);
+            this.pbRegresar.Image = global::ProyectoJuego.Properties.Resources.flecha_normal;
+            this.pbRegresar.Location = new System.Drawing.Point(12, 12);
+            this.pbRegresar.Name = "pbRegresar";
+            this.pbRegresar.Size = new System.Drawing.Size(95, 75);
+            this.pbRegresar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbRegresar.TabIndex = 18;
+            this.pbRegresar.TabStop = false;
+            this.pbRegresar.Click += new System.EventHandler(this.pbRegresar_Click);
+            this.pbRegresar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbRegresar_MouseDown);
+            this.pbRegresar.MouseEnter += new System.EventHandler(this.pbRegresar_MouseEnter);
+            this.pbRegresar.MouseLeave += new System.EventHandler(this.pbRegresar_MouseLeave);
+            this.pbRegresar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbRegresar_MouseUp);
             // 
-            // btnCerrar
+            // pbCerrar
             // 
-            this.btnCerrar.Location = new System.Drawing.Point(1236, 35);
-            this.btnCerrar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnCerrar.Name = "btnCerrar";
-            this.btnCerrar.Size = new System.Drawing.Size(103, 35);
-            this.btnCerrar.TabIndex = 2;
-            this.btnCerrar.Text = "Cerrar";
-            this.btnCerrar.UseVisualStyleBackColor = true;
-            this.btnCerrar.Click += new System.EventHandler(this.btnCerrar_Click);
+            this.pbCerrar.Image = global::ProyectoJuego.Properties.Resources.cerrar_normal1;
+            this.pbCerrar.Location = new System.Drawing.Point(893, 12);
+            this.pbCerrar.Name = "pbCerrar";
+            this.pbCerrar.Size = new System.Drawing.Size(95, 75);
+            this.pbCerrar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbCerrar.TabIndex = 17;
+            this.pbCerrar.TabStop = false;
+            this.pbCerrar.Click += new System.EventHandler(this.pbCerrar_Click);
+            this.pbCerrar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbCerrar_MouseDown);
+            this.pbCerrar.MouseEnter += new System.EventHandler(this.pbCerrar_MouseEnter);
+            this.pbCerrar.MouseLeave += new System.EventHandler(this.pbCerrar_MouseLeave);
+            this.pbCerrar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pbCerrar_MouseUp);
             // 
-            // btnAnimales
+            // picBoxMarcas
             // 
-            this.btnAnimales.Location = new System.Drawing.Point(229, 131);
-            this.btnAnimales.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnAnimales.Name = "btnAnimales";
-            this.btnAnimales.Size = new System.Drawing.Size(125, 52);
-            this.btnAnimales.TabIndex = 3;
-            this.btnAnimales.Text = "Animales";
-            this.btnAnimales.UseVisualStyleBackColor = true;
-            this.btnAnimales.Click += new System.EventHandler(this.btnAnimales_Click);
+            this.picBoxMarcas.Location = new System.Drawing.Point(620, 475);
+            this.picBoxMarcas.Margin = new System.Windows.Forms.Padding(4);
+            this.picBoxMarcas.Name = "picBoxMarcas";
+            this.picBoxMarcas.Size = new System.Drawing.Size(211, 116);
+            this.picBoxMarcas.TabIndex = 16;
+            this.picBoxMarcas.TabStop = false;
+            this.picBoxMarcas.Click += new System.EventHandler(this.picBoxMarcas_Click);
+            this.picBoxMarcas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picBoxMarcas_MouseDown);
+            this.picBoxMarcas.MouseEnter += new System.EventHandler(this.picBoxMarcas_MouseEnter);
+            this.picBoxMarcas.MouseLeave += new System.EventHandler(this.picBoxMarcas_MouseLeave);
+            this.picBoxMarcas.MouseUp += new System.Windows.Forms.MouseEventHandler(this.picBoxMarcas_MouseUp);
             // 
-            // btnVideojuegos
+            // picBoxCanciones
             // 
-            this.btnVideojuegos.Location = new System.Drawing.Point(554, 131);
-            this.btnVideojuegos.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnVideojuegos.Name = "btnVideojuegos";
-            this.btnVideojuegos.Size = new System.Drawing.Size(172, 52);
-            this.btnVideojuegos.TabIndex = 4;
-            this.btnVideojuegos.Text = "Videojuegos";
-            this.btnVideojuegos.UseVisualStyleBackColor = true;
-            this.btnVideojuegos.Click += new System.EventHandler(this.btnVideojuegos_Click);
+            this.picBoxCanciones.Location = new System.Drawing.Point(147, 475);
+            this.picBoxCanciones.Margin = new System.Windows.Forms.Padding(4);
+            this.picBoxCanciones.Name = "picBoxCanciones";
+            this.picBoxCanciones.Size = new System.Drawing.Size(204, 116);
+            this.picBoxCanciones.TabIndex = 15;
+            this.picBoxCanciones.TabStop = false;
+            this.picBoxCanciones.Click += new System.EventHandler(this.picBoxCanciones_Click);
+            this.picBoxCanciones.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picBoxCanciones_MouseDown);
+            this.picBoxCanciones.MouseEnter += new System.EventHandler(this.picBoxCanciones_MouseEnter);
+            this.picBoxCanciones.MouseLeave += new System.EventHandler(this.picBoxCanciones_MouseLeave);
+            this.picBoxCanciones.MouseUp += new System.Windows.Forms.MouseEventHandler(this.picBoxCanciones_MouseUp);
             // 
-            // btnCategoria3
+            // picBoxSeries
             // 
-            this.btnCategoria3.Location = new System.Drawing.Point(229, 648);
-            this.btnCategoria3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnCategoria3.Name = "btnCategoria3";
-            this.btnCategoria3.Size = new System.Drawing.Size(125, 54);
-            this.btnCategoria3.TabIndex = 5;
-            this.btnCategoria3.Text = "Categoria3";
-            this.btnCategoria3.UseVisualStyleBackColor = true;
+            this.picBoxSeries.Location = new System.Drawing.Point(528, 319);
+            this.picBoxSeries.Margin = new System.Windows.Forms.Padding(4);
+            this.picBoxSeries.Name = "picBoxSeries";
+            this.picBoxSeries.Size = new System.Drawing.Size(204, 116);
+            this.picBoxSeries.TabIndex = 14;
+            this.picBoxSeries.TabStop = false;
+            this.picBoxSeries.Click += new System.EventHandler(this.picBoxSeries_Click);
+            this.picBoxSeries.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picBoxSeries_MouseDown);
+            this.picBoxSeries.MouseEnter += new System.EventHandler(this.picBoxSeries_MouseEnter);
+            this.picBoxSeries.MouseLeave += new System.EventHandler(this.picBoxSeries_MouseLeave);
+            this.picBoxSeries.MouseUp += new System.Windows.Forms.MouseEventHandler(this.picBoxSeries_MouseUp);
             // 
-            // btnPaises
+            // picBoxPeliculas
             // 
-            this.btnPaises.Location = new System.Drawing.Point(955, 131);
-            this.btnPaises.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnPaises.Name = "btnPaises";
-            this.btnPaises.Size = new System.Drawing.Size(114, 54);
-            this.btnPaises.TabIndex = 6;
-            this.btnPaises.Text = "Paises";
-            this.btnPaises.UseVisualStyleBackColor = true;
-            this.btnPaises.Click += new System.EventHandler(this.btnPaises_Click);
-            // 
-            // btnCategoria5
-            // 
-            this.btnCategoria5.Location = new System.Drawing.Point(429, 386);
-            this.btnCategoria5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnCategoria5.Name = "btnCategoria5";
-            this.btnCategoria5.Size = new System.Drawing.Size(117, 54);
-            this.btnCategoria5.TabIndex = 7;
-            this.btnCategoria5.Text = "Categoria5";
-            this.btnCategoria5.UseVisualStyleBackColor = true;
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(803, 386);
-            this.button6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(103, 35);
-            this.button6.TabIndex = 8;
-            this.button6.Text = "button6";
-            this.button6.UseVisualStyleBackColor = true;
-            // 
-            // button7
-            // 
-            this.button7.Location = new System.Drawing.Point(955, 648);
-            this.button7.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(103, 35);
-            this.button7.TabIndex = 9;
-            this.button7.Text = "button7";
-            this.button7.UseVisualStyleBackColor = true;
-            // 
-            // picBoxAnimales
-            // 
-            this.picBoxAnimales.Location = new System.Drawing.Point(163, 190);
-            this.picBoxAnimales.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.picBoxAnimales.Name = "picBoxAnimales";
-            this.picBoxAnimales.Size = new System.Drawing.Size(275, 159);
-            this.picBoxAnimales.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.picBoxAnimales.TabIndex = 10;
-            this.picBoxAnimales.TabStop = false;
-            // 
-            // picBoxJuegos
-            // 
-            this.picBoxJuegos.Location = new System.Drawing.Point(532, 192);
-            this.picBoxJuegos.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.picBoxJuegos.Name = "picBoxJuegos";
-            this.picBoxJuegos.Size = new System.Drawing.Size(227, 150);
-            this.picBoxJuegos.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.picBoxJuegos.TabIndex = 11;
-            this.picBoxJuegos.TabStop = false;
+            this.picBoxPeliculas.Location = new System.Drawing.Point(255, 319);
+            this.picBoxPeliculas.Margin = new System.Windows.Forms.Padding(4);
+            this.picBoxPeliculas.Name = "picBoxPeliculas";
+            this.picBoxPeliculas.Size = new System.Drawing.Size(204, 116);
+            this.picBoxPeliculas.TabIndex = 13;
+            this.picBoxPeliculas.TabStop = false;
+            this.picBoxPeliculas.Click += new System.EventHandler(this.picBoxPeliculas_Click);
+            this.picBoxPeliculas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picBoxPeliculas_MouseDown);
+            this.picBoxPeliculas.MouseEnter += new System.EventHandler(this.picBoxPeliculas_MouseEnter);
+            this.picBoxPeliculas.MouseLeave += new System.EventHandler(this.picBoxPeliculas_MouseLeave);
+            this.picBoxPeliculas.MouseUp += new System.Windows.Forms.MouseEventHandler(this.picBoxPeliculas_MouseUp);
             // 
             // picBoxPaises
             // 
-            this.picBoxPaises.Location = new System.Drawing.Point(908, 192);
-            this.picBoxPaises.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.picBoxPaises.Location = new System.Drawing.Point(662, 161);
             this.picBoxPaises.Name = "picBoxPaises";
-            this.picBoxPaises.Size = new System.Drawing.Size(227, 144);
+            this.picBoxPaises.Size = new System.Drawing.Size(197, 109);
             this.picBoxPaises.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picBoxPaises.TabIndex = 12;
             this.picBoxPaises.TabStop = false;
+            this.picBoxPaises.Click += new System.EventHandler(this.picBoxPaises_Click);
+            this.picBoxPaises.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picBoxPaises_MouseDown);
+            this.picBoxPaises.MouseEnter += new System.EventHandler(this.picBoxPaises_MouseEnter);
+            this.picBoxPaises.MouseLeave += new System.EventHandler(this.picBoxPaises_MouseLeave);
+            this.picBoxPaises.MouseUp += new System.Windows.Forms.MouseEventHandler(this.picBoxPaises_MouseUp);
             // 
-            // pictureBox1
+            // picBoxJuegos
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(350, 449);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(280, 174);
-            this.pictureBox1.TabIndex = 13;
-            this.pictureBox1.TabStop = false;
+            this.picBoxJuegos.Location = new System.Drawing.Point(393, 161);
+            this.picBoxJuegos.Name = "picBoxJuegos";
+            this.picBoxJuegos.Size = new System.Drawing.Size(204, 109);
+            this.picBoxJuegos.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picBoxJuegos.TabIndex = 11;
+            this.picBoxJuegos.TabStop = false;
+            this.picBoxJuegos.Click += new System.EventHandler(this.picBoxJuegos_Click);
+            this.picBoxJuegos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picBoxJuegos_MouseDown);
+            this.picBoxJuegos.MouseEnter += new System.EventHandler(this.picBoxJuegos_MouseEnter);
+            this.picBoxJuegos.MouseLeave += new System.EventHandler(this.picBoxJuegos_MouseLeave);
+            this.picBoxJuegos.MouseUp += new System.Windows.Forms.MouseEventHandler(this.picBoxJuegos_MouseUp);
             // 
-            // pictureBox2
+            // picBoxAnimales
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(722, 430);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(280, 174);
-            this.pictureBox2.TabIndex = 14;
-            this.pictureBox2.TabStop = false;
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.Location = new System.Drawing.Point(163, 711);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(280, 174);
-            this.pictureBox3.TabIndex = 15;
-            this.pictureBox3.TabStop = false;
-            // 
-            // pictureBox4
-            // 
-            this.pictureBox4.Location = new System.Drawing.Point(854, 711);
-            this.pictureBox4.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(280, 174);
-            this.pictureBox4.TabIndex = 16;
-            this.pictureBox4.TabStop = false;
+            this.picBoxAnimales.Location = new System.Drawing.Point(131, 164);
+            this.picBoxAnimales.Name = "picBoxAnimales";
+            this.picBoxAnimales.Size = new System.Drawing.Size(200, 106);
+            this.picBoxAnimales.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picBoxAnimales.TabIndex = 10;
+            this.picBoxAnimales.TabStop = false;
+            this.picBoxAnimales.Click += new System.EventHandler(this.picBoxAnimales_Click);
+            this.picBoxAnimales.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picBoxAnimales_MouseDown);
+            this.picBoxAnimales.MouseEnter += new System.EventHandler(this.picBoxAnimales_MouseEnter);
+            this.picBoxAnimales.MouseLeave += new System.EventHandler(this.picBoxAnimales_MouseLeave);
+            this.picBoxAnimales.MouseUp += new System.Windows.Forms.MouseEventHandler(this.picBoxAnimales_MouseUp);
             // 
             // Categorias
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1375, 906);
-            this.Controls.Add(this.pictureBox4);
-            this.Controls.Add(this.pictureBox3);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.pictureBox1);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.ClientSize = new System.Drawing.Size(1000, 604);
+            this.Controls.Add(this.pbRegresar);
+            this.Controls.Add(this.pbCerrar);
+            this.Controls.Add(this.picBoxMarcas);
+            this.Controls.Add(this.picBoxCanciones);
+            this.Controls.Add(this.picBoxSeries);
+            this.Controls.Add(this.picBoxPeliculas);
             this.Controls.Add(this.picBoxPaises);
             this.Controls.Add(this.picBoxJuegos);
             this.Controls.Add(this.picBoxAnimales);
-            this.Controls.Add(this.button7);
-            this.Controls.Add(this.button6);
-            this.Controls.Add(this.btnCategoria5);
-            this.Controls.Add(this.btnPaises);
-            this.Controls.Add(this.btnCategoria3);
-            this.Controls.Add(this.btnVideojuegos);
-            this.Controls.Add(this.btnAnimales);
-            this.Controls.Add(this.btnCerrar);
-            this.Controls.Add(this.btnRegresar);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblTitulo);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Categorias";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Categorias";
             this.Load += new System.EventHandler(this.Categorias_Load);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Categorias_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Categorias_MouseMove);
-            ((System.ComponentModel.ISupportInitialize)(this.picBoxAnimales)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picBoxJuegos)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbRegresar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbCerrar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxMarcas)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxCanciones)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxSeries)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxPeliculas)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picBoxPaises)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxJuegos)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxAnimales)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -269,22 +225,15 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button btnRegresar;
-        private System.Windows.Forms.Button btnCerrar;
-        private System.Windows.Forms.Button btnAnimales;
-        private System.Windows.Forms.Button btnVideojuegos;
-        private System.Windows.Forms.Button btnCategoria3;
-        private System.Windows.Forms.Button btnPaises;
-        private System.Windows.Forms.Button btnCategoria5;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Label lblTitulo;
         private System.Windows.Forms.PictureBox picBoxAnimales;
         private System.Windows.Forms.PictureBox picBoxJuegos;
         private System.Windows.Forms.PictureBox picBoxPaises;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.PictureBox pictureBox3;
-        private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.PictureBox picBoxPeliculas;
+        private System.Windows.Forms.PictureBox picBoxSeries;
+        private System.Windows.Forms.PictureBox picBoxCanciones;
+        private System.Windows.Forms.PictureBox picBoxMarcas;
+        private System.Windows.Forms.PictureBox pbCerrar;
+        private System.Windows.Forms.PictureBox pbRegresar;
     }
 }

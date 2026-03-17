@@ -124,6 +124,20 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Resources\flecha normal.png" />
+    <None Include="Resources\flecha resplandor.png" />
+    <None Include="Resources\estrellaleaderboard1.png" />
+    <None Include="Resources\estrellaleaderboard.png" />
+    <None Include="Resources\juego_resplandor1.png" />
+    <None Include="Resources\leader board_resplandor1.png" />
+    <None Include="Resources\leader board_normal1.png" />
+    <None Include="Resources\cerrar_normal1.png" />
+    <None Include="Resources\cerrar_resplandor.png" />
+    <None Include="Resources\cerrar_normal.png" />
+    <None Include="Resources\leader board_normal.png" />
+    <None Include="Resources\jugar_normal.png" />
+    <None Include="Resources\leader board_resplandor.png" />
+    <None Include="Resources\juego_resplandor.png" />
     <EmbeddedResource Include="Categorias.resx">
       <DependentUpon>Categorias.cs</DependentUpon>
     </EmbeddedResource>
@@ -144,6 +158,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Content Include="Fonts\Fipps-Regular.otf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

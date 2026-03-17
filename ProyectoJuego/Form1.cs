@@ -12,26 +12,44 @@ namespace ProyectoJuego
 {
     public partial class Form1 : Form
     {
+        //private int indiceColor = 0;    
+        private int offsetColor = 0;
+
+        private Size tamanoOriginalBoton;
+        private Size tamanoOriginalBoton2;
+
+        //private Color[] paleta = { Color.DarkOrchid, Color.MediumPurple, Color.Plum, Color.MediumPurple };
+        private Color[] paletaMario = { Color.Red, Color.DodgerBlue, Color.Yellow, Color.LimeGreen };
+
+        private Point mouseLoc;
+
         public Form1()
         {
             
             InitializeComponent();
-            label1.Font = FontsManager.GetFipps(24);
+            lblTitulo.Font = FontsManager.GetFipps(24);
 
-            //Forzamos al Label a ajustarse a la nueva fuente
-            label1.AutoSize = true;
+            lblTitulo.AutoSize = true;
 
-            // Lo centramos manualmente por código
-            // Esto calcula la mitad del formulario menos la mitad del label
-            label1.Location = new Point(
-                (this.ClientSize.Width - label1.Width) / 2,
-                label1.Location.Y // Mantenemos su altura original
+            lblTitulo.Location = new Point(
+                (this.ClientSize.Width - lblTitulo.Width) / 2,
+                lblTitulo.Location.Y
             );
+            lblTitulo.ForeColor = Color.Transparent;
+            lblTitulo.Paint += new PaintEventHandler(lblTitulo_Paint);
+            timer1.Interval = 400;
 
+            tamanoOriginalBoton = pictureBox1.Size;
+            tamanoOriginalBoton2 = pictureBox2.Size;
+
+            this.Opacity = 0.0;
+
+            Timer timerAparicion = new Timer();
+            timerAparicion.Interval = 15; 
+            timerAparicion.Tick += TimerAparicion_Tick;
+            timerAparicion.Start();
         }
-        private Point mouseLoc;
-
-
+        
         private void button1_Click(object sender, EventArgs e)
         {
             Close();
@@ -67,6 +85,7 @@ namespace ProyectoJuego
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
+            pictureBox1.Top -= 4;
             Categorias ventana = new Categorias(this);
             ventana.Show();
             this.Hide();
@@ -79,6 +98,7 @@ namespace ProyectoJuego
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
+            pictureBox2.Top -= 4;
             LeaderBoard ventana = new LeaderBoard(this);
             ventana.Show();
             this.Hide();
@@ -86,6 +106,149 @@ namespace ProyectoJuego
         private void CentrarLabel(Label lbl)
         {
             lbl.Left = (this.ClientSize.Width - lbl.Width) / 2;
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            /*lblTitulo.ForeColor = paleta[indiceColor];
+
+            indiceColor++;
+
+            if (indiceColor >= paleta.Length)
+            {
+                indiceColor = 0;
+            }*/
+            offsetColor++;
+            lblTitulo.Invalidate();
+        }
+
+        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+            pictureBox1.Top += 4;
+        }
+
+        private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
+        {
+            pictureBox1.Top -= 4;
+        }
+
+        private void pictureBox1_MouseEnter(object sender, EventArgs e)
+        {
+            pictureBox1.Image = Properties.Resources.juego_resplandor1;
+            pictureBox1.Cursor = Cursors.Hand;
+
+            int nuevoAncho = (int)(tamanoOriginalBoton.Width * 1.10);
+            int nuevoAlto = (int)(tamanoOriginalBoton.Height * 1.10);
+            pictureBox1.Size = new Size(nuevoAncho, nuevoAlto);
+
+            pictureBox1.Location = new Point(
+                pictureBox1.Location.X - (nuevoAncho - tamanoOriginalBoton.Width) / 2,
+                pictureBox1.Location.Y - (nuevoAlto - tamanoOriginalBoton.Height) / 2
+            );
+        }
+
+        private void pictureBox1_MouseLeave(object sender, EventArgs e)
+        {
+            pictureBox1.Image = Properties.Resources.jugar_normal;
+
+            pictureBox1.Location = new Point(
+                pictureBox1.Location.X + (pictureBox1.Width - tamanoOriginalBoton.Width) / 2,
+                pictureBox1.Location.Y + (pictureBox1.Height - tamanoOriginalBoton.Height) / 2
+            );
+            pictureBox1.Size = tamanoOriginalBoton;
+        }
+
+        private void pictureBox2_MouseUp(object sender, MouseEventArgs e)
+        {
+            pictureBox2.Top -= 4;
+        }
+
+        private void pictureBox2_MouseDown(object sender, MouseEventArgs e)
+        {
+            pictureBox2.Top += 4;
+        }
+
+        private void pictureBox2_MouseEnter(object sender, EventArgs e)
+        {
+            pictureBox2.Image = Properties.Resources.leader_board_resplandor1;
+            pictureBox2.Cursor = Cursors.Hand;
+
+            int nuevoAncho = (int)(tamanoOriginalBoton2.Width * 1.10);
+            int nuevoAlto = (int)(tamanoOriginalBoton2.Height * 1.10);
+            pictureBox2.Size = new Size(nuevoAncho, nuevoAlto);
+
+            pictureBox2.Location = new Point(
+                pictureBox2.Location.X - (nuevoAncho - tamanoOriginalBoton2.Width) / 2,
+                pictureBox2.Location.Y - (nuevoAlto - tamanoOriginalBoton2.Height) / 2
+            );
+        }
+
+        private void pictureBox2_MouseLeave(object sender, EventArgs e)
+        {
+            pictureBox2.Image = Properties.Resources.leader_board_normal1;
+
+            pictureBox2.Location = new Point(
+                pictureBox2.Location.X + (pictureBox2.Width - tamanoOriginalBoton2.Width) / 2,
+                pictureBox2.Location.Y + (pictureBox2.Height - tamanoOriginalBoton2.Height) / 2
+            );
+            pictureBox2.Size = tamanoOriginalBoton2;
+        }
+
+        private void pictureBox3_MouseUp(object sender, MouseEventArgs e)
+        {
+            pictureBox3.Top -= 4;
+        }
+
+        private void pictureBox3_MouseDown(object sender, MouseEventArgs e)
+        {
+            pictureBox3.Top += 4;
+        }
+
+        private void pictureBox3_MouseEnter(object sender, EventArgs e)
+        {
+            pictureBox3.Image = Properties.Resources.cerrar_resplandor;
+            pictureBox3.Cursor = Cursors.Hand;
+        }
+
+        private void pictureBox3_MouseLeave(object sender, EventArgs e)
+        {
+            pictureBox3.Image = Properties.Resources.cerrar_normal;
+        }
+
+        private void lblTitulo_Paint(object sender, PaintEventArgs e)
+        {
+            string texto = lblTitulo.Text;
+            float x = 0;
+            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
+
+            Brush brochaSombra = new SolidBrush(Color.Black);
+
+            for (int i = 0; i < texto.Length; i++)
+            {
+                int indice = (i + offsetColor) % paletaMario.Length;
+                Brush brochaColor = new SolidBrush(paletaMario[indice]);
+                string letra = texto[i].ToString();
+
+                e.Graphics.DrawString(letra, lblTitulo.Font, brochaSombra, x + 2, 2);
+
+                e.Graphics.DrawString(letra, lblTitulo.Font, brochaColor, x, 0);
+
+                x += e.Graphics.MeasureString(letra, lblTitulo.Font).Width - 10;
+            }
+        }
+
+        private void TimerAparicion_Tick(object sender, EventArgs e)
+        {
+            if (this.Opacity < 1.0)
+            {
+                this.Opacity += 0.05;
+            }
+            else
+            {
+                Timer timer = (Timer)sender;
+                timer.Stop();
+                timer.Dispose();
+            }
         }
     }
 }
