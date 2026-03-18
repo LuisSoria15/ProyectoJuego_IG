@@ -90,6 +90,7 @@
             // 
             // picBoxMarcas
             // 
+            this.picBoxMarcas.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picBoxMarcas.Location = new System.Drawing.Point(620, 475);
             this.picBoxMarcas.Margin = new System.Windows.Forms.Padding(4);
             this.picBoxMarcas.Name = "picBoxMarcas";
@@ -104,6 +105,7 @@
             // 
             // picBoxCanciones
             // 
+            this.picBoxCanciones.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picBoxCanciones.Location = new System.Drawing.Point(147, 475);
             this.picBoxCanciones.Margin = new System.Windows.Forms.Padding(4);
             this.picBoxCanciones.Name = "picBoxCanciones";
@@ -118,6 +120,7 @@
             // 
             // picBoxSeries
             // 
+            this.picBoxSeries.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picBoxSeries.Location = new System.Drawing.Point(528, 319);
             this.picBoxSeries.Margin = new System.Windows.Forms.Padding(4);
             this.picBoxSeries.Name = "picBoxSeries";
@@ -132,6 +135,7 @@
             // 
             // picBoxPeliculas
             // 
+            this.picBoxPeliculas.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picBoxPeliculas.Location = new System.Drawing.Point(255, 319);
             this.picBoxPeliculas.Margin = new System.Windows.Forms.Padding(4);
             this.picBoxPeliculas.Name = "picBoxPeliculas";
@@ -146,6 +150,7 @@
             // 
             // picBoxPaises
             // 
+            this.picBoxPaises.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picBoxPaises.Location = new System.Drawing.Point(662, 161);
             this.picBoxPaises.Name = "picBoxPaises";
             this.picBoxPaises.Size = new System.Drawing.Size(197, 109);
@@ -160,6 +165,7 @@
             // 
             // picBoxJuegos
             // 
+            this.picBoxJuegos.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picBoxJuegos.Location = new System.Drawing.Point(393, 161);
             this.picBoxJuegos.Name = "picBoxJuegos";
             this.picBoxJuegos.Size = new System.Drawing.Size(204, 109);
@@ -174,6 +180,7 @@
             // 
             // picBoxAnimales
             // 
+            this.picBoxAnimales.Cursor = System.Windows.Forms.Cursors.Hand;
             this.picBoxAnimales.Location = new System.Drawing.Point(131, 164);
             this.picBoxAnimales.Name = "picBoxAnimales";
             this.picBoxAnimales.Size = new System.Drawing.Size(200, 106);

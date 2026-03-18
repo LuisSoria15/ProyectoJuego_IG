@@ -84,8 +84,28 @@ namespace ProyectoJuego
                             }
                             if (i == 3)
                             {
+                                picBoxPeliculas.Text = nombreCat;
+                                CargarImagenCategoria(URLimagen, picBoxPeliculas);
+                            }
+                            if (i == 4)
+                            {
+                                picBoxCanciones.Text = nombreCat;
+                                CargarImagenCategoria(URLimagen, picBoxCanciones);
+                            }
+                            if (i == 5)
+                            {
                                 picBoxPaises.Text = nombreCat;
                                 CargarImagenCategoria(URLimagen, picBoxPaises);
+                            }
+                            if (i == 6)
+                            {
+                                picBoxSeries.Text = nombreCat;
+                                CargarImagenCategoria(URLimagen, picBoxSeries);
+                            }
+                            if (i == 7)
+                            {
+                                picBoxMarcas.Text = nombreCat;
+                                CargarImagenCategoria(URLimagen, picBoxMarcas);
                             }
                             i++;
                         }
@@ -227,7 +247,7 @@ namespace ProyectoJuego
 
         private void picBoxAnimales_Click(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(picBoxAnimales.Text, formPrincipal);
+            Preguntas formPreguntas = new Preguntas(1, formPrincipal);
             formPreguntas.Show();
             this.Close();
         }
@@ -259,7 +279,7 @@ namespace ProyectoJuego
 
         private void picBoxJuegos_Click(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(picBoxJuegos.Text, formPrincipal);
+            Preguntas formPreguntas = new Preguntas(2, formPrincipal);
             formPreguntas.Show();
             this.Close();
         }
@@ -292,7 +312,7 @@ namespace ProyectoJuego
 
         private void picBoxPaises_Click(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(picBoxPaises.Text, formPrincipal);
+            Preguntas formPreguntas = new Preguntas(3, formPrincipal);
             formPreguntas.Show();
             this.Close();
         }
@@ -326,7 +346,7 @@ namespace ProyectoJuego
 
         private void picBoxPeliculas_Click(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(picBoxPeliculas.Text, formPrincipal);
+            Preguntas formPreguntas = new Preguntas(4, formPrincipal);
             formPreguntas.Show();
             this.Close();
         }
@@ -360,7 +380,7 @@ namespace ProyectoJuego
 
         private void picBoxSeries_Click(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(picBoxSeries.Text, formPrincipal);
+            Preguntas formPreguntas = new Preguntas(5, formPrincipal);
             formPreguntas.Show();
             this.Close();
         }
@@ -394,7 +414,7 @@ namespace ProyectoJuego
 
         private void picBoxCanciones_Click(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(picBoxCanciones.Text, formPrincipal);
+            Preguntas formPreguntas = new Preguntas(6, formPrincipal);
             formPreguntas.Show();
             this.Close();
         }
@@ -428,7 +448,7 @@ namespace ProyectoJuego
 
         private void picBoxMarcas_Click(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(picBoxMarcas.Text, formPrincipal);
+            Preguntas formPreguntas = new Preguntas(7, formPrincipal);
             formPreguntas.Show();
             this.Close();
         }
