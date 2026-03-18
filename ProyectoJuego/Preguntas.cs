@@ -29,6 +29,8 @@ namespace ProyectoJuego
         private MediaFoundationReader lectorAudio;
         private string indicador;
 
+        private Random rng = new Random();
+
         public Preguntas(int idCategoria, Form1 formPrincipal)
         {
             InitializeComponent();
@@ -154,11 +156,42 @@ namespace ProyectoJuego
                             });
                         }
                     }
+                    if (listaPreguntas.Count > 0)
+                    {
+                        MezclarPreguntas(listaPreguntas);
+                    }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error de BD: " + ex.Message);
                 }
+            }
+        }
+
+        private void MezclarOpciones(List<OpcionJuego> opciones)
+        {
+            int n = opciones.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1); 
+
+                OpcionJuego valorTemporal = opciones[k];
+                opciones[k] = opciones[n];
+                opciones[n] = valorTemporal;
+            }
+        }
+
+        private void MezclarPreguntas(List<PreguntaJuego> preguntas)
+        {
+            int n = preguntas.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                PreguntaJuego valorTemporal = preguntas[k];
+                preguntas[k] = preguntas[n];
+                preguntas[n] = valorTemporal;
             }
         }
 
@@ -173,6 +206,8 @@ namespace ProyectoJuego
             }
 
             PreguntaJuego pActual = listaPreguntas[indiceActual];
+            // Mezclamos las opciones para que no siempre estén en el mismo orden (esto no afecta la lógica de validación porque cada opción tiene su propiedad EsCorrecta)
+            MezclarOpciones(pActual.Opciones);
 
             // Actualizar texto para el dibujo personalizado
             textoPreguntaActual = pActual.Enunciado;
@@ -210,6 +245,8 @@ namespace ProyectoJuego
 
             }
         }
+
+
 
         private void ConfigurarBoton(Button btn, OpcionJuego opcion)
         {
@@ -339,6 +376,7 @@ namespace ProyectoJuego
             lblScore.Invalidate(); // Redibuja el score con el nuevo puntaje
         }
 
+        
         #endregion
         //_____________________________________________________________________________________________________________________________________________________________
 
@@ -417,5 +455,6 @@ namespace ProyectoJuego
         {
 
         }
+
     }
 }
