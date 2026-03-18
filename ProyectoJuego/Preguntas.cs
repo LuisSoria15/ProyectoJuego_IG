@@ -1,11 +1,10 @@
-﻿using MySql.Data.MySqlClient;
+﻿using NAudio.Wave;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,303 +12,410 @@ namespace ProyectoJuego
 {
     public partial class Preguntas : Form
     {
+        // Configuración de Conexión
         public string connectionString = "Server=bhuefshpv92bhb0wqb5n-mysql.services.clever-cloud.com;" +
-                                        "Port=3306;" +
-                                        "Database=bhuefshpv92bhb0wqb5n;" +
-                                        "User ID=u7mcmeqwvuwiyurk;" +
-                                        "Password=hwlYTA5OEtN6FXWbJowK;";
+                                        "Port=3306;Database=bhuefshpv92bhb0wqb5n;" +
+                                        "User ID=u7mcmeqwvuwiyurk;Password=hwlYTA5OEtN6FXWbJowK;";
+
         private Form1 formPrincipal;
         private Point mouseLoc;
-
         private int puntosActuales = 0;
-
+        private int indiceActual = 0;
+        private int idCategoriaSeleccionada;
+        private List<PreguntaJuego> listaPreguntas = new List<PreguntaJuego>();
         private string textoPreguntaActual = "";
 
-        public Preguntas(string nombreCategoria, Form1 formPrincipal)
+        private WaveOutEvent reproductorAudio;
+        private MediaFoundationReader lectorAudio;
+        private string indicador;
+
+        public Preguntas(int idCategoria, Form1 formPrincipal)
         {
             InitializeComponent();
             this.formPrincipal = formPrincipal;
-
+            this.idCategoriaSeleccionada = idCategoria;
             this.Size = formPrincipal.Size;
 
-            lblScore.Font = FontsManager.GetFipps(14); 
+            ConfigurarDisenoInicial();
+            AsignarEventos();
+
+            // Iniciar carga y efectos
+            IniciarEfectoAparicion();
+            CargarTodasLasPreguntasDesdeBD();
+            MostrarPreguntaActual();
+        }
+        //_____________________________________________________________________________________________________________________________________________________________
+
+        #region Configuración de Interfaz y Diseño
+
+        private void ConfigurarDisenoInicial()
+        {
+            // Configurar Label de Score (Dibujo personalizado)
+            lblScore.Font = FontsManager.GetFipps(14);
             lblScore.AutoSize = false;
-            lblScore.Width = 300;
-            lblScore.Height = 60;
-            lblScore.BackColor = Color.Transparent;
-            lblScore.ForeColor = Color.Transparent; 
+            lblScore.Size = new Size(300, 60);
             lblScore.Location = new Point(20, 20);
+            lblScore.BackColor = Color.Transparent;
+            lblScore.ForeColor = Color.Transparent; // Se dibuja en el evento Paint
+            lblScore.Paint += lblScore_Paint;
 
-            lblScore.Parent = this;
-            lblScore.BringToFront();
-           
-            lblScore.Paint += new PaintEventHandler(lblScore_Paint);
-
+            // Configurar Label de Pregunta (Dibujo personalizado)
             pregunta.Font = FontsManager.GetFipps(10);
             pregunta.AutoSize = false;
-
-            pregunta.Width = this.ClientSize.Width - 100; 
-            pregunta.Height = 100;
-
+            pregunta.Size = new Size(this.ClientSize.Width - 100, 100);
             pregunta.Location = new Point(50, 80);
-
             pregunta.BackColor = Color.Transparent;
-            pregunta.ForeColor = Color.Transparent; 
-
-            pregunta.Paint += new PaintEventHandler(pregunta_Paint);
+            pregunta.ForeColor = Color.Transparent;
+            pregunta.Paint += pregunta_Paint;
 
             this.Opacity = 0.0;
+        }
 
-            Timer timerAparicion = new Timer();
-            timerAparicion.Interval = 15; 
-            timerAparicion.Tick += TimerAparicion_Tick;
+        private void AsignarEventos()
+        {
+            // Eventos de botones y opciones
+            btnOpcion1.Click += ValidarRespuesta_Click;
+            btnOpcion2.Click += ValidarRespuesta_Click;
+            btnOpcion3.Click += ValidarRespuesta_Click;
+            btnOpcion4.Click += ValidarRespuesta_Click;
+
+
+            picOpcion1.Click += ValidarRespuesta_Click;
+            picOpcion2.Click += ValidarRespuesta_Click;
+            picOpcion3.Click += ValidarRespuesta_Click;
+            picOpcion4.Click += ValidarRespuesta_Click;
+
+
+            picAudio1.Click += EscucharAudio_Click;
+            picAudio2.Click += EscucharAudio_Click;
+            picAudio3.Click += EscucharAudio_Click;
+            picAudio4.Click += EscucharAudio_Click;
+
+            picAudio1.DoubleClick += SeleccionarAudio_DoubleClick;
+            picAudio2.DoubleClick += SeleccionarAudio_DoubleClick;
+            picAudio3.DoubleClick += SeleccionarAudio_DoubleClick;
+            picAudio4.DoubleClick += SeleccionarAudio_DoubleClick;
+        }
+
+        private void IniciarEfectoAparicion()
+        {
+            Timer timerAparicion = new Timer { Interval = 15 };
+            timerAparicion.Tick += (s, e) => {
+                if (this.Opacity < 1.0) this.Opacity += 0.05;
+                else { ((Timer)s).Stop(); ((Timer)s).Dispose(); }
+            };
             timerAparicion.Start();
-
-            cargaPreguntas();
-        }
-        
-        private void Preguntas_Load(object sender, EventArgs e)
-        {
-
         }
 
-        private void Preguntas_MouseMove(object sender, MouseEventArgs e)
+        #endregion
+        //_____________________________________________________________________________________________________________________________________________________________
+        #region Lógica del Juego y Base de Datos
+
+        private void CargarTodasLasPreguntasDesdeBD()
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                int dx = e.Location.X - mouseLoc.X;
-                int dy = e.Location.Y - mouseLoc.Y;
-                dx += this.Location.X;
-                dy += this.Location.Y;
-                this.Location = new Point(dx, dy);
-            }
-        }
-        private void Preguntas_MouseDown(object sender, MouseEventArgs e)
-        {
-            mouseLoc = e.Location;
-        }
-
-        private void pbCerrar_Click(object sender, EventArgs e)
-        {
-            formPrincipal.Show();
-            Close();
-        }
-
-        private void pregunta_Paint(object sender, PaintEventArgs e)
-        {
-            if (string.IsNullOrEmpty(textoPreguntaActual)) return;
-
-            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-
-            Brush brochaColor = new SolidBrush(Color.Black);
-            Brush brochaBorde = new SolidBrush(Color.White);
-
-            StringFormat formato = new StringFormat();
-            formato.Alignment = StringAlignment.Center;
-            formato.LineAlignment = StringAlignment.Center;
-
-            float x = 0;
-            float y = 0;
-            float w = pregunta.Width;
-            float h = pregunta.Height;
-
-            e.Graphics.DrawString(textoPreguntaActual, pregunta.Font, brochaBorde, new RectangleF(x - 2, y, w, h), formato);
-            e.Graphics.DrawString(textoPreguntaActual, pregunta.Font, brochaBorde, new RectangleF(x + 2, y, w, h), formato);
-            e.Graphics.DrawString(textoPreguntaActual, pregunta.Font, brochaBorde, new RectangleF(x, y - 2, w, h), formato);
-            e.Graphics.DrawString(textoPreguntaActual, pregunta.Font, brochaBorde, new RectangleF(x, y + 2, w, h), formato);
-
-            e.Graphics.DrawString(textoPreguntaActual, pregunta.Font, brochaColor, new RectangleF(x, y, w, h), formato);
-        }
-
-        private void cargaPreguntas()
-        {
+            listaPreguntas.Clear();
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 try
                 {
                     conn.Open();
+                    string query = @"
+                        SELECT p.id AS PreguntaId, p.enunciado, p.formato, o.contenido, o.es_correcta
+                        FROM preguntas p
+                        INNER JOIN opciones o ON p.id = o.pregunta_id
+                        WHERE p.categoria_id = @categoriaId
+                        ORDER BY p.id";
 
-                    // 1. Modificamos la consulta para traer también el formato
-                    string queryPregunta = "SELECT enunciado, formato FROM preguntas WHERE categoria_id = 1 AND id = 2";
-                    MySqlCommand cmdPregunta = new MySqlCommand(queryPregunta, conn);
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@categoriaId", idCategoriaSeleccionada);
 
-                    string enunciado = "";
-                    string formato = "";
-
-                    // Volvemos a usar ExecuteReader porque ahora traemos 2 columnas
-                    using (MySqlDataReader readerPregunta = cmdPregunta.ExecuteReader())
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        if (readerPregunta.Read())
+                        PreguntaJuego preguntaActual = null;
+                        while (reader.Read())
                         {
-                            enunciado = readerPregunta["enunciado"].ToString();
-                            formato = readerPregunta["formato"].ToString();
-                        }
-                    }
+                            int idPreguntaBD = Convert.ToInt32(reader["PreguntaId"]);
 
-                    // Si encontramos la pregunta, procedemos con las opciones
-                    if (!string.IsNullOrEmpty(enunciado))
-                    {
-                        //pregunta.Text = enunciado; //tengo que quitar esto para dibuje la pregunta con el diseno del juego sorry
-
-                        textoPreguntaActual = enunciado;
-
-                        pregunta.Text = "";
-
-                        pregunta.Invalidate();
-
-
-                        // 2. Ocultamos todos los paneles primero para "limpiar" la pantalla
-                        // (Asegúrate de cambiar estos nombres por los nombres reales de tus paneles)
-                        panelTexto.Visible = false;
-                        panelImagen.Visible = false;
-                        panelAudio.Visible = false;
-
-                        string queryOpciones = "SELECT contenido FROM opciones WHERE pregunta_id = 2";
-                        MySqlCommand cmdOpciones = new MySqlCommand(queryOpciones, conn);
-
-                        using (MySqlDataReader readerOpciones = cmdOpciones.ExecuteReader())
-                        {
-                            int i = 1;
-                            while (readerOpciones.Read() && i <= 4)
+                            if (preguntaActual == null || preguntaActual.Id != idPreguntaBD)
                             {
-                                string contenido = readerOpciones["contenido"].ToString();
-
-                                // 3. Dependiendo del formato, mostramos el panel y asignamos los datos
-                                if (formato == "texto")
+                                preguntaActual = new PreguntaJuego
                                 {
-                                    panelTexto.Visible = true;
-                                    if (i == 1) btnOpcion1.Text = contenido;
-                                    if (i == 2) btnOpcion2.Text = contenido;
-                                    if (i == 3) btnOpcion3.Text = contenido;
-                                    if (i == 4) btnOpcion4.Text = contenido;
-                                }
-                                else if (formato == "imagen")
-                                {
-                                    panelImagen.Visible = true;
-                                    // En Windows Forms, PictureBox tiene la propiedad ImageLocation 
-                                    // que carga automáticamente una imagen desde un enlace (URL)
-                                    if (i == 1) CargarImagen(contenido, picOpcion1);
-                                    if (i == 2) CargarImagen(contenido, picOpcion2);
-                                    if (i == 3) CargarImagen(contenido, picOpcion3);
-                                    if (i == 4) CargarImagen(contenido, picOpcion4);
-                                }
-                                else if (formato == "audio")
-                                {
-                                    panelAudio.Visible = true;
-                                    // Para el audio, podrías guardar el enlace en la propiedad "Tag" del botón
-                                    // Así, cuando le den clic a "Reproducir", sabes qué enlace usar.
-                                    if (i == 1) btnAudio1.Tag = contenido;
-                                    if (i == 2) btnAudio2.Tag = contenido;
-                                    if (i == 3) btnAudio3.Tag = contenido;
-                                    if (i == 4) btnAudio4.Tag = contenido;
-                                }
-                                i++;
+                                    Id = idPreguntaBD,
+                                    Enunciado = reader["enunciado"].ToString(),
+                                    Formato = reader["formato"].ToString()
+                                };
+                                listaPreguntas.Add(preguntaActual);
                             }
+
+                            preguntaActual.Opciones.Add(new OpcionJuego
+                            {
+                                Contenido = reader["contenido"].ToString(),
+                                EsCorrecta = Convert.ToBoolean(reader["es_correcta"])
+                            });
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al cargar la pregunta: " + ex.Message);
+                    MessageBox.Show("Error de BD: " + ex.Message);
                 }
             }
-            lblScore.Invalidate();
         }
 
-        private void CargarImagen(string url, PictureBox picBox)
+        private void MostrarPreguntaActual()
         {
+            DetenerAudio();
+            if (indiceActual >= listaPreguntas.Count)
+            {
+                MessageBox.Show($"¡Juego Terminado! Puntos totales: {puntosActuales}");
+                CerrarYRegresar();
+                return;
+            }
+
+            PreguntaJuego pActual = listaPreguntas[indiceActual];
+
+            // Actualizar texto para el dibujo personalizado
+            textoPreguntaActual = pActual.Enunciado;
+            pregunta.Invalidate();
+
+            // Limpiar paneles
+            panelTexto.Visible = panelImagen.Visible = panelAudio.Visible = false;
+
+            if (pActual.Formato == "texto")
+            {
+                panelTexto.Visible = true;
+                ConfigurarBoton(btnOpcion1, pActual.Opciones[0]);
+                ConfigurarBoton(btnOpcion2, pActual.Opciones[1]);
+                ConfigurarBoton(btnOpcion3, pActual.Opciones[2]);
+                ConfigurarBoton(btnOpcion4, pActual.Opciones[3]);
+                indicador = "texto";
+            }
+            else if (pActual.Formato == "imagen")
+            {
+                panelImagen.Visible = true;
+                CargarImagen(pActual.Opciones[0].Contenido, picOpcion1, pActual.Opciones[0].EsCorrecta);
+                CargarImagen(pActual.Opciones[1].Contenido, picOpcion2, pActual.Opciones[1].EsCorrecta);
+                CargarImagen(pActual.Opciones[2].Contenido, picOpcion3, pActual.Opciones[2].EsCorrecta);
+                CargarImagen(pActual.Opciones[3].Contenido, picOpcion4, pActual.Opciones[3].EsCorrecta);
+                indicador = "imagen";
+            }
+            else if(pActual.Formato == "audio")
+            {
+                panelAudio.Visible = true;
+                CargarAudio(pActual.Opciones[0].Contenido, picAudio1, pActual.Opciones[0].EsCorrecta);
+                CargarAudio(pActual.Opciones[1].Contenido, picAudio2, pActual.Opciones[1].EsCorrecta);
+                CargarAudio(pActual.Opciones[2].Contenido, picAudio3, pActual.Opciones[2].EsCorrecta);
+                CargarAudio(pActual.Opciones[3].Contenido, picAudio4, pActual.Opciones[3].EsCorrecta);
+                indicador = "audio";
+
+            }
+        }
+
+        private void ConfigurarBoton(Button btn, OpcionJuego opcion)
+        {
+            btn.Text = opcion.Contenido;
+            btn.Tag = opcion.EsCorrecta;
+        }
+
+        private async void CargarImagen(string url, PictureBox picBox, bool esCorrecta)
+        {
+            picBox.Tag = esCorrecta;
+            picBox.Image = null; // Limpiar imagen previa
             try
             {
                 if (string.IsNullOrWhiteSpace(url)) return;
-
-                using (System.Net.WebClient webClient = new System.Net.WebClient())
+                using (WebClient webClient = new WebClient())
                 {
-                    // Engañamos a Wikipedia diciendo que somos un navegador web
-                    webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
-
-                    // Descargamos la imagen
-                    byte[] imageData = webClient.DownloadData(url);
-
-                    using (System.IO.MemoryStream ms = new System.IO.MemoryStream(imageData))
+                    //esto es por que algunas imagenes no se cargaban por el user agent, asi que se lo agregue para que se haga pasar por un navegador
+                    webClient.Headers.Add("User-Agent", "Mozilla/5.0");
+                    byte[] imageData = await webClient.DownloadDataTaskAsync(url);
+                    using (MemoryStream ms = new MemoryStream(imageData))
                     {
                         picBox.Image = Image.FromStream(ms);
                         picBox.SizeMode = PictureBoxSizeMode.Zoom;
                     }
                 }
             }
-            catch (Exception ex)
+            catch {  }
+        }
+
+        private void DetenerAudio()
+        {
+            if (reproductorAudio != null)
             {
-                // Esto te dirá el error exacto si vuelve a fallar
-                MessageBox.Show($"Error al cargar la imagen: {ex.Message}");
+                reproductorAudio.Stop();
+                reproductorAudio.Dispose();
+                reproductorAudio = null;
+            }
+            if (lectorAudio != null)
+            {
+                lectorAudio.Dispose();
+                lectorAudio = null;
             }
         }
 
-        private void pbCerrar_MouseUp(object sender, MouseEventArgs e)
+        private void ReproducirMP3(string url)
         {
-            pbCerrar.Top -= 4;
+            DetenerAudio(); // Siempre detenemos el anterior antes de poner uno nuevo
+
+            try
+            {
+                lectorAudio = new MediaFoundationReader(url);
+                reproductorAudio = new WaveOutEvent();
+                reproductorAudio.Init(lectorAudio);
+                reproductorAudio.Play();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al reproducir el audio: " + ex.Message);
+            }
         }
 
-        private void pbCerrar_MouseDown(object sender, MouseEventArgs e)
+        // Este método carga la información oculta en el botón
+        private void CargarAudio(string url, PictureBox picReproducir, bool esCorrecta)
         {
-            pbCerrar.Left += 4;
+            // Guardamos la URL y si es correcta separados por un símbolo |
+            picReproducir.Tag = url + "|" + esCorrecta.ToString();
         }
 
-        private void pbCerrar_MouseEnter(object sender, EventArgs e)
+        // Este evento es para ESCUCHAR (Asígnalo al evento Click de tus 4 botones de audio)
+        private void EscucharAudio_Click(object sender, EventArgs e)
         {
-            pbCerrar.Image = Properties.Resources.cerrar_resplandor;
-            pbCerrar.Cursor = Cursors.Hand;
+            Control control = (Control)sender;
+            if (control.Tag == null) return;
+
+            string[] datos = control.Tag.ToString().Split('|');
+            string urlAudio = datos[0];
+
+            ReproducirMP3(urlAudio); // Solo reproduce, no avanza el juego
         }
 
-        private void pbCerrar_MouseLeave(object sender, EventArgs e)
+        // Este evento es para ELEGIR LA RESPUESTA (Asígnalo al evento DoubleClick)
+        private void SeleccionarAudio_DoubleClick(object sender, EventArgs e)
         {
-            pbCerrar.Image = Properties.Resources.cerrar_normal;
+            Control control = (Control)sender;
+            if (control.Tag == null) return;
+
+            string[] datos = control.Tag.ToString().Split('|');
+            bool esCorrecta = bool.Parse(datos[1]);
+
+            DetenerAudio(); // Callamos el audio al elegir
+
+            if (esCorrecta)
+            {
+                SumarPuntos(100);
+                MessageBox.Show("¡Correcto!");
+            }
+            else
+            {
+                MessageBox.Show("Incorrecto...");
+            }
+
+            indiceActual++;
+            MostrarPreguntaActual();
+        }
+
+
+        private void ValidarRespuesta_Click(object sender, EventArgs e)
+        {
+            Control control = (Control)sender;
+            if (control.Tag != null && (bool)control.Tag)
+            {
+                SumarPuntos(100);
+                MessageBox.Show("¡Correcto!");
+            }
+            else
+            {
+                MessageBox.Show("Incorrecto...");
+            }
+
+            indiceActual++;
+            MostrarPreguntaActual();
+        }
+
+        private void SumarPuntos(int cantidad)
+        {
+            puntosActuales += cantidad;
+            lblScore.Invalidate(); // Redibuja el score con el nuevo puntaje
+        }
+
+        #endregion
+        //_____________________________________________________________________________________________________________________________________________________________
+
+        #region Eventos de Dibujo (Paint)
+
+        private void pregunta_Paint(object sender, PaintEventArgs e)
+        {
+            if (string.IsNullOrEmpty(textoPreguntaActual)) return;
+            DibujarTextoConBorde(e.Graphics, textoPreguntaActual, pregunta.Font, Color.White, Color.Black, pregunta.ClientRectangle);
         }
 
         private void lblScore_Paint(object sender, PaintEventArgs e)
         {
-           string texto = "PUNTOS: " + puntosActuales.ToString();
-
-            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-
-            Brush brochaBorde = new SolidBrush(Color.Black);
-            Brush brochaColor = new SolidBrush(Color.Gold);
-
-            float x = 5;
-            float y = 5;
-
-            e.Graphics.DrawString(texto, lblScore.Font, brochaBorde, x - 2, y);
-            e.Graphics.DrawString(texto, lblScore.Font, brochaBorde, x + 2, y);
-            e.Graphics.DrawString(texto, lblScore.Font, brochaBorde, x, y - 2);
-            e.Graphics.DrawString(texto, lblScore.Font, brochaBorde, x, y + 2);
-
-            e.Graphics.DrawString(texto, lblScore.Font, brochaBorde, x + 3, y + 3);
-
-            e.Graphics.DrawString(texto, lblScore.Font, brochaColor, x, y);
+            string texto = "PUNTOS: " + puntosActuales;
+            DibujarTextoConBorde(e.Graphics, texto, lblScore.Font, Color.Black, Color.Gold, new Rectangle(5, 5, 300, 60), true);
         }
 
-        //quien haga lo de validar si la pregunta es correcta, solo mande a llamar esta funcion
-        //con los puntos a darle por pregunta bien contestada
-        //Ejemplo:
-        //          SumarPuntos(100); //suponiendo que se le agrega 100 puntos
-        private void SumarPuntos(int cantidad)
+        private void DibujarTextoConBorde(Graphics g, string texto, Font fuente, Color colorBorde, Color colorTexto, Rectangle rect, bool esScore = false)
         {
-            puntosActuales += cantidad;
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
+            StringFormat formato = new StringFormat 
+            { 
+                Alignment = StringAlignment.Center, 
+                LineAlignment = StringAlignment.Center,
+                Trimming = StringTrimming.Word
+            };
 
-            lblScore.Invalidate();
+            if (esScore) 
+            {
+                formato.Alignment = StringAlignment.Near;
+                formato.LineAlignment = StringAlignment.Near;
+            }
+
+            using (Brush bBorde = new SolidBrush(colorBorde))
+            using (Brush bTexto = new SolidBrush(colorTexto))
+            {
+                // Dibujar contorno (Offsets)
+                for (int x = -2; x <= 2; x += 2)
+                    for (int y = -2; y <= 2; y += 2)
+                        if (x != 0 || y != 0) g.DrawString(texto, fuente, bBorde, new Rectangle(rect.X + x, rect.Y + y, rect.Width, rect.Height), formato);
+
+                // Dibujar texto principal
+                g.DrawString(texto, fuente, bTexto, rect, formato);
+            }
         }
 
-        private void TimerAparicion_Tick(object sender, EventArgs e)
+        #endregion
+        //_____________________________________________________________________________________________________________________________________________________________
+
+        #region Controles de Ventana (Mover, Cerrar)
+
+        private void pbCerrar_Click(object sender, EventArgs e) => CerrarYRegresar();
+
+        private void CerrarYRegresar()
         {
-           if (this.Opacity < 1.0)
-            {
-                this.Opacity += 0.05; 
-            }
-            else
-            {
-                Timer timer = (Timer)sender;
-                timer.Stop();
-                timer.Dispose();
-            }
+            DetenerAudio();
+            formPrincipal.Show();
+            this.Close();
+        }
+
+        private void Preguntas_MouseDown(object sender, MouseEventArgs e) => mouseLoc = e.Location;
+
+        private void Preguntas_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                this.Location = new Point(this.Location.X + (e.X - mouseLoc.X), this.Location.Y + (e.Y - mouseLoc.Y));
+        }
+
+        // Efectos del botón cerrar (Asegúrate que los nombres coincidan con tus recursos)
+        private void pbCerrar_MouseEnter(object sender, EventArgs e) { pbCerrar.Image = Properties.Resources.cerrar_resplandor; Cursor = Cursors.Hand; }
+        private void pbCerrar_MouseLeave(object sender, EventArgs e) { pbCerrar.Image = Properties.Resources.cerrar_normal; }
+
+        #endregion
+
+        private void btnOpcion4_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
