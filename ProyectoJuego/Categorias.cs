@@ -312,7 +312,7 @@ namespace ProyectoJuego
 
         private void picBoxPaises_Click(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(3, formPrincipal);
+            Preguntas formPreguntas = new Preguntas(5, formPrincipal);
             formPreguntas.Show();
             this.Close();
         }
@@ -346,7 +346,7 @@ namespace ProyectoJuego
 
         private void picBoxPeliculas_Click(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(4, formPrincipal);
+            Preguntas formPreguntas = new Preguntas(3, formPrincipal);
             formPreguntas.Show();
             this.Close();
         }
@@ -380,7 +380,7 @@ namespace ProyectoJuego
 
         private void picBoxSeries_Click(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(5, formPrincipal);
+            Preguntas formPreguntas = new Preguntas(6, formPrincipal);
             formPreguntas.Show();
             this.Close();
         }
@@ -414,7 +414,7 @@ namespace ProyectoJuego
 
         private void picBoxCanciones_Click(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(6, formPrincipal);
+            Preguntas formPreguntas = new Preguntas(4, formPrincipal);
             formPreguntas.Show();
             this.Close();
         }
