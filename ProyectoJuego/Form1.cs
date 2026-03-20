@@ -92,10 +92,15 @@ namespace ProyectoJuego
         {
             pictureBox1.Top -= 4;
 
+            Categorias ventana = new Categorias(this);
+            ventana.Show();
+            this.Hide();
+
+            /*
             // 1. Abrimos el formulario de inicio de sesión como "Dialog"
             InicioSesion formLogin = new InicioSesion(this);
-
-            formLogin.ShowDialog();
+            formLogin.Show();
+            */
         }
 
         private void pictureBox3_Click(object sender, EventArgs e)
