@@ -68,6 +68,7 @@ namespace ProyectoJuego
             pregunta.Location = new Point(50, 80);
             pregunta.BackColor = Color.Transparent;
             pregunta.ForeColor = Color.Transparent;
+            pregunta.Text = "";
             pregunta.Paint += pregunta_Paint;
 
             this.Opacity = 0.0;
@@ -218,6 +219,8 @@ namespace ProyectoJuego
 
             if (pActual.Formato == "texto")
             {
+                int centroX = (this.ClientSize.Width - panelTexto.Width) / 2;
+                panelTexto.Location = new Point(centroX, 250);
                 panelTexto.Visible = true;
                 ConfigurarBoton(btnOpcion1, pActual.Opciones[0]);
                 ConfigurarBoton(btnOpcion2, pActual.Opciones[1]);
@@ -227,6 +230,9 @@ namespace ProyectoJuego
             }
             else if (pActual.Formato == "imagen")
             {
+                int centroX = (this.ClientSize.Width - panelImagen.Width) / 2;
+                panelImagen.Location = new Point(centroX, 200);
+
                 panelImagen.Visible = true;
                 CargarImagen(pActual.Opciones[0].Contenido, picOpcion1, pActual.Opciones[0].EsCorrecta);
                 CargarImagen(pActual.Opciones[1].Contenido, picOpcion2, pActual.Opciones[1].EsCorrecta);
@@ -236,6 +242,9 @@ namespace ProyectoJuego
             }
             else if(pActual.Formato == "audio")
             {
+                int centroX = (this.ClientSize.Width - panelAudio.Width) / 2;
+                panelAudio.Location = new Point(centroX, 250);
+
                 panelAudio.Visible = true;
                 CargarAudio(pActual.Opciones[0].Contenido, picAudio1, pActual.Opciones[0].EsCorrecta);
                 CargarAudio(pActual.Opciones[1].Contenido, picAudio2, pActual.Opciones[1].EsCorrecta);
@@ -456,5 +465,9 @@ namespace ProyectoJuego
 
         }
 
+        private void picOpcion2_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

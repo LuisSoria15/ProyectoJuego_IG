@@ -150,6 +150,7 @@
             this.picOpcion2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picOpcion2.TabIndex = 3;
             this.picOpcion2.TabStop = false;
+            this.picOpcion2.Click += new System.EventHandler(this.picOpcion2_Click);
             // 
             // picOpcion4
             // 
