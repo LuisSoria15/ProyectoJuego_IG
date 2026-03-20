@@ -17,6 +17,8 @@ namespace ProyectoJuego
         Form1 formPrincipal;
         private Point mouseLoc;
 
+
+
         // 1. Tu cadena de conexión a Clever Cloud
         public string connectionString = "Server=bhuefshpv92bhb0wqb5n-mysql.services.clever-cloud.com;" +
                                         "Port=3306;" +
