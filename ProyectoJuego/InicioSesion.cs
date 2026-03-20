@@ -35,7 +35,8 @@ namespace ProyectoJuego
             {
                 MessageBox.Show("Por favor, ingresa un nombre de usuario.");
                 return;
-            }
+            } 
+
 
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
@@ -53,8 +54,9 @@ namespace ProyectoJuego
                     if (resultado != null)
                     {
                         // ¡El usuario ya existe! Guardamos su ID.
-                        IdUsuarioRegistrado = Convert.ToInt32(resultado);
-                        MessageBox.Show($"El usuario {username} ya existe, ingresa otro nombre!");
+                        //IdUsuarioRegistrado = Convert.ToInt32(resultado);
+                        MessageBox.Show($"El usuario \"{username}\" ya existe, ingresa otro nombre!");
+                        txtUsername.Text = "";
                     }
                     else
                     {
@@ -68,11 +70,16 @@ namespace ProyectoJuego
                         IdUsuarioRegistrado = Convert.ToInt32(cmdInsertar.ExecuteScalar());
                         NombreUsuarioRegistrado = username;
                         MessageBox.Show($"¡Bienvenido a QuizTown, {username}!");
+                        // 2. Si el usuario ingresó su nombre y le dio a "Jugar" (DialogResult.OK)
+                      
+                        // 3. Ahora sí, pasamos a las categorías
+                        Categorias ventana = new Categorias(formPrincipal);
+                        ventana.Show();
+                        this.Close();
+                        formPrincipal.Hide();
                     }
 
-                    // 3. Le decimos a WinForms que todo salió bien y cerramos esta ventanita
-                    this.DialogResult = DialogResult.OK;
-                    this.Close();
+                  
                 }
                 catch (Exception ex)
                 {

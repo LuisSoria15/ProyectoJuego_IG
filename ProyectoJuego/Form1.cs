@@ -95,19 +95,7 @@ namespace ProyectoJuego
             // 1. Abrimos el formulario de inicio de sesión como "Dialog"
             InicioSesion formLogin = new InicioSesion(this);
 
-            // 2. Si el usuario ingresó su nombre y le dio a "Jugar" (DialogResult.OK)
-            if (formLogin.ShowDialog() == DialogResult.OK)
-            {
-                // 3. Guardamos los datos que el formLogin recuperó de la BD
-                this.IdJugadorActual = formLogin.IdUsuarioRegistrado;
-                this.NombreJugadorActual = formLogin.NombreUsuarioRegistrado;
-
-                // 4. Ahora sí, pasamos a las categorías
-                Categorias ventana = new Categorias(this);
-                ventana.Show();
-                this.Hide();
-            }
-            // Si cerró la ventanita de login con la "X", no hace nada y se queda en el menú
+            formLogin.ShowDialog();
         }
 
         private void pictureBox3_Click(object sender, EventArgs e)
