@@ -13,9 +13,11 @@ namespace ProyectoJuego
     public partial class Preguntas : Form
     {
         // Configuración de Conexión
-        public string connectionString = "Server=bhuefshpv92bhb0wqb5n-mysql.services.clever-cloud.com;" +
-                                        "Port=3306;Database=bhuefshpv92bhb0wqb5n;" +
-                                        "User ID=u7mcmeqwvuwiyurk;Password=hwlYTA5OEtN6FXWbJowK;";
+        public string connectionString = "Server=127.0.0.1;" +
+                                         "Port=3306;" +
+                                         "Database=preguntaslocal;" +
+                                         "User ID=root;" +
+                                         "Password=123456;";
 
         private Form1 formPrincipal;
         private Point mouseLoc;
