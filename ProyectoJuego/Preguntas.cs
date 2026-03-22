@@ -43,7 +43,7 @@ namespace ProyectoJuego
             ConfigurarDisenoInicial();
             AsignarEventos();
 
-            // Iniciar carga y efectos
+            // Se inicia carga y efectos
             IniciarEfectoAparicion();
             CargarTodasLasPreguntasDesdeBD();
             MostrarPreguntaActual();
@@ -54,7 +54,7 @@ namespace ProyectoJuego
 
         private void ConfigurarDisenoInicial()
         {
-            // Configurar Label de Score (Dibujo personalizado)
+            // Se configura el Label de Score para que se dibuje con un estilo personalizado en el evento Paint
             lblScore.Font = FontsManager.GetFipps(14);
             lblScore.AutoSize = false;
             lblScore.Size = new Size(300, 60);
@@ -63,7 +63,7 @@ namespace ProyectoJuego
             lblScore.ForeColor = Color.Transparent; // Se dibuja en el evento Paint
             lblScore.Paint += lblScore_Paint;
 
-            // Configurar Label de Pregunta (Dibujo personalizado)
+            // Se configura el Label de Pregunta para que se dibuje con un estilo personalizado en el evento Paint
             pregunta.Font = FontsManager.GetFipps(10);
             pregunta.AutoSize = false;
             pregunta.Size = new Size(this.ClientSize.Width - 100, 100);
@@ -78,7 +78,7 @@ namespace ProyectoJuego
 
         private void AsignarEventos()
         {
-            // Eventos de botones y opciones
+            // Asignamos el mismo evento de validación a los botones de texto e imagen, y a las imágenes (que también funcionan como opciones)
             btnOpcion1.Click += ValidarRespuesta_Click;
             btnOpcion2.Click += ValidarRespuesta_Click;
             btnOpcion3.Click += ValidarRespuesta_Click;

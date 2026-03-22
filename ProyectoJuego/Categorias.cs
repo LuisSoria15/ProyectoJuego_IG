@@ -19,12 +19,12 @@ namespace ProyectoJuego
 
 
 
-        // 1. Tu cadena de conexión a Clever Cloud
-        public string connectionString = "Server=bhuefshpv92bhb0wqb5n-mysql.services.clever-cloud.com;" +
-                                        "Port=3306;" +
-                                        "Database=bhuefshpv92bhb0wqb5n;" +
-                                        "User ID=u7mcmeqwvuwiyurk;" +
-                                        "Password=hwlYTA5OEtN6FXWbJowK;";
+        // Aquí va la cadena de conexión a nuestra base de datos.
+        public string connectionString = "Server=127.0.0.1;" +
+                                         "Port=3306;" +
+                                         "Database=preguntaslocal;" +
+                                         "User ID=root;" +
+                                         "Password=123456;";
 
         public Categorias(Form1 formPrincipal)
         {
@@ -53,7 +53,7 @@ namespace ProyectoJuego
             CargarCategoriasEnBotones();
         }
 
-        // 2. Método para jalar las categorías y ponerlas en los botones
+        // Este es el método para jalar las categorías y ponerlas en los botones
         private void CargarCategoriasEnBotones()
         {
             using (MySqlConnection conn = new MySqlConnection(connectionString))
@@ -66,7 +66,7 @@ namespace ProyectoJuego
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        // Suponiendo que tienes botones llamados btnCat1, btnCat2, btnCat3
+                        
                         // Usamos un contador para saber a qué botón asignarle el texto
                         int i = 1;
                         while (reader.Read())
@@ -77,7 +77,7 @@ namespace ProyectoJuego
                             if (i == 1)
                             {
                                 picBoxAnimales.Text = nombreCat;
-                                CargarImagenCategoria(URLimagen, picBoxAnimales); // Suponiendo que tienes uno para cada uno
+                                CargarImagenCategoria(URLimagen, picBoxAnimales); 
                             }
                             if (i == 2)
                             {
@@ -130,12 +130,10 @@ namespace ProyectoJuego
             }
             catch (Exception ex)
             {
-                // Si el link está roto o no hay internet, puedes poner una imagen por defecto
+                // Si el link está roto o no hay internet, se pone una imagen por defecto
                 Console.WriteLine("No se pudo cargar la imagen: " + ex.Message);
             }
         }
-
-        // --- Tus métodos de movimiento de ventana y navegación ---
 
         private void btnCerrar_Click(object sender, EventArgs e)
         {
