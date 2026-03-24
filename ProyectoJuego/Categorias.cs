@@ -20,16 +20,17 @@ namespace ProyectoJuego
 
 
         // 1. Tu cadena de conexión a Clever Cloud
-        public string connectionString = "Server=bhuefshpv92bhb0wqb5n-mysql.services.clever-cloud.com;" +
+        public string connectionString = "Server=127.0.0.1;" +
                                         "Port=3306;" +
-                                        "Database=bhuefshpv92bhb0wqb5n;" +
-                                        "User ID=u7mcmeqwvuwiyurk;" +
-                                        "Password=hwlYTA5OEtN6FXWbJowK;";
+                                        "Database=preguntaslocal;" +
+                                        "User ID=root;" +
+                                        "Password=2183;";
 
         public Categorias(Form1 formPrincipal)
         {
             InitializeComponent();
             this.formPrincipal = formPrincipal;
+            this.Size = formPrincipal.Size;
 
             lblTitulo.Font = FontsManager.GetFipps(20); 
             lblTitulo.AutoSize = false;
@@ -66,7 +67,7 @@ namespace ProyectoJuego
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        // Suponiendo que tienes botones llamados btnCat1, btnCat2, btnCat3
+                   
                         // Usamos un contador para saber a qué botón asignarle el texto
                         int i = 1;
                         while (reader.Read())
@@ -77,36 +78,106 @@ namespace ProyectoJuego
                             if (i == 1)
                             {
                                 picBoxAnimales.Text = nombreCat;
-                                CargarImagenCategoria(URLimagen, picBoxAnimales); // Suponiendo que tienes uno para cada uno
+                                // etiqueta que muestra el nombre de la categoría
+                                try
+                                {
+                                    nomCateg1.Text = nombreCat.ToUpperInvariant();
+                                    nomCateg1.Font = FontsManager.GetFipps(7);
+                                   // nomCateg1.ForeColor = Color.White;
+                                    nomCateg1.BackColor = Color.Transparent;
+                                    nomCateg1.TextAlign = ContentAlignment.MiddleCenter;
+                                    nomCateg1.BringToFront();
+                                } catch { }
+                                CargarImagenCategoria(URLimagen, picBoxAnimales);
                             }
                             if (i == 2)
                             {
                                 picBoxJuegos.Text = nombreCat;
+                                try
+                                {
+                                    nomCateg2.Text = nombreCat.ToUpperInvariant();
+                                    nomCateg2.Font = FontsManager.GetFipps(7);
+                                    //nomCateg2.ForeColor = Color.White;
+                                    nomCateg2.BackColor = Color.Transparent;
+                                    nomCateg2.TextAlign = ContentAlignment.MiddleCenter;
+                                    nomCateg2.BringToFront();
+                                } catch { }
                                 CargarImagenCategoria(URLimagen, picBoxJuegos);
                             }
                             if (i == 3)
                             {
                                 picBoxPeliculas.Text = nombreCat;
+                                try
+                                {
+                                    nomCateg3.Text = nombreCat.ToUpperInvariant();
+                                    nomCateg3.Font = FontsManager.GetFipps(7);
+                                    //nomCateg3.ForeColor = Color.White;
+                                    nomCateg3.BackColor = Color.Transparent;
+                                    nomCateg3.TextAlign = ContentAlignment.MiddleCenter;
+                                    
+                                    nomCateg3.BringToFront();
+                                } catch { }
                                 CargarImagenCategoria(URLimagen, picBoxPeliculas);
                             }
                             if (i == 4)
                             {
                                 picBoxCanciones.Text = nombreCat;
+                                try
+                                {
+                                    nomCateg4.Text = nombreCat.ToUpperInvariant();
+                                    nomCateg4.Font = FontsManager.GetFipps(7);
+                                   // nomCateg4.ForeColor = Color.White;
+                                    nomCateg4.BackColor = Color.Transparent;
+                                    nomCateg4.TextAlign = ContentAlignment.MiddleCenter;
+                                    
+                                    nomCateg4.BringToFront();
+                                } catch { }
                                 CargarImagenCategoria(URLimagen, picBoxCanciones);
                             }
                             if (i == 5)
                             {
                                 picBoxPaises.Text = nombreCat;
+                                try
+                                {
+                                    nomCateg5.Text = nombreCat.ToUpperInvariant();
+                                    nomCateg5.Font = FontsManager.GetFipps(7);
+                                   // nomCateg5.ForeColor = Color.White;
+                                    nomCateg5.BackColor = Color.Transparent;
+                                    nomCateg5.TextAlign = ContentAlignment.MiddleCenter;
+                                    
+                                    nomCateg5.BringToFront();
+                                } catch { }
                                 CargarImagenCategoria(URLimagen, picBoxPaises);
                             }
                             if (i == 6)
                             {
                                 picBoxSeries.Text = nombreCat;
+                                try
+                                {
+                                    nomCateg6.Text = nombreCat.ToUpperInvariant();
+                                    nomCateg6.Font = FontsManager.GetFipps(7);
+                                    //nomCateg7.ForeColor = Color.White;
+                                    nomCateg6.BackColor = Color.Transparent;
+                                    nomCateg6.TextAlign = ContentAlignment.MiddleCenter;
+                                    
+                                    nomCateg6.BringToFront();
+                                } catch { }
                                 CargarImagenCategoria(URLimagen, picBoxSeries);
                             }
                             if (i == 7)
                             {
                                 picBoxMarcas.Text = nombreCat;
+                                try
+                                {
+                                    nomCateg7.Text = nombreCat.ToUpperInvariant();
+                                    nomCateg7.Font = FontsManager.GetFipps(7);
+                                    //nomCateg7.ForeColor = Color.White;
+                                    nomCateg7.BackColor = Color.Transparent;
+                                    nomCateg7.TextAlign = ContentAlignment.MiddleCenter;
+
+                                    nomCateg7.BringToFront();
+                                }
+                                catch { }
                                 CargarImagenCategoria(URLimagen, picBoxMarcas);
                             }
                             i++;
@@ -495,5 +566,6 @@ namespace ProyectoJuego
                 timer.Dispose();
             }
         }
+
     }
 }

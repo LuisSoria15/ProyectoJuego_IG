@@ -1,5 +1,6 @@
-﻿using NAudio.Wave;
+﻿using Google.Protobuf.WellKnownTypes;
 using MySql.Data.MySqlClient;
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,7 +18,7 @@ namespace ProyectoJuego
                                          "Port=3306;" +
                                          "Database=preguntaslocal;" +
                                          "User ID=root;" +
-                                         "Password=123456;";
+                                         "Password=2183;";
 
         private Form1 formPrincipal;
         private Point mouseLoc;
@@ -41,6 +42,7 @@ namespace ProyectoJuego
             this.Size = formPrincipal.Size;
 
             ConfigurarDisenoInicial();
+            ConfigurarControlesDeTextoCustom();
             AsignarEventos();
 
             // Iniciar carga y efectos
@@ -51,6 +53,42 @@ namespace ProyectoJuego
         //_____________________________________________________________________________________________________________________________________________________________
 
         #region Configuración de Interfaz y Diseño
+
+        private void ConfigurarControlesDeTextoCustom()
+        {
+            // 1. Asignar el PictureBox como padre del Label
+            label1.Parent = opcion1;
+            label2.Parent = opcion2;
+            label3.Parent = opcion3;
+            label4.Parent = opcion4;
+
+            // 2. Asegurar que el fondo del Label sea transparente al PictureBox
+            label1.BackColor = Color.Transparent;
+            label2.BackColor = Color.Transparent;
+            label3.BackColor = Color.Transparent;
+            label4.BackColor = Color.Transparent;
+
+   
+            // Desactivamos AutoSize para controlar nosotros el tamaño
+            label1.AutoSize = false;
+            label2.AutoSize = false;
+            label3.AutoSize = false;
+            label4.AutoSize = false;
+
+            // Hacemos que el Label ocupe todo el espacio del PictureBox parent
+            
+            label1.Dock = DockStyle.Fill;
+            label2.Dock = DockStyle.Fill;
+            label3.Dock = DockStyle.Fill;
+            label4.Dock = DockStyle.Fill;
+            
+                    
+            // Centramos el texto dentro del Label
+            label1.TextAlign = ContentAlignment.MiddleCenter;
+            label2.TextAlign = ContentAlignment.MiddleCenter;
+            label3.TextAlign = ContentAlignment.MiddleCenter;
+            label4.TextAlign = ContentAlignment.MiddleCenter;
+        }
 
         private void ConfigurarDisenoInicial()
         {
@@ -78,11 +116,16 @@ namespace ProyectoJuego
 
         private void AsignarEventos()
         {
-            // Eventos de botones y opciones
-            btnOpcion1.Click += ValidarRespuesta_Click;
-            btnOpcion2.Click += ValidarRespuesta_Click;
-            btnOpcion3.Click += ValidarRespuesta_Click;
-            btnOpcion4.Click += ValidarRespuesta_Click;
+            // Eventos para las opciones de texto (PictureBox y Labels)
+            opcion1.Click += ValidarRespuesta_Click;
+            opcion2.Click += ValidarRespuesta_Click;
+            opcion3.Click += ValidarRespuesta_Click;
+            opcion4.Click += ValidarRespuesta_Click;
+
+            label1.Click += ValidarRespuesta_Click;
+            label2.Click += ValidarRespuesta_Click;
+            label3.Click += ValidarRespuesta_Click;
+            label4.Click += ValidarRespuesta_Click;
 
 
             picOpcion1.Click += ValidarRespuesta_Click;
@@ -209,7 +252,7 @@ namespace ProyectoJuego
             }
 
             PreguntaJuego pActual = listaPreguntas[indiceActual];
-            // Mezclamos las opciones para que no siempre estén en el mismo orden (esto no afecta la lógica de validación porque cada opción tiene su propiedad EsCorrecta)
+            // Mezclamos las opciones para que no siempre estén en el mismo orden 
             MezclarOpciones(pActual.Opciones);
 
             // Actualizar texto para el dibujo personalizado
@@ -224,10 +267,13 @@ namespace ProyectoJuego
                 int centroX = (this.ClientSize.Width - panelTexto.Width) / 2;
                 panelTexto.Location = new Point(centroX, 250);
                 panelTexto.Visible = true;
-                ConfigurarBoton(btnOpcion1, pActual.Opciones[0]);
-                ConfigurarBoton(btnOpcion2, pActual.Opciones[1]);
-                ConfigurarBoton(btnOpcion3, pActual.Opciones[2]);
-                ConfigurarBoton(btnOpcion4, pActual.Opciones[3]);
+
+          
+                ConfigurarOpcionTexto(label1, opcion1, pActual.Opciones[0]);
+                ConfigurarOpcionTexto(label2, opcion2, pActual.Opciones[1]);
+                ConfigurarOpcionTexto(label3, opcion3, pActual.Opciones[2]);
+                ConfigurarOpcionTexto(label4, opcion4, pActual.Opciones[3]);
+
                 indicador = "texto";
             }
             else if (pActual.Formato == "imagen")
@@ -258,6 +304,14 @@ namespace ProyectoJuego
         }
 
 
+        private void ConfigurarOpcionTexto(Label lbl, PictureBox pic, OpcionJuego opcion)
+        {
+            lbl.Text = opcion.Contenido;
+
+            // Asignamos el valor booleano (EsCorrecta) al Tag de ambos controles.
+            lbl.Tag = opcion.EsCorrecta;
+            pic.Tag = opcion.EsCorrecta;
+        }
 
         private void ConfigurarBoton(Button btn, OpcionJuego opcion)
         {
@@ -460,16 +514,78 @@ namespace ProyectoJuego
         private void pbCerrar_MouseEnter(object sender, EventArgs e) { pbCerrar.Image = Properties.Resources.cerrar_resplandor; Cursor = Cursors.Hand; }
         private void pbCerrar_MouseLeave(object sender, EventArgs e) { pbCerrar.Image = Properties.Resources.cerrar_normal; }
 
+
+
+
         #endregion
 
-        private void btnOpcion4_Click(object sender, EventArgs e)
-        {
 
+        private void label1_MouseEnter(object sender, EventArgs e)
+        {
+            opcion1.Width += 10;
+            opcion1.Height += 10;
+            opcion1.Top -= 5;
+            opcion1.Left -= 5;
+            opcion1.Cursor = Cursors.Hand;
         }
 
-        private void picOpcion2_Click(object sender, EventArgs e)
+        private void label1_MouseLeave(object sender, EventArgs e)
         {
+            opcion1.Width -= 10;
+            opcion1.Height -= 10;
+            opcion1.Top += 5;
+            opcion1.Left += 5;
+        }
 
+        private void label2_MouseEnter(object sender, EventArgs e)
+        {
+            opcion2.Width += 10;
+            opcion2.Height += 10;
+            opcion2.Top -= 5;
+            opcion2.Left -= 5;
+            opcion2.Cursor = Cursors.Hand;
+        }
+
+        private void label2_MouseLeave(object sender, EventArgs e)
+        {
+            opcion2.Width -= 10;
+            opcion2.Height -= 10;
+            opcion2.Top += 5;
+            opcion2.Left += 5;
+        }
+
+        private void label3_MouseEnter(object sender, EventArgs e)
+        {
+            opcion3.Width += 10;
+            opcion3.Height += 10;
+            opcion3.Top -= 5;
+            opcion3.Left -= 5;
+            opcion3.Cursor = Cursors.Hand;
+        }
+
+        private void label3_MouseLeave(object sender, EventArgs e)
+        {
+            opcion3.Width -= 10;
+            opcion3.Height -= 10;
+            opcion3.Top += 5;
+            opcion3.Left += 5;
+        }
+
+        private void label4_MouseEnter(object sender, EventArgs e)
+        {
+            opcion4.Width += 10;
+            opcion4.Height += 10;
+            opcion4.Top -= 5;
+            opcion4.Left -= 5;
+            opcion4.Cursor = Cursors.Hand;
+        }
+
+        private void label4_MouseLeave(object sender, EventArgs e)
+        {
+            opcion4.Width -= 10;
+            opcion4.Height -= 10;
+            opcion4.Top += 5;
+            opcion4.Left += 5;
         }
     }
 }
