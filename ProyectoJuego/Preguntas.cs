@@ -319,26 +319,38 @@ namespace ProyectoJuego
             btn.Tag = opcion.EsCorrecta;
         }
 
-        private async void CargarImagen(string url, PictureBox picBox, bool esCorrecta)
+        private void CargarImagen(string nombreArchivo, PictureBox picBox, bool esCorrecta)
         {
             picBox.Tag = esCorrecta;
             picBox.Image = null; // Limpiar imagen previa
+
+            if (string.IsNullOrWhiteSpace(nombreArchivo)) return;
+
+            
+            string rutaAbsoluta = Path.Combine(Application.StartupPath, "Recursos", "Imagenes", nombreArchivo);
+
             try
             {
-                if (string.IsNullOrWhiteSpace(url)) return;
-                using (WebClient webClient = new WebClient())
+                
+                if (File.Exists(rutaAbsoluta))
                 {
-                    //esto es por que algunas imagenes no se cargaban por el user agent, asi que se lo agregue para que se haga pasar por un navegador
-                    webClient.Headers.Add("User-Agent", "Mozilla/5.0");
-                    byte[] imageData = await webClient.DownloadDataTaskAsync(url);
-                    using (MemoryStream ms = new MemoryStream(imageData))
+                    // Usamos FileStream en lugar de Image.FromFile para que C# no "bloquee" el archivo
+                    using (FileStream fs = new FileStream(rutaAbsoluta, FileMode.Open, FileAccess.Read))
                     {
-                        picBox.Image = Image.FromStream(ms);
+                        picBox.Image = Image.FromStream(fs);
                         picBox.SizeMode = PictureBoxSizeMode.Zoom;
                     }
                 }
+                else
+                {
+                    
+                    Console.WriteLine("¡Falta la imagen!: " + rutaAbsoluta);
+                }
             }
-            catch {  }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar imagen local: {ex.Message}");
+            }
         }
 
         private void DetenerAudio()
@@ -356,13 +368,24 @@ namespace ProyectoJuego
             }
         }
 
-        private void ReproducirMP3(string url)
+        private void ReproducirMP3(string nombreArchivo)
         {
-            DetenerAudio(); // Siempre detenemos el anterior antes de poner uno nuevo
+            DetenerAudio(); 
+
+            if (string.IsNullOrWhiteSpace(nombreArchivo)) return;
+
+            string rutaAbsoluta = Path.Combine(Application.StartupPath, "Recursos", "Audios", nombreArchivo);
+
+            if (!File.Exists(rutaAbsoluta))
+            {
+                MessageBox.Show("Falta el archivo de audio: " + nombreArchivo);
+                return;
+            }
 
             try
             {
-                lectorAudio = new MediaFoundationReader(url);
+                
+                lectorAudio = new MediaFoundationReader(rutaAbsoluta);
                 reproductorAudio = new WaveOutEvent();
                 reproductorAudio.Init(lectorAudio);
                 reproductorAudio.Play();
@@ -392,7 +415,7 @@ namespace ProyectoJuego
             ReproducirMP3(urlAudio); // Solo reproduce, no avanza el juego
         }
 
-        // Este evento es para ELEGIR LA RESPUESTA (Asígnalo al evento DoubleClick)
+        // Evento para ELEGIR LA RESPUESTA (Asígnalo al evento DoubleClick)
         private void SeleccionarAudio_DoubleClick(object sender, EventArgs e)
         {
             Control control = (Control)sender;

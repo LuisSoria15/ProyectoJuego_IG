@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 
 namespace ProyectoJuego
@@ -191,18 +192,35 @@ namespace ProyectoJuego
             }
         }
 
-        private void CargarImagenCategoria(string urlImagen, PictureBox pbDestino)
+        private void CargarImagenCategoria(string nombreImagen, PictureBox pbDestino)
         {
             try
             {
-                // Esto le dice al PictureBox que descargue la imagen de la URL de la base de datos
-                pbDestino.LoadAsync(urlImagen);
-                pbDestino.SizeMode = PictureBoxSizeMode.Zoom; // Para que no se deforme
+                if (string.IsNullOrWhiteSpace(nombreImagen)) return;
+
+                nombreImagen = nombreImagen.Trim();
+
+                //Armamos la ruta
+                string rutaAbsoluta = Path.Combine(Application.StartupPath, "Recursos", "Imagenes", nombreImagen);
+
+                // Verificamos si existe físicamente
+                if (File.Exists(rutaAbsoluta))
+                {
+                    using (FileStream fs = new FileStream(rutaAbsoluta, FileMode.Open, FileAccess.Read))
+                    {
+                        pbDestino.Image = Image.FromStream(fs);
+                        pbDestino.SizeMode = PictureBoxSizeMode.Zoom;
+                    }
+                }
+                else
+                {
+                    
+                    MessageBox.Show("No encuentro la imagen. Busqué exactamente en:\n\n" + rutaAbsoluta);
+                }
             }
             catch (Exception ex)
             {
-                // Si el link está roto o no hay internet, puedes poner una imagen por defecto
-                Console.WriteLine("No se pudo cargar la imagen: " + ex.Message);
+                MessageBox.Show("Error al intentar cargar: " + ex.Message);
             }
         }
 
