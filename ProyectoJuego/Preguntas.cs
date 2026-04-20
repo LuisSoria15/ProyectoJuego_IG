@@ -16,9 +16,9 @@ namespace ProyectoJuego
         // Configuración de Conexión
         public string connectionString = "Server=127.0.0.1;" +
                                          "Port=3306;" +
-                                         "Database=preguntaslocal;" +
+                                         "Database=preguntaslocaldisco;" +
                                          "User ID=root;" +
-                                         "Password=2183;";
+                                         "Password=Cucusoria1515!;";
 
         private Form1 formPrincipal;
         private Point mouseLoc;
@@ -415,7 +415,7 @@ namespace ProyectoJuego
             ReproducirMP3(urlAudio); // Solo reproduce, no avanza el juego
         }
 
-        // Evento para ELEGIR LA RESPUESTA (Asígnalo al evento DoubleClick)
+        // Evento para ELEGIR LA RESPUESTA
         private void SeleccionarAudio_DoubleClick(object sender, EventArgs e)
         {
             Control control = (Control)sender;

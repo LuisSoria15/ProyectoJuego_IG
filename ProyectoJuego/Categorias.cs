@@ -23,9 +23,9 @@ namespace ProyectoJuego
         // 1. Tu cadena de conexión a Clever Cloud
         public string connectionString = "Server=127.0.0.1;" +
                                         "Port=3306;" +
-                                        "Database=preguntaslocal;" +
+                                        "Database=preguntaslocaldisco;" +
                                         "User ID=root;" +
-                                        "Password=2183;";
+                                        "Password=Cucusoria1515!;";
 
         public Categorias(Form1 formPrincipal)
         {
