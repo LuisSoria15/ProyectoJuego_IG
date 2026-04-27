@@ -6,10 +6,20 @@ using System.Threading.Tasks;
 
 namespace ProyectoJuego
 {
+    internal class APIrequest
+    {
+
+    }
     public class OpcionJuego
     {
+        public int id { get; set; }
+        public int pregunta_id { get; set; }
+        public string formato { get; set; }
         public string Contenido { get; set; }
         public bool EsCorrecta { get; set; }
+
+
+
     }
 
     public class PreguntaJuego
@@ -19,4 +29,12 @@ namespace ProyectoJuego
         public string Formato { get; set; }
         public List<OpcionJuego> Opciones { get; set; } = new List<OpcionJuego>();
     }
+
+    public class CategoriaAPI
+    {
+        public string id { get; set; }
+        public string nombre { get; set; }
+        public string imagen { get; set; }
+    }
+
 }
