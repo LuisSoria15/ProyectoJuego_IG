@@ -45,22 +45,29 @@ namespace ProyectoJuego
             timerAparicion.Start();
 
             // Llamamos al método al cargar el form
-            CargarCategoriasEnBotones();
+            //CargarCategoriasEnBotones();
+        }
+
+        private async void Categorias_Load(object sender, EventArgs e)
+        {
+            await CargarCategoriasEnBotones();
         }
 
         // 2. Método para jalar las categorías y ponerlas en los botones
-        private async void CargarCategoriasEnBotones()
+        private async Task CargarCategoriasEnBotones()
         {
-            string urlApi = "http://192.168.1.15:8000/categorias";
+            string urlApi = "http://10.17.217.135:11000/categorias";
 
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
                     HttpResponseMessage respuesta = await client.GetAsync(urlApi);
+
                     respuesta.EnsureSuccessStatusCode();
 
                     string jsonString = await respuesta.Content.ReadAsStringAsync();
+                    MessageBox.Show("Esto me mandó Python:\n\n" + jsonString);
                     List<CategoriaAPI> listaCategorias = JsonConvert.DeserializeObject<List<CategoriaAPI>>(jsonString);
 
                     // 1. Metemos tus controles en el orden exacto de los IDs de la base de datos
@@ -88,7 +95,7 @@ namespace ProyectoJuego
                         catch { }
 
                         // Enviamos la imagen y el PictureBox correspondiente
-                        CargarImagenCategoria(cat.imagen, misPictureBoxes[i]);
+                        CargarImagenCategoria(cat.IMAGEN, misPictureBoxes[i]);
                     }
                 }
             }
@@ -160,10 +167,7 @@ namespace ProyectoJuego
             this.Close();
         }
 
-        private void Categorias_Load(object sender, EventArgs e)
-        {
-
-        }
+       
         
         private void lblTitulo_Paint(object sender, PaintEventArgs e)
         {
