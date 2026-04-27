@@ -32,6 +32,12 @@ namespace ProyectoJuego
         private MediaFoundationReader lectorAudio;
         private string indicador;
 
+        //Variables para la barra de tiempo
+        private Timer timerTiempo;
+        private int tiempoMaximo = 150; //equivale a 15 segundos, modificarlo para el tiempo requerido
+        private int tiempoActual = 100;
+        private PictureBox pbBarraTiempo;
+        //
         private Random rng = new Random();
             
         public Preguntas(int idCategoria, Form1 formPrincipal)
@@ -112,6 +118,20 @@ namespace ProyectoJuego
             pregunta.Paint += pregunta_Paint;
 
             this.Opacity = 0.0;
+
+            //Configuracion de la barra de tiempo
+            pbBarraTiempo = new PictureBox();
+            pbBarraTiempo.Height = 25;
+            pbBarraTiempo.Width = this.ClientSize.Width - 100;
+            pbBarraTiempo.Location = new Point(50, this.ClientSize.Height - 60);
+            pbBarraTiempo.BackColor = Color.Transparent;
+            pbBarraTiempo.Paint += pbBarraTiempo_Paint;
+            this.Controls.Add(pbBarraTiempo);
+
+            //para motor de tiempo
+            timerTiempo = new Timer();
+            timerTiempo.Interval = 100;
+            timerTiempo.Tick += TimerTiempo_Tick;
         }
 
         private void AsignarEventos()
@@ -301,6 +321,9 @@ namespace ProyectoJuego
                 indicador = "audio";
 
             }
+            //reiniciar y arrancar el temporizador
+            tiempoActual = tiempoMaximo;
+            timerTiempo.Start();
         }
 
 
@@ -416,9 +439,12 @@ namespace ProyectoJuego
         }
 
         // Evento para ELEGIR LA RESPUESTA
-        private void SeleccionarAudio_DoubleClick(object sender, EventArgs e)
+        private async void SeleccionarAudio_DoubleClick(object sender, EventArgs e)
         {
+            timerTiempo.Stop();//Pausa el reloj
+
             Control control = (Control)sender;
+
             if (control.Tag == null) return;
 
             string[] datos = control.Tag.ToString().Split('|');
@@ -429,11 +455,15 @@ namespace ProyectoJuego
             if (esCorrecta)
             {
                 SumarPuntos(100);
-                MessageBox.Show("¡Correcto!");
+                //Se pone pantalla en verde
+                await MostrarFeedback(true);
+                //MessageBox.Show("¡Correcto!");
             }
             else
             {
-                MessageBox.Show("Incorrecto...");
+                //Se pone pantalla en rojo
+                //MessageBox.Show("Incorrecto...");
+                await MostrarFeedback(false);
             }
 
             indiceActual++;
@@ -441,17 +471,23 @@ namespace ProyectoJuego
         }
 
 
-        private void ValidarRespuesta_Click(object sender, EventArgs e)
+        private async void ValidarRespuesta_Click(object sender, EventArgs e)
         {
+            timerTiempo.Stop();//Pausa el reloj
+            
             Control control = (Control)sender;
             if (control.Tag != null && (bool)control.Tag)
             {
                 SumarPuntos(100);
-                MessageBox.Show("¡Correcto!");
+                //Se pone la pantalla verde
+                await MostrarFeedback(true);
+                //MessageBox.Show("¡Correcto!");
             }
             else
             {
-                MessageBox.Show("Incorrecto...");
+                //Se pone la pantalla roja
+                await MostrarFeedback(false);
+                //MessageBox.Show("Incorrecto...");
             }
 
             indiceActual++;
@@ -510,7 +546,48 @@ namespace ProyectoJuego
                 g.DrawString(texto, fuente, bTexto, rect, formato);
             }
         }
+        private void TimerTiempo_Tick(object sender, EventArgs e)
+        {
+            tiempoActual--;
+            pbBarraTiempo.Invalidate();
 
+            if(tiempoActual <= 0)
+            {
+                //Pausar el reloj
+                timerTiempo.Stop();
+
+                //Anvanzamos el indice para la siguente pregunta
+                indiceActual++;
+
+                //Se carga la siguiente pregunta
+                MostrarPreguntaActual();
+            }
+        }  
+        private void pbBarraTiempo_Paint(object sender, PaintEventArgs e)
+        {
+            float porcentaje = (float)tiempoActual / tiempoMaximo;
+            if(porcentaje < 0) 
+                porcentaje = 0;
+            int anchoRelleno = (int)(pbBarraTiempo.Width * porcentaje);
+
+            //colores de la barra
+            Brush brochaRelleno = Brushes.LimeGreen;
+            if (porcentaje <= 0.5f)
+                brochaRelleno = Brushes.Gold;
+            if (porcentaje <= 0.2f)
+                brochaRelleno = Brushes.Crimson;
+
+            //hueco que va dejando
+            e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(80, 0, 0, 0)), 0, 0, pbBarraTiempo.Width, pbBarraTiempo.Height);
+
+            //barra de color
+            if (anchoRelleno > 0)
+                e.Graphics.FillRectangle(brochaRelleno, 0, 0, anchoRelleno,pbBarraTiempo.Height);
+
+            //contorno de la barra
+            using (Pen penBorde = new Pen(Color.Black, 4))
+                e.Graphics.DrawRectangle(penBorde, 0, 0, pbBarraTiempo.Width, pbBarraTiempo.Height);
+        }
         #endregion
         //_____________________________________________________________________________________________________________________________________________________________
 
@@ -520,6 +597,7 @@ namespace ProyectoJuego
 
         private void CerrarYRegresar()
         {
+            timerTiempo.Stop();//Pausa el reloj
             DetenerAudio();
             formPrincipal.Show();
             this.Close();
@@ -609,6 +687,35 @@ namespace ProyectoJuego
             opcion4.Height -= 10;
             opcion4.Top += 5;
             opcion4.Left += 5;
+        }
+
+        private async Task MostrarFeedback(bool esCorrecta)
+        {
+            //Crear pantalla fantasma
+            Form filtro = new Form();
+            filtro.FormBorderStyle = FormBorderStyle.None;
+            filtro.StartPosition = FormStartPosition.Manual;
+
+            //Se posiciona y se hace del tamano
+            filtro.Location = this.PointToScreen(Point.Empty);
+            filtro.Size = this.ClientSize;
+
+            //Se elige el color:
+            //Verde: correcta      Rojo: incorrecto
+            filtro.BackColor = esCorrecta ? Color.LimeGreen : Color.Crimson;
+
+            //Se da 50% de transparencia
+            filtro.Opacity = 0.5;
+
+            //Se muestra encima de la ventana
+            filtro.Show(this);
+
+            //Se pausa medio segundo el juego
+            await Task.Delay(500);
+
+            //Se cierra ventana
+            filtro.Close();
+            filtro.Dispose();
         }
     }
 }
