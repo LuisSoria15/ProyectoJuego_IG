@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
+using Newtonsoft.Json;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 
 namespace ProyectoJuego
@@ -17,15 +19,6 @@ namespace ProyectoJuego
     {
         Form1 formPrincipal;
         private Point mouseLoc;
-
-
-
-        // 1. Tu cadena de conexión a Clever Cloud
-        public string connectionString = "Server=127.0.0.1;" +
-                                        "Port=3306;" +
-                                        "Database=preguntaslocaldisco;" +
-                                        "User ID=root;" +
-                                        "Password=Cucusoria1515!;";
 
         public Categorias(Form1 formPrincipal)
         {
@@ -39,7 +32,7 @@ namespace ProyectoJuego
             lblTitulo.Height = 80;
             lblTitulo.ForeColor = Color.Transparent;
             lblTitulo.BackColor = Color.Transparent;
-            lblTitulo.Location = new Point(0, 20); 
+            lblTitulo.Location = new Point(0, 20);
 
             lblTitulo.Paint += new PaintEventHandler(lblTitulo_Paint);
 
@@ -56,141 +49,55 @@ namespace ProyectoJuego
         }
 
         // 2. Método para jalar las categorías y ponerlas en los botones
-        private void CargarCategoriasEnBotones()
+        private async void CargarCategoriasEnBotones()
         {
-            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            string urlApi = "http://192.168.1.15:8000/categorias";
+
+            try
             {
-                try
+                using (HttpClient client = new HttpClient())
                 {
-                    conn.Open();
-                    string query = "SELECT nombre, imagen FROM categorias ORDER BY id ASC";
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    HttpResponseMessage respuesta = await client.GetAsync(urlApi);
+                    respuesta.EnsureSuccessStatusCode();
 
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    string jsonString = await respuesta.Content.ReadAsStringAsync();
+                    List<CategoriaAPI> listaCategorias = JsonConvert.DeserializeObject<List<CategoriaAPI>>(jsonString);
+
+                    // 1. Metemos tus controles en el orden exacto de los IDs de la base de datos
+                    PictureBox[] misPictureBoxes = { picBoxAnimales, picBoxJuegos, picBoxPeliculas, picBoxCanciones, picBoxPaises, picBoxSeries, picBoxMarcas };
+                    Label[] misLabels = { nomCateg1, nomCateg2, nomCateg3, nomCateg4, nomCateg5, nomCateg6, nomCateg7 };
+
+                    // 2. Recorremos la lista usando un simple for
+                    // (Usamos Math.Min para que el programa no falle si la base de datos devuelve más o menos de 7 categorías)
+                    int limite = Math.Min(listaCategorias.Count, misPictureBoxes.Length);
+
+                    for (int i = 0; i < limite; i++)
                     {
-                   
-                        // Usamos un contador para saber a qué botón asignarle el texto
-                        int i = 1;
-                        while (reader.Read())
+                        var cat = listaCategorias[i]; // Sacamos la categoría actual
+
+                        misPictureBoxes[i].Text = cat.nombre;
+
+                        try
                         {
-                            string nombreCat = reader["nombre"].ToString();
-                            string URLimagen = reader["imagen"].ToString();
-
-                            if (i == 1)
-                            {
-                                picBoxAnimales.Text = nombreCat;
-                                // etiqueta que muestra el nombre de la categoría
-                                try
-                                {
-                                    nomCateg1.Text = nombreCat.ToUpperInvariant();
-                                    nomCateg1.Font = FontsManager.GetFipps(7);
-                                   // nomCateg1.ForeColor = Color.White;
-                                    nomCateg1.BackColor = Color.Transparent;
-                                    nomCateg1.TextAlign = ContentAlignment.MiddleCenter;
-                                    nomCateg1.BringToFront();
-                                } catch { }
-                                CargarImagenCategoria(URLimagen, picBoxAnimales);
-                            }
-                            if (i == 2)
-                            {
-                                picBoxJuegos.Text = nombreCat;
-                                try
-                                {
-                                    nomCateg2.Text = nombreCat.ToUpperInvariant();
-                                    nomCateg2.Font = FontsManager.GetFipps(7);
-                                    //nomCateg2.ForeColor = Color.White;
-                                    nomCateg2.BackColor = Color.Transparent;
-                                    nomCateg2.TextAlign = ContentAlignment.MiddleCenter;
-                                    nomCateg2.BringToFront();
-                                } catch { }
-                                CargarImagenCategoria(URLimagen, picBoxJuegos);
-                            }
-                            if (i == 3)
-                            {
-                                picBoxPeliculas.Text = nombreCat;
-                                try
-                                {
-                                    nomCateg3.Text = nombreCat.ToUpperInvariant();
-                                    nomCateg3.Font = FontsManager.GetFipps(7);
-                                    //nomCateg3.ForeColor = Color.White;
-                                    nomCateg3.BackColor = Color.Transparent;
-                                    nomCateg3.TextAlign = ContentAlignment.MiddleCenter;
-                                    
-                                    nomCateg3.BringToFront();
-                                } catch { }
-                                CargarImagenCategoria(URLimagen, picBoxPeliculas);
-                            }
-                            if (i == 4)
-                            {
-                                picBoxCanciones.Text = nombreCat;
-                                try
-                                {
-                                    nomCateg4.Text = nombreCat.ToUpperInvariant();
-                                    nomCateg4.Font = FontsManager.GetFipps(7);
-                                   // nomCateg4.ForeColor = Color.White;
-                                    nomCateg4.BackColor = Color.Transparent;
-                                    nomCateg4.TextAlign = ContentAlignment.MiddleCenter;
-                                    
-                                    nomCateg4.BringToFront();
-                                } catch { }
-                                CargarImagenCategoria(URLimagen, picBoxCanciones);
-                            }
-                            if (i == 5)
-                            {
-                                picBoxPaises.Text = nombreCat;
-                                try
-                                {
-                                    nomCateg5.Text = nombreCat.ToUpperInvariant();
-                                    nomCateg5.Font = FontsManager.GetFipps(7);
-                                   // nomCateg5.ForeColor = Color.White;
-                                    nomCateg5.BackColor = Color.Transparent;
-                                    nomCateg5.TextAlign = ContentAlignment.MiddleCenter;
-                                    
-                                    nomCateg5.BringToFront();
-                                } catch { }
-                                CargarImagenCategoria(URLimagen, picBoxPaises);
-                            }
-                            if (i == 6)
-                            {
-                                picBoxSeries.Text = nombreCat;
-                                try
-                                {
-                                    nomCateg6.Text = nombreCat.ToUpperInvariant();
-                                    nomCateg6.Font = FontsManager.GetFipps(7);
-                                    //nomCateg7.ForeColor = Color.White;
-                                    nomCateg6.BackColor = Color.Transparent;
-                                    nomCateg6.TextAlign = ContentAlignment.MiddleCenter;
-                                    
-                                    nomCateg6.BringToFront();
-                                } catch { }
-                                CargarImagenCategoria(URLimagen, picBoxSeries);
-                            }
-                            if (i == 7)
-                            {
-                                picBoxMarcas.Text = nombreCat;
-                                try
-                                {
-                                    nomCateg7.Text = nombreCat.ToUpperInvariant();
-                                    nomCateg7.Font = FontsManager.GetFipps(7);
-                                    //nomCateg7.ForeColor = Color.White;
-                                    nomCateg7.BackColor = Color.Transparent;
-                                    nomCateg7.TextAlign = ContentAlignment.MiddleCenter;
-
-                                    nomCateg7.BringToFront();
-                                }
-                                catch { }
-                                CargarImagenCategoria(URLimagen, picBoxMarcas);
-                            }
-                            i++;
+                            misLabels[i].Text = cat.nombre.ToUpperInvariant();
+                            misLabels[i].Font = FontsManager.GetFipps(7);
+                            misLabels[i].BackColor = Color.Transparent;
+                            misLabels[i].TextAlign = ContentAlignment.MiddleCenter;
+                            misLabels[i].BringToFront();
                         }
+                        catch { }
+
+                        // Enviamos la imagen y el PictureBox correspondiente
+                        CargarImagenCategoria(cat.imagen, misPictureBoxes[i]);
                     }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al conectar con la nube: " + ex.Message);
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al conectar con el servidor del juego: " + ex.Message);
             }
         }
+
 
         private void CargarImagenCategoria(string nombreImagen, PictureBox pbDestino)
         {
@@ -224,7 +131,7 @@ namespace ProyectoJuego
             }
         }
 
-        // --- Tus métodos de movimiento de ventana y navegación ---
+        // --- Métodos de movimiento de ventana y navegación ---
 
         private void btnCerrar_Click(object sender, EventArgs e)
         {

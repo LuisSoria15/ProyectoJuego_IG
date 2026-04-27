@@ -37,7 +37,6 @@ namespace ProyectoJuego
                 return;
             } 
 
-
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 try

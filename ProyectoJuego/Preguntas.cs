@@ -33,7 +33,7 @@ namespace ProyectoJuego
         private string indicador;
 
         private Random rng = new Random();
-
+            
         public Preguntas(int idCategoria, Form1 formPrincipal)
         {
             InitializeComponent();
