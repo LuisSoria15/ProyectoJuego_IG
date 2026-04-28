@@ -1,11 +1,13 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using MySql.Data.MySqlClient;
 using NAudio.Wave;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,12 +15,6 @@ namespace ProyectoJuego
 {
     public partial class Preguntas : Form
     {
-        // Configuración de Conexión
-        public string connectionString = "Server=127.0.0.1;" +
-                                         "Port=3306;" +
-                                         "Database=preguntaslocaldisco;" +
-                                         "User ID=root;" +
-                                         "Password=Cucusoria1515!;";
 
         private Form1 formPrincipal;
         private Point mouseLoc;
@@ -53,7 +49,14 @@ namespace ProyectoJuego
 
             // Iniciar carga y efectos
             IniciarEfectoAparicion();
-            CargarTodasLasPreguntasDesdeBD();
+            //MostrarPreguntaActual();
+        }
+
+        private async void Preguntas_Load(object sender, EventArgs e)
+        {
+            await CargarTodasLasPreguntasDesdeAPI();
+
+            // Una vez que ya bajó y revolvió las preguntas, ahora sí mostramos la primera
             MostrarPreguntaActual();
         }
         //_____________________________________________________________________________________________________________________________________________________________
@@ -179,58 +182,46 @@ namespace ProyectoJuego
         //_____________________________________________________________________________________________________________________________________________________________
         #region Lógica del Juego y Base de Datos
 
-        private void CargarTodasLasPreguntasDesdeBD()
+        // Lo renombramos y le ponemos async Task
+        private async Task CargarTodasLasPreguntasDesdeAPI()
         {
             listaPreguntas.Clear();
-            using (MySqlConnection conn = new MySqlConnection(connectionString))
+
+            // Usamos la IP y puerto que acabamos de depurar, y le concatenamos el ID de la categoría
+            string urlApi = $"http://10.17.217.135:11000/preguntas/{idCategoriaSeleccionada}";
+
+            try
             {
-                try
+                using (HttpClient client = new HttpClient())
                 {
-                    conn.Open();
-                    string query = @"
-                        SELECT p.id AS PreguntaId, p.enunciado, p.formato, o.contenido, o.es_correcta
-                        FROM preguntas p
-                        INNER JOIN opciones o ON p.id = o.pregunta_id
-                        WHERE p.categoria_id = @categoriaId
-                        ORDER BY p.id";
+                    // 1. Pedimos los datos al servidor Python
+                    HttpResponseMessage respuesta = await client.GetAsync(urlApi);
+                    respuesta.EnsureSuccessStatusCode(); // Verifica que no haya error 404 o 500
 
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@categoriaId", idCategoriaSeleccionada);
+                    // 2. Leemos el texto JSON
+                    string jsonString = await respuesta.Content.ReadAsStringAsync();
+                    MessageBox.Show("Esto me mandó Python:\n\n" + jsonString);
 
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        PreguntaJuego preguntaActual = null;
-                        while (reader.Read())
-                        {
-                            int idPreguntaBD = Convert.ToInt32(reader["PreguntaId"]);
+                    // Opcional: Descomenta esta línea si quieres ver el JSON en pantalla antes de convertirlo
+                    // MessageBox.Show("JSON Recibido:\n" + jsonString);
 
-                            if (preguntaActual == null || preguntaActual.Id != idPreguntaBD)
-                            {
-                                preguntaActual = new PreguntaJuego
-                                {
-                                    Id = idPreguntaBD,
-                                    Enunciado = reader["enunciado"].ToString(),
-                                    Formato = reader["formato"].ToString()
-                                };
-                                listaPreguntas.Add(preguntaActual);
-                            }
+                    // 3. LA MAGIA: Convertimos el texto anidado directamente a tu lista de objetos
+                    listaPreguntas = JsonConvert.DeserializeObject<List<PreguntaJuego>>(jsonString);
 
-                            preguntaActual.Opciones.Add(new OpcionJuego
-                            {
-                                Contenido = reader["contenido"].ToString(),
-                                EsCorrecta = Convert.ToBoolean(reader["es_correcta"])
-                            });
-                        }
-                    }
-                    if (listaPreguntas.Count > 0)
+                    // 4. Si llegaron preguntas, las revolvemos tal como lo hacías antes
+                    if (listaPreguntas != null && listaPreguntas.Count > 0)
                     {
                         MezclarPreguntas(listaPreguntas);
                     }
+                    else
+                    {
+                        MessageBox.Show("No se encontraron preguntas para esta categoría.");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error de BD: " + ex.Message);
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al descargar preguntas del servidor: " + ex.Message);
             }
         }
 
@@ -717,5 +708,7 @@ namespace ProyectoJuego
             filtro.Close();
             filtro.Dispose();
         }
+
+        
     }
 }
