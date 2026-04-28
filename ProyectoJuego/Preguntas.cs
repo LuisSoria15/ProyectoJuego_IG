@@ -41,7 +41,10 @@ namespace ProyectoJuego
             InitializeComponent();
             this.formPrincipal = formPrincipal;
             this.idCategoriaSeleccionada = idCategoria;
-            this.Size = formPrincipal.Size;
+
+            this.Size = new Size(formPrincipal.Width, formPrincipal.Height + 120);
+
+            this.StartPosition = FormStartPosition.CenterScreen;
 
             ConfigurarDisenoInicial();
             ConfigurarControlesDeTextoCustom();
