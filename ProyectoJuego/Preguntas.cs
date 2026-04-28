@@ -160,15 +160,22 @@ namespace ProyectoJuego
             picOpcion4.Click += ValidarRespuesta_Click;
 
 
-            picAudio1.Click += EscucharAudio_Click;
-            picAudio2.Click += EscucharAudio_Click;
-            picAudio3.Click += EscucharAudio_Click;
-            picAudio4.Click += EscucharAudio_Click;
+            //Al posar el cursor se escucha el audio
+            picAudio1.Click += EscucharAudio_MouseEnter;
+            picAudio2.Click += EscucharAudio_MouseEnter;
+            picAudio3.Click += EscucharAudio_MouseEnter;
+            picAudio4.Click += EscucharAudio_MouseEnter;
+            
+            //Al dar click con el mouse se selecciona la opcion
+            picAudio1.Click += SeleccionarAudio_Click;
+            picAudio2.Click += SeleccionarAudio_Click;
+            picAudio3.Click += SeleccionarAudio_Click;
+            picAudio4.Click += SeleccionarAudio_Click;
 
-            picAudio1.DoubleClick += SeleccionarAudio_DoubleClick;
-            picAudio2.DoubleClick += SeleccionarAudio_DoubleClick;
-            picAudio3.DoubleClick += SeleccionarAudio_DoubleClick;
-            picAudio4.DoubleClick += SeleccionarAudio_DoubleClick;
+            picAudio1.DoubleClick += SeleccionarAudio_Click;
+            picAudio2.DoubleClick += SeleccionarAudio_Click;
+            picAudio3.DoubleClick += SeleccionarAudio_Click;
+            picAudio4.DoubleClick += SeleccionarAudio_Click;
         }
 
         private void IniciarEfectoAparicion()
@@ -203,7 +210,7 @@ namespace ProyectoJuego
 
                     // 2. Leemos el texto JSON
                     string jsonString = await respuesta.Content.ReadAsStringAsync();
-                    MessageBox.Show("Esto me mandó Python:\n\n" + jsonString);
+                    //MessageBox.Show("Esto me mandó Python:\n\n" + jsonString);
 
                     // Opcional: Descomenta esta línea si quieres ver el JSON en pantalla antes de convertirlo
                     // MessageBox.Show("JSON Recibido:\n" + jsonString);
@@ -421,11 +428,11 @@ namespace ProyectoJuego
         }
 
         // Este evento es para ESCUCHAR (Asígnalo al evento Click de tus 4 botones de audio)
-        private void EscucharAudio_Click(object sender, EventArgs e)
+        private void EscucharAudio_MouseEnter(object sender, EventArgs e)
         {
             Control control = (Control)sender;
             if (control.Tag == null) return;
-
+            
             string[] datos = control.Tag.ToString().Split('|');
             string urlAudio = datos[0];
 
@@ -433,7 +440,7 @@ namespace ProyectoJuego
         }
 
         // Evento para ELEGIR LA RESPUESTA
-        private async void SeleccionarAudio_DoubleClick(object sender, EventArgs e)
+        private async void SeleccionarAudio_Click(object sender, EventArgs e)
         {
             timerTiempo.Stop();//Pausa el reloj
 
