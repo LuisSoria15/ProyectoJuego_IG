@@ -163,11 +163,11 @@ namespace ProyectoJuego
 
 
             //Al posar el cursor se escucha el audio
-            picAudio1.MouseMove += EscucharAudio_MouseEnter;
-            picAudio2.MouseMove += EscucharAudio_MouseEnter;
-            picAudio3.MouseMove += EscucharAudio_MouseEnter;
-            picAudio4.MouseMove += EscucharAudio_MouseEnter;
-            
+            picAudio1.MouseMove += EscucharAudio_MouseMove;
+            picAudio2.MouseMove += EscucharAudio_MouseMove;
+            picAudio3.MouseMove += EscucharAudio_MouseMove;
+            picAudio4.MouseMove += EscucharAudio_MouseMove;
+
             //Al dar click con el mouse se selecciona la opcion
             picAudio1.Click += SeleccionarAudio_Click;
             picAudio2.Click += SeleccionarAudio_Click;
