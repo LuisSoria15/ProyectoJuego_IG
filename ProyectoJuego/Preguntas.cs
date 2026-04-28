@@ -163,10 +163,10 @@ namespace ProyectoJuego
 
 
             //Al posar el cursor se escucha el audio
-            picAudio1.Click += EscucharAudio_MouseEnter;
-            picAudio2.Click += EscucharAudio_MouseEnter;
-            picAudio3.Click += EscucharAudio_MouseEnter;
-            picAudio4.Click += EscucharAudio_MouseEnter;
+            picAudio1.MouseMove += EscucharAudio_MouseEnter;
+            picAudio2.MouseMove += EscucharAudio_MouseEnter;
+            picAudio3.MouseMove += EscucharAudio_MouseEnter;
+            picAudio4.MouseMove += EscucharAudio_MouseEnter;
             
             //Al dar click con el mouse se selecciona la opcion
             picAudio1.Click += SeleccionarAudio_Click;
@@ -399,16 +399,22 @@ namespace ProyectoJuego
 
         private void ReproducirMP3(string nombreArchivo)
         {
+            if (string.IsNullOrWhiteSpace(nombreArchivo)) return;
+
             //si ya esta sonando se deja
-            if (audioSonandoActual == nombreArchivo && reproductorAudio != null && reproductorAudio.PlaybackState == PlaybackState.Playing)
-                return;
+            if (audioSonandoActual == nombreArchivo && reproductorAudio != null)
+            {
+                if(reproductorAudio.PlaybackState == PlaybackState.Playing)
+                {
+                    return;
+                }
+            }
+                
 
             DetenerAudio();
 
             //Se guarda en la memoria cual suena
             audioSonandoActual = nombreArchivo;
-
-            if (string.IsNullOrWhiteSpace(nombreArchivo)) return;
 
             string rutaAbsoluta = Path.Combine(Application.StartupPath, "Recursos", "Audios", nombreArchivo);
 
@@ -440,9 +446,13 @@ namespace ProyectoJuego
         }
 
         // Este evento es para ESCUCHAR (Asígnalo al evento Click de tus 4 botones de audio)
-        private void EscucharAudio_MouseEnter(object sender, EventArgs e)
+        private void EscucharAudio_MouseMove(object sender, EventArgs e)
         {
             Control control = (Control)sender;
+
+            //Se pone como manita el cursor
+            control.Cursor = Cursors.Hand;
+
             if (control.Tag == null) return;
             
             string[] datos = control.Tag.ToString().Split('|');
