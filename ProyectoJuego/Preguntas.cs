@@ -28,6 +28,8 @@ namespace ProyectoJuego
         private MediaFoundationReader lectorAudio;
         private string indicador;
 
+        private string audioSonandoActual = "";
+
         //Variables para la barra de tiempo
         private Timer timerTiempo;
         private int tiempoMaximo = 150; //equivale a 15 segundos, modificarlo para el tiempo requerido
@@ -379,6 +381,9 @@ namespace ProyectoJuego
 
         private void DetenerAudio()
         {
+            //Se resetea la memoria
+            audioSonandoActual = "";
+
             if (reproductorAudio != null)
             {
                 reproductorAudio.Stop();
@@ -394,7 +399,14 @@ namespace ProyectoJuego
 
         private void ReproducirMP3(string nombreArchivo)
         {
-            DetenerAudio(); 
+            //si ya esta sonando se deja
+            if (audioSonandoActual == nombreArchivo && reproductorAudio != null && reproductorAudio.PlaybackState == PlaybackState.Playing)
+                return;
+
+            DetenerAudio();
+
+            //Se guarda en la memoria cual suena
+            audioSonandoActual = nombreArchivo;
 
             if (string.IsNullOrWhiteSpace(nombreArchivo)) return;
 
