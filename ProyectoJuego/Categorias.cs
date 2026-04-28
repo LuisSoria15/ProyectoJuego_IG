@@ -67,7 +67,7 @@ namespace ProyectoJuego
                     respuesta.EnsureSuccessStatusCode();
 
                     string jsonString = await respuesta.Content.ReadAsStringAsync();
-                    MessageBox.Show("Esto me mandó Python:\n\n" + jsonString);
+                    //MessageBox.Show("Esto me mandó Python:\n\n" + jsonString);
                     List<CategoriaAPI> listaCategorias = JsonConvert.DeserializeObject<List<CategoriaAPI>>(jsonString);
 
                     // 1. Metemos tus controles en el orden exacto de los IDs de la base de datos
