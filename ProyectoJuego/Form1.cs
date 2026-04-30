@@ -23,10 +23,9 @@ namespace ProyectoJuego
 
         private Point mouseLoc;
 
+        public int IdJugadorActual { get; set; }
+        public string NombreJugadorActual { get; set; }
 
-        // Variables para guardar la sesión del jugador
-        public int IdJugadorActual { get; set; } = 0;
-        public string NombreJugadorActual { get; set; } = "";
 
         public Form1()
         {
@@ -92,15 +91,16 @@ namespace ProyectoJuego
         {
             pictureBox1.Top -= 4;
 
-            Categorias ventana = new Categorias(this);
-            ventana.Show();
-            this.Hide();
+            //Categorias ventana = new Categorias(this);
+            //ventana.Show();
+            //this.Hide();
 
-            /*
+            
             // 1. Abrimos el formulario de inicio de sesión como "Dialog"
             InicioSesion formLogin = new InicioSesion(this);
             formLogin.Show();
-            */
+            this.Hide();
+
         }
 
         private void pictureBox3_Click(object sender, EventArgs e)
