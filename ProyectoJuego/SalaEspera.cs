@@ -103,7 +103,7 @@ namespace ProyectoJuego
                     {
                         lstJugadores.Items.Add(jugador.ToString());
                     }
-                    lblEstado.Text = $"Esperando jugadores ({datos.jugadores.Count}/4)...";
+                    lblEstado.Text = $"Esperando jugadores ({datos.jugadores.Count}/2)...";
                 }
                 else if (accion == "iniciar_juego")
                 {
