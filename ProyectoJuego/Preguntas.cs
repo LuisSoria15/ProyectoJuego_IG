@@ -318,6 +318,7 @@ namespace ProyectoJuego
 
                 // 4. Ahora sí, le mostramos sus puntos finales y nos salimos
                 MessageBox.Show($"¡Juego Terminado! Puntos totales: {puntosActuales}");
+
                 CerrarYRegresar();
                 return;
             }
