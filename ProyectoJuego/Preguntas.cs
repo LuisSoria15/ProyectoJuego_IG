@@ -192,7 +192,7 @@ namespace ProyectoJuego
 
         #endregion
         //_____________________________________________________________________________________________________________________________________________________________
-        #region Lógica del Juego y Base de Datos
+        #region Lógica del Juego y API
 
         // Lo renombramos y le ponemos async Task
         private async Task CargarTodasLasPreguntasDesdeAPI()
@@ -237,6 +237,46 @@ namespace ProyectoJuego
             }
         }
 
+        private async Task GuardarPuntajeEnServidor()
+        {
+            // Ojo: Usando el puerto 11000 como lo tienes configurado
+            string urlApi = "http://10.17.217.135:11000/guardar_puntaje";
+
+            // Empaquetamos los datos del juego actual
+            UsuarioPuntaje datosJuego = new UsuarioPuntaje
+            {
+                id_usuario = formPrincipal.IdJugadorActual, // Jala el nombre que guardaste en el Form1
+                puntaje = puntosActuales,
+                id_categoria = idCategoriaSeleccionada
+            };
+
+            string jsonEnvio = JsonConvert.SerializeObject(datosJuego);
+            // Asegúrate de tener 'using System.Text;' arriba, o usa System.Text.Encoding.UTF8
+            StringContent contenido = new StringContent(jsonEnvio, System.Text.Encoding.UTF8, "application/json");
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    HttpResponseMessage respuesta = await client.PutAsync(urlApi, contenido);
+                    respuesta.EnsureSuccessStatusCode();
+
+                    string jsonRespuesta = await respuesta.Content.ReadAsStringAsync();
+                    EnvioPuntaje resultado = JsonConvert.DeserializeObject<EnvioPuntaje>(jsonRespuesta);
+
+                    // Si el servidor falla internamente, te avisará
+                    if (resultado.estatus != "exito")
+                    {
+                        MessageBox.Show("Error del servidor al guardar puntaje: " + resultado.mensaje);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al intentar guardar el puntaje en la red: " + ex.Message);
+            }
+        }
+
         private void MezclarOpciones(List<OpcionJuego> opciones)
         {
             int n = opciones.Count;
@@ -264,11 +304,19 @@ namespace ProyectoJuego
             }
         }
 
-        private void MostrarPreguntaActual()
+        private async void MostrarPreguntaActual()
         {
             DetenerAudio();
+
             if (indiceActual >= listaPreguntas.Count)
             {
+                // 2. Bloqueamos la ventana para que el jugador no haga doble clic por accidente
+                this.Enabled = false;
+
+                // 3. Mandamos a guardar a la base de datos por internet
+                await GuardarPuntajeEnServidor();
+
+                // 4. Ahora sí, le mostramos sus puntos finales y nos salimos
                 MessageBox.Show($"¡Juego Terminado! Puntos totales: {puntosActuales}");
                 CerrarYRegresar();
                 return;
