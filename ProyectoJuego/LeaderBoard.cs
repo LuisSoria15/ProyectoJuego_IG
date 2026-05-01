@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,6 +14,7 @@ namespace ProyectoJuego
     public partial class LeaderBoard : Form
     {
         private Form1 formPrincipal;
+        private Form ventanaEspera;
         private Point mouseLoc;
 
         private Timer timerEstrellas;
@@ -64,6 +66,109 @@ namespace ProyectoJuego
             timerAparicion.Interval = 15;
             timerAparicion.Tick += TimerAparicion_Tick;
             timerAparicion.Start();
+        }
+
+        private void LeaderBoard_Load(object sender, EventArgs e)
+        {
+            // Apenas entra, muestra el mensaje de espera
+            MostrarMensajeEspera();
+            _ = EscucharServidor();
+        }
+
+
+
+        private void MostrarMensajeEspera()
+        {
+            ventanaEspera = new Form();
+            ventanaEspera.FormBorderStyle = FormBorderStyle.None;
+            ventanaEspera.StartPosition = FormStartPosition.CenterScreen;
+            ventanaEspera.Size = new Size(400, 100);
+            ventanaEspera.BackColor = Color.DarkSlateBlue;
+
+            Label lbl = new Label();
+            lbl.Text = "Esperando a que el otro jugador termine...";
+            lbl.ForeColor = Color.White;
+            lbl.Dock = DockStyle.Fill;
+            lbl.TextAlign = ContentAlignment.MiddleCenter;
+            lbl.Font = new Font("Arial", 12, FontStyle.Bold);
+
+            ventanaEspera.Controls.Add(lbl);
+            ventanaEspera.Show(this);
+        }
+
+        private async Task EscucharServidor()
+        {
+            byte[] buffer = new byte[2048];
+            try
+            {
+                while (formPrincipal.wsCliente.State == System.Net.WebSockets.WebSocketState.Open)
+                {
+                    var result = await formPrincipal.wsCliente.ReceiveAsync(new ArraySegment<byte>(buffer), formPrincipal.cancelToken.Token);
+
+                    if (result.MessageType == System.Net.WebSockets.WebSocketMessageType.Close)
+                    {
+                        await formPrincipal.wsCliente.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "", formPrincipal.cancelToken.Token);
+                        break;
+                    }
+                    else
+                    {
+                        string json = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                        dynamic datos = JsonConvert.DeserializeObject(json);
+
+                        if (datos != null && datos.accion == "mostrar_ganador")
+                        {
+                            // Usamos async delegate para poder poner pausas de tiempo
+                            this.Invoke((MethodInvoker)async delegate
+                            {
+                                // 1. Quitamos el letrero de "Esperando"
+                                if (ventanaEspera != null) ventanaEspera.Close();
+
+                                // 2. Armamos el texto
+                                string mensajeGanador;
+                                if ((bool)datos.empate)
+                                {
+                                    mensajeGanador = $"¡Es un EMPATE con {datos.puntaje_ganador} puntos!";
+                                }
+                                else
+                                {
+                                    mensajeGanador = $"¡El ganador es {datos.ganador} con {datos.puntaje_ganador} puntos!";
+                                }
+
+                                // 3. Mostramos el cuadro gigante por 3 segundos
+                                await AnunciarGanadorTemporal(mensajeGanador);
+
+                                // Opcional: Aquí podrías actualizar tu lblTituloLeader para que diga el nombre del ganador permanentemente
+                            });
+                            break; // Dejamos de escuchar
+                        }
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private async Task AnunciarGanadorTemporal(string mensaje)
+        {
+            Form frmAnuncio = new Form();
+            frmAnuncio.FormBorderStyle = FormBorderStyle.None;
+            frmAnuncio.StartPosition = FormStartPosition.CenterScreen;
+            frmAnuncio.Size = new Size(600, 150);
+            frmAnuncio.BackColor = Color.Gold;
+
+            Label lbl = new Label();
+            lbl.Text = mensaje;
+            lbl.ForeColor = Color.Black;
+            lbl.Dock = DockStyle.Fill;
+            lbl.TextAlign = ContentAlignment.MiddleCenter;
+            lbl.Font = new Font("Arial", 16, FontStyle.Bold);
+
+            frmAnuncio.Controls.Add(lbl);
+            frmAnuncio.Show(this);
+
+            // Magia: Congelamos esta función 3 segundos sin congelar el juego completo
+            await Task.Delay(3000);
+
+            frmAnuncio.Close();
         }
 
         private void CrearEstrellasIniciales(int count)
@@ -217,5 +322,7 @@ namespace ProyectoJuego
                 timer.Dispose();
             }
         }
+
+       
     }
 }
