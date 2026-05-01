@@ -302,7 +302,7 @@ namespace ProyectoJuego
             pbRegresar.Image = Properties.Resources.flecha_normal;
         }
 
-        private async Task picBoxAnimales_ClickAsync(object sender, EventArgs e)
+        private async void picBoxAnimales_ClickAsync(object sender, EventArgs e)
         {
             this.Enabled = false;
 
@@ -344,7 +344,7 @@ namespace ProyectoJuego
             picBoxAnimales.Left += 5;
         }
 
-        private async Task picBoxJuegos_ClickAsync(object sender, EventArgs e)
+        private async void picBoxJuegos_ClickAsync(object sender, EventArgs e)
         {
             this.Enabled = false;
 
@@ -387,7 +387,7 @@ namespace ProyectoJuego
             picBoxJuegos.Left += 5;
         }
 
-        private async Task picBoxPaises_ClickAsync(object sender, EventArgs e)
+        private async void picBoxPaises_ClickAsync(object sender, EventArgs e)
         {
             this.Enabled = false;
 
@@ -431,7 +431,7 @@ namespace ProyectoJuego
             picBoxPaises.Left += 5;
         }
 
-        private async Task picBoxPeliculas_ClickAsync(object sender, EventArgs e)
+        private async void picBoxPeliculas_ClickAsync(object sender, EventArgs e)
         {
             this.Enabled = false;
 
@@ -475,7 +475,7 @@ namespace ProyectoJuego
             picBoxPeliculas.Left += 5;
         }
 
-        private async Task picBoxSeries_ClickAsync(object sender, EventArgs e)
+        private async void picBoxSeries_ClickAsync(object sender, EventArgs e)
         {
             this.Enabled = false;
 
@@ -519,7 +519,7 @@ namespace ProyectoJuego
             picBoxSeries.Left += 5;
         }
 
-        private async Task picBoxCanciones_ClickAsync(object sender, EventArgs e)
+        private async void picBoxCanciones_ClickAsync(object sender, EventArgs e)
         {
             this.Enabled = false;
 
@@ -563,7 +563,7 @@ namespace ProyectoJuego
             picBoxCanciones.Left += 5;
         }
 
-        private async Task picBoxMarcas_ClickAsync(object sender, EventArgs e)
+        private async void picBoxMarcas_ClickAsync(object sender, EventArgs e)
         {
             this.Enabled = false;
 
