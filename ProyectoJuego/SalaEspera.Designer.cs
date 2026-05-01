@@ -35,7 +35,7 @@
             // lblEstado
             // 
             this.lblEstado.AutoSize = true;
-            this.lblEstado.Location = new System.Drawing.Point(262, 149);
+            this.lblEstado.Location = new System.Drawing.Point(271, 53);
             this.lblEstado.Name = "lblEstado";
             this.lblEstado.Size = new System.Drawing.Size(64, 25);
             this.lblEstado.TabIndex = 0;
@@ -45,7 +45,7 @@
             // 
             this.lstJugadores.FormattingEnabled = true;
             this.lstJugadores.ItemHeight = 24;
-            this.lstJugadores.Location = new System.Drawing.Point(486, 134);
+            this.lstJugadores.Location = new System.Drawing.Point(261, 181);
             this.lstJugadores.Name = "lstJugadores";
             this.lstJugadores.Size = new System.Drawing.Size(120, 76);
             this.lstJugadores.TabIndex = 1;
