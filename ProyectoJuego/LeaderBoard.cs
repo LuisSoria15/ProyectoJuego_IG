@@ -117,58 +117,68 @@ namespace ProyectoJuego
 
                         if (datos != null && datos.accion == "mostrar_ganador")
                         {
-                            // Usamos async delegate para poder poner pausas de tiempo
-                            this.Invoke((MethodInvoker)async delegate
+                            // Armamos el texto ANTES de tocar la interfaz
+                            string mensajeGanador;
+                            if ((bool)datos.empate)
                             {
-                                // 1. Quitamos el letrero de "Esperando"
+                                mensajeGanador = $"¡Es un EMPATE con {datos.puntaje_ganador} puntos!";
+                            }
+                            else
+                            {
+                                mensajeGanador = $"¡El ganador es {datos.ganador} con {datos.puntaje_ganador} puntos!";
+                            }
+
+                            // 1. Cerramos la ventana de espera de forma segura
+                            this.Invoke((MethodInvoker)delegate
+                            {
                                 if (ventanaEspera != null) ventanaEspera.Close();
-
-                                // 2. Armamos el texto
-                                string mensajeGanador;
-                                if ((bool)datos.empate)
-                                {
-                                    mensajeGanador = $"¡Es un EMPATE con {datos.puntaje_ganador} puntos!";
-                                }
-                                else
-                                {
-                                    mensajeGanador = $"¡El ganador es {datos.ganador} con {datos.puntaje_ganador} puntos!";
-                                }
-
-                                // 3. Mostramos el cuadro gigante por 3 segundos
-                                await AnunciarGanadorTemporal(mensajeGanador);
-
-                                // Opcional: Aquí podrías actualizar tu lblTituloLeader para que diga el nombre del ganador permanentemente
                             });
-                            break; // Dejamos de escuchar
+
+                            // 2. Mostramos el ganador
+                            await AnunciarGanadorTemporal(mensajeGanador);
+
+                            break; // Terminamos la escucha
                         }
                     }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                // ¡AQUÍ ESTÁ LA MAGIA! Si algo falla, ahora sí te saldrá una alerta
+                MessageBox.Show("Error crítico en la sala de resultados: " + ex.Message);
+            }
         }
 
         private async Task AnunciarGanadorTemporal(string mensaje)
         {
-            Form frmAnuncio = new Form();
-            frmAnuncio.FormBorderStyle = FormBorderStyle.None;
-            frmAnuncio.StartPosition = FormStartPosition.CenterScreen;
-            frmAnuncio.Size = new Size(600, 150);
-            frmAnuncio.BackColor = Color.Gold;
+            Form frmAnuncio = null;
 
-            Label lbl = new Label();
-            lbl.Text = mensaje;
-            lbl.ForeColor = Color.Black;
-            lbl.Dock = DockStyle.Fill;
-            lbl.TextAlign = ContentAlignment.MiddleCenter;
-            lbl.Font = new Font("Arial", 16, FontStyle.Bold);
+            // Creamos y mostramos la ventana en el hilo principal
+            this.Invoke((MethodInvoker)delegate {
+                frmAnuncio = new Form();
+                frmAnuncio.FormBorderStyle = FormBorderStyle.None;
+                frmAnuncio.StartPosition = FormStartPosition.CenterScreen;
+                frmAnuncio.Size = new Size(600, 150);
+                frmAnuncio.BackColor = Color.Gold;
 
-            frmAnuncio.Controls.Add(lbl);
-            frmAnuncio.Show(this);
+                Label lbl = new Label();
+                lbl.Text = mensaje;
+                lbl.ForeColor = Color.Black;
+                lbl.Dock = DockStyle.Fill;
+                lbl.TextAlign = ContentAlignment.MiddleCenter;
+                lbl.Font = new Font("Arial", 16, FontStyle.Bold);
 
-            // Magia: Congelamos esta función 3 segundos sin congelar el juego completo
+                frmAnuncio.Controls.Add(lbl);
+                frmAnuncio.Show(this);
+            });
+
+            // Pausamos 3 segundos afuera del hilo principal (evita que el juego se trabe)
             await Task.Delay(3000);
 
-            frmAnuncio.Close();
+            // Cerramos la ventana en el hilo principal
+            this.Invoke((MethodInvoker)delegate {
+                if (frmAnuncio != null) frmAnuncio.Close();
+            });
         }
 
         private void CrearEstrellasIniciales(int count)
