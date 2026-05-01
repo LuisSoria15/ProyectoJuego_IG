@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,10 +8,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Newtonsoft.Json;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 
 namespace ProyectoJuego
@@ -18,6 +19,7 @@ namespace ProyectoJuego
     public partial class Categorias : Form
     {
         Form1 formPrincipal;
+        private Form ventanaEspera;
         private Point mouseLoc;
 
         public Categorias(Form1 formPrincipal)
@@ -51,6 +53,71 @@ namespace ProyectoJuego
         private async void Categorias_Load(object sender, EventArgs e)
         {
             await CargarCategoriasEnBotones();
+            _ = EscucharServidor();
+        }
+
+        private async Task EscucharServidor()
+        {
+            byte[] buffer = new byte[2048];
+            try
+            {
+                while (formPrincipal.wsCliente.State == System.Net.WebSockets.WebSocketState.Open)
+                {
+                    var result = await formPrincipal.wsCliente.ReceiveAsync(new ArraySegment<byte>(buffer), formPrincipal.cancelToken.Token);
+
+                    // ¡Faltaba esta protección vital!
+                    if (result.MessageType == WebSocketMessageType.Close)
+                    {
+                        await formPrincipal.wsCliente.CloseAsync(WebSocketCloseStatus.NormalClosure, "", formPrincipal.cancelToken.Token);
+                        break;
+                    }
+                    else
+                    {
+                        string json = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                        dynamic datos = JsonConvert.DeserializeObject(json);
+
+                        // Como datos es dinámico, verificamos que no sea nulo
+                        if (datos != null && datos.accion == "resultado_votacion")
+                        {
+                            int catGanadora = datos.categoria_ganadora;
+
+                            this.Invoke((MethodInvoker)delegate
+                            {
+                                // 1. Cerramos el mensajito de "Esperando..."
+                                if (ventanaEspera != null) ventanaEspera.Close();
+
+                                MessageBox.Show($"¡El sistema ha elegido la categoría {catGanadora}!");
+
+                                // 2. Ahora sí, ¡a las preguntas!
+                                Preguntas ventana = new Preguntas(catGanadora, formPrincipal);
+                                ventana.Show();
+                                this.Close();
+                            });
+                            break; // Dejamos de escuchar
+                        }
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private void MostrarMensajeEspera()
+        {
+            ventanaEspera = new Form();
+            ventanaEspera.FormBorderStyle = FormBorderStyle.None;
+            ventanaEspera.StartPosition = FormStartPosition.CenterScreen;
+            ventanaEspera.Size = new System.Drawing.Size(400, 100);
+            ventanaEspera.BackColor = Color.DarkSlateBlue;
+
+            Label lbl = new Label();
+            lbl.Text = "Esperando a que el otro jugador elija...";
+            lbl.ForeColor = Color.White;
+            lbl.Dock = DockStyle.Fill;
+            lbl.TextAlign = ContentAlignment.MiddleCenter;
+            lbl.Font = new Font("Arial", 12, FontStyle.Bold);
+
+            ventanaEspera.Controls.Add(lbl);
+            ventanaEspera.Show(this);
         }
 
         // 2. Método para jalar las categorías y ponerlas en los botones
@@ -247,11 +314,21 @@ namespace ProyectoJuego
             pbRegresar.Image = Properties.Resources.flecha_normal;
         }
 
-        private void picBoxAnimales_Click(object sender, EventArgs e)
+        private async void picBoxAnimales_ClickAsync(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(1, formPrincipal);
-            formPreguntas.Show();
-            this.Close();
+            this.Enabled = false;
+
+            // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
+            int idCategoriaElegida = 1;
+
+            // 3. Mandamos el voto a Python en JSON
+            var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
+            string jsonVoto = JsonConvert.SerializeObject(voto);
+            byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
+            await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
+
+            // 4. Mostramos el mensaje flotante
+            MostrarMensajeEspera();
         }
         
         private void picBoxAnimales_MouseUp(object sender, MouseEventArgs e)
@@ -279,11 +356,21 @@ namespace ProyectoJuego
             picBoxAnimales.Left += 5;
         }
 
-        private void picBoxJuegos_Click(object sender, EventArgs e)
+        private async void picBoxJuegos_ClickAsync(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(2, formPrincipal);
-            formPreguntas.Show();
-            this.Close();
+            this.Enabled = false;
+
+            // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
+            int idCategoriaElegida = 2;
+
+            // 3. Mandamos el voto a Python en JSON
+            var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
+            string jsonVoto = JsonConvert.SerializeObject(voto);
+            byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
+            await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
+
+            // 4. Mostramos el mensaje flotante
+            MostrarMensajeEspera();
         }
         private void picBoxJuegos_MouseUp(object sender, MouseEventArgs e)
         {
@@ -312,11 +399,21 @@ namespace ProyectoJuego
             picBoxJuegos.Left += 5;
         }
 
-        private void picBoxPaises_Click(object sender, EventArgs e)
+        private async void picBoxPaises_ClickAsync(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(5, formPrincipal);
-            formPreguntas.Show();
-            this.Close();
+            this.Enabled = false;
+
+            // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
+            int idCategoriaElegida = 5;
+
+            // 3. Mandamos el voto a Python en JSON
+            var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
+            string jsonVoto = JsonConvert.SerializeObject(voto);
+            byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
+            await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
+
+            // 4. Mostramos el mensaje flotante
+            MostrarMensajeEspera();
         }
 
         private void picBoxPaises_MouseUp(object sender, MouseEventArgs e)
@@ -346,11 +443,21 @@ namespace ProyectoJuego
             picBoxPaises.Left += 5;
         }
 
-        private void picBoxPeliculas_Click(object sender, EventArgs e)
+        private async void picBoxPeliculas_ClickAsync(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(3, formPrincipal);
-            formPreguntas.Show();
-            this.Close();
+            this.Enabled = false;
+
+            // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
+            int idCategoriaElegida = 3;
+
+            // 3. Mandamos el voto a Python en JSON
+            var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
+            string jsonVoto = JsonConvert.SerializeObject(voto);
+            byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
+            await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
+
+            // 4. Mostramos el mensaje flotante
+            MostrarMensajeEspera();
         }
 
         private void picBoxPeliculas_MouseUp(object sender, MouseEventArgs e)
@@ -380,11 +487,21 @@ namespace ProyectoJuego
             picBoxPeliculas.Left += 5;
         }
 
-        private void picBoxSeries_Click(object sender, EventArgs e)
+        private async void picBoxSeries_ClickAsync(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(6, formPrincipal);
-            formPreguntas.Show();
-            this.Close();
+            this.Enabled = false;
+
+            // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
+            int idCategoriaElegida = 6;
+
+            // 3. Mandamos el voto a Python en JSON
+            var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
+            string jsonVoto = JsonConvert.SerializeObject(voto);
+            byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
+            await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
+
+            // 4. Mostramos el mensaje flotante
+            MostrarMensajeEspera();
         }
 
         private void picBoxSeries_MouseUp(object sender, MouseEventArgs e)
@@ -414,11 +531,21 @@ namespace ProyectoJuego
             picBoxSeries.Left += 5;
         }
 
-        private void picBoxCanciones_Click(object sender, EventArgs e)
+        private async void picBoxCanciones_ClickAsync(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(4, formPrincipal);
-            formPreguntas.Show();
-            this.Close();
+            this.Enabled = false;
+
+            // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
+            int idCategoriaElegida = 4;
+
+            // 3. Mandamos el voto a Python en JSON
+            var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
+            string jsonVoto = JsonConvert.SerializeObject(voto);
+            byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
+            await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
+
+            // 4. Mostramos el mensaje flotante
+            MostrarMensajeEspera();
         }
 
         private void picBoxCanciones_MouseUp(object sender, MouseEventArgs e)
@@ -448,11 +575,21 @@ namespace ProyectoJuego
             picBoxCanciones.Left += 5;
         }
 
-        private void picBoxMarcas_Click(object sender, EventArgs e)
+        private async void picBoxMarcas_ClickAsync(object sender, EventArgs e)
         {
-            Preguntas formPreguntas = new Preguntas(7, formPrincipal);
-            formPreguntas.Show();
-            this.Close();
+            this.Enabled = false;
+
+            // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
+            int idCategoriaElegida = 7;
+
+            // 3. Mandamos el voto a Python en JSON
+            var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
+            string jsonVoto = JsonConvert.SerializeObject(voto);
+            byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
+            await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
+
+            // 4. Mostramos el mensaje flotante
+            MostrarMensajeEspera();
         }
 
         private void picBoxMarcas_MouseUp(object sender, MouseEventArgs e)

@@ -73,9 +73,9 @@ namespace ProyectoJuego
 
                         MessageBox.Show(resultado.mensaje);
 
-                        // Pasamos a las categorías
-                        Categorias ventana = new Categorias(formPrincipal);
-                        ventana.Show();
+                        // Pasamos a la SALA DE ESPERA
+                        SalaEspera ventanaSala = new SalaEspera(formPrincipal);
+                        ventanaSala.Show();
                         this.Close();
                         formPrincipal.Hide();
                     }

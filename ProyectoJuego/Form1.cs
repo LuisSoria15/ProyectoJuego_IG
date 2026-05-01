@@ -23,6 +23,10 @@ namespace ProyectoJuego
 
         private Point mouseLoc;
 
+        // En Form1.cs agrega estas variables:
+        public System.Net.WebSockets.ClientWebSocket wsCliente { get; set; }
+        public System.Threading.CancellationTokenSource cancelToken { get; set; }
+
         public int IdJugadorActual { get; set; }
         public string NombreJugadorActual { get; set; }
 

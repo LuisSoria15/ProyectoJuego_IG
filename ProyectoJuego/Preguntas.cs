@@ -8,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -310,15 +311,26 @@ namespace ProyectoJuego
 
             if (indiceActual >= listaPreguntas.Count)
             {
-                // 2. Bloqueamos la ventana para que el jugador no haga doble clic por accidente
                 this.Enabled = false;
 
-                // 3. Mandamos a guardar a la base de datos por internet
+                // 1. Guardamos en BD (Esto ya lo tenías)
                 await GuardarPuntajeEnServidor();
 
-                // 4. Ahora sí, le mostramos sus puntos finales y nos salimos
-                MessageBox.Show($"¡Juego Terminado! Puntos totales: {puntosActuales}");
-                CerrarYRegresar();
+                // 2. Le avisamos a la Sala en vivo que ya terminamos y cuántos puntos hicimos
+                var datosFin = new
+                {
+                    accion = "terminar_juego",
+                    nombre = formPrincipal.NombreJugadorActual,
+                    puntaje = puntosActuales
+                };
+                string jsonFin = JsonConvert.SerializeObject(datosFin);
+                byte[] bytesFin = Encoding.UTF8.GetBytes(jsonFin);
+                await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesFin), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
+
+                // 3. Pasamos al LeaderBoard
+                LeaderBoard ventana = new LeaderBoard(formPrincipal);
+                ventana.Show();
+                this.Close();
                 return;
             }
 

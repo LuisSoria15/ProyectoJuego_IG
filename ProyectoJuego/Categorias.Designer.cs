@@ -107,7 +107,7 @@
             this.picBoxMarcas.Size = new System.Drawing.Size(290, 174);
             this.picBoxMarcas.TabIndex = 16;
             this.picBoxMarcas.TabStop = false;
-            this.picBoxMarcas.Click += new System.EventHandler(this.picBoxMarcas_Click);
+            this.picBoxMarcas.Click += new System.EventHandler(this.picBoxMarcas_ClickAsync);
             this.picBoxMarcas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picBoxMarcas_MouseDown);
             this.picBoxMarcas.MouseEnter += new System.EventHandler(this.picBoxMarcas_MouseEnter);
             this.picBoxMarcas.MouseLeave += new System.EventHandler(this.picBoxMarcas_MouseLeave);
@@ -122,7 +122,7 @@
             this.picBoxCanciones.Size = new System.Drawing.Size(280, 174);
             this.picBoxCanciones.TabIndex = 15;
             this.picBoxCanciones.TabStop = false;
-            this.picBoxCanciones.Click += new System.EventHandler(this.picBoxCanciones_Click);
+            this.picBoxCanciones.Click += new System.EventHandler(this.picBoxCanciones_ClickAsync);
             this.picBoxCanciones.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picBoxCanciones_MouseDown);
             this.picBoxCanciones.MouseEnter += new System.EventHandler(this.picBoxCanciones_MouseEnter);
             this.picBoxCanciones.MouseLeave += new System.EventHandler(this.picBoxCanciones_MouseLeave);
@@ -137,7 +137,7 @@
             this.picBoxSeries.Size = new System.Drawing.Size(280, 174);
             this.picBoxSeries.TabIndex = 14;
             this.picBoxSeries.TabStop = false;
-            this.picBoxSeries.Click += new System.EventHandler(this.picBoxSeries_Click);
+            this.picBoxSeries.Click += new System.EventHandler(this.picBoxSeries_ClickAsync);
             this.picBoxSeries.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picBoxSeries_MouseDown);
             this.picBoxSeries.MouseEnter += new System.EventHandler(this.picBoxSeries_MouseEnter);
             this.picBoxSeries.MouseLeave += new System.EventHandler(this.picBoxSeries_MouseLeave);
@@ -152,7 +152,7 @@
             this.picBoxPeliculas.Size = new System.Drawing.Size(280, 174);
             this.picBoxPeliculas.TabIndex = 13;
             this.picBoxPeliculas.TabStop = false;
-            this.picBoxPeliculas.Click += new System.EventHandler(this.picBoxPeliculas_Click);
+            this.picBoxPeliculas.Click += new System.EventHandler(this.picBoxPeliculas_ClickAsync);
             this.picBoxPeliculas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picBoxPeliculas_MouseDown);
             this.picBoxPeliculas.MouseEnter += new System.EventHandler(this.picBoxPeliculas_MouseEnter);
             this.picBoxPeliculas.MouseLeave += new System.EventHandler(this.picBoxPeliculas_MouseLeave);
@@ -168,7 +168,7 @@
             this.picBoxPaises.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picBoxPaises.TabIndex = 12;
             this.picBoxPaises.TabStop = false;
-            this.picBoxPaises.Click += new System.EventHandler(this.picBoxPaises_Click);
+            this.picBoxPaises.Click += new System.EventHandler(this.picBoxPaises_ClickAsync);
             this.picBoxPaises.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picBoxPaises_MouseDown);
             this.picBoxPaises.MouseEnter += new System.EventHandler(this.picBoxPaises_MouseEnter);
             this.picBoxPaises.MouseLeave += new System.EventHandler(this.picBoxPaises_MouseLeave);
@@ -184,7 +184,7 @@
             this.picBoxJuegos.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picBoxJuegos.TabIndex = 11;
             this.picBoxJuegos.TabStop = false;
-            this.picBoxJuegos.Click += new System.EventHandler(this.picBoxJuegos_Click);
+            this.picBoxJuegos.Click += new System.EventHandler(this.picBoxJuegos_ClickAsync);
             this.picBoxJuegos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picBoxJuegos_MouseDown);
             this.picBoxJuegos.MouseEnter += new System.EventHandler(this.picBoxJuegos_MouseEnter);
             this.picBoxJuegos.MouseLeave += new System.EventHandler(this.picBoxJuegos_MouseLeave);
@@ -200,7 +200,7 @@
             this.picBoxAnimales.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picBoxAnimales.TabIndex = 10;
             this.picBoxAnimales.TabStop = false;
-            this.picBoxAnimales.Click += new System.EventHandler(this.picBoxAnimales_Click);
+            this.picBoxAnimales.Click += new System.EventHandler(this.picBoxAnimales_ClickAsync);
             this.picBoxAnimales.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picBoxAnimales_MouseDown);
             this.picBoxAnimales.MouseEnter += new System.EventHandler(this.picBoxAnimales_MouseEnter);
             this.picBoxAnimales.MouseLeave += new System.EventHandler(this.picBoxAnimales_MouseLeave);
