@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,10 +8,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Newtonsoft.Json;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 
 namespace ProyectoJuego
@@ -63,26 +64,37 @@ namespace ProyectoJuego
                 while (formPrincipal.wsCliente.State == System.Net.WebSockets.WebSocketState.Open)
                 {
                     var result = await formPrincipal.wsCliente.ReceiveAsync(new ArraySegment<byte>(buffer), formPrincipal.cancelToken.Token);
-                    string json = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                    dynamic datos = JsonConvert.DeserializeObject(json);
 
-                    if (datos.accion == "resultado_votacion")
+                    // ¡Faltaba esta protección vital!
+                    if (result.MessageType == WebSocketMessageType.Close)
                     {
-                        int catGanadora = datos.categoria_ganadora;
+                        await formPrincipal.wsCliente.CloseAsync(WebSocketCloseStatus.NormalClosure, "", formPrincipal.cancelToken.Token);
+                        break;
+                    }
+                    else
+                    {
+                        string json = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                        dynamic datos = JsonConvert.DeserializeObject(json);
 
-                        this.Invoke((MethodInvoker)delegate
+                        // Como datos es dinámico, verificamos que no sea nulo
+                        if (datos != null && datos.accion == "resultado_votacion")
                         {
-                            // 1. Cerramos el mensajito de "Esperando..."
-                            if (ventanaEspera != null) ventanaEspera.Close();
+                            int catGanadora = datos.categoria_ganadora;
 
-                            MessageBox.Show($"¡El sistema ha elegido la categoría {catGanadora}!");
+                            this.Invoke((MethodInvoker)delegate
+                            {
+                                // 1. Cerramos el mensajito de "Esperando..."
+                                if (ventanaEspera != null) ventanaEspera.Close();
 
-                            // 2. Ahora sí, ¡a las preguntas!
-                            Preguntas ventana = new Preguntas(catGanadora, formPrincipal);
-                            ventana.Show();
-                            this.Close();
-                        });
-                        break; // Dejamos de escuchar aquí
+                                MessageBox.Show($"¡El sistema ha elegido la categoría {catGanadora}!");
+
+                                // 2. Ahora sí, ¡a las preguntas!
+                                Preguntas ventana = new Preguntas(catGanadora, formPrincipal);
+                                ventana.Show();
+                                this.Close();
+                            });
+                            break; // Dejamos de escuchar
+                        }
                     }
                 }
             }
@@ -349,7 +361,7 @@ namespace ProyectoJuego
             this.Enabled = false;
 
             // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
-            int idCategoriaElegida = 1;
+            int idCategoriaElegida = 2;
 
             // 3. Mandamos el voto a Python en JSON
             var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
@@ -392,7 +404,7 @@ namespace ProyectoJuego
             this.Enabled = false;
 
             // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
-            int idCategoriaElegida = 1;
+            int idCategoriaElegida = 5;
 
             // 3. Mandamos el voto a Python en JSON
             var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
@@ -436,7 +448,7 @@ namespace ProyectoJuego
             this.Enabled = false;
 
             // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
-            int idCategoriaElegida = 1;
+            int idCategoriaElegida = 3;
 
             // 3. Mandamos el voto a Python en JSON
             var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
@@ -480,7 +492,7 @@ namespace ProyectoJuego
             this.Enabled = false;
 
             // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
-            int idCategoriaElegida = 1;
+            int idCategoriaElegida = 6;
 
             // 3. Mandamos el voto a Python en JSON
             var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
@@ -524,7 +536,7 @@ namespace ProyectoJuego
             this.Enabled = false;
 
             // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
-            int idCategoriaElegida = 1;
+            int idCategoriaElegida = 4;
 
             // 3. Mandamos el voto a Python en JSON
             var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
@@ -568,7 +580,7 @@ namespace ProyectoJuego
             this.Enabled = false;
 
             // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
-            int idCategoriaElegida = 1;
+            int idCategoriaElegida = 7;
 
             // 3. Mandamos el voto a Python en JSON
             var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
