@@ -108,6 +108,7 @@ namespace ProyectoJuego
                     if (result.MessageType == System.Net.WebSockets.WebSocketMessageType.Close)
                     {
                         await formPrincipal.wsCliente.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "", formPrincipal.cancelToken.Token);
+                        MessageBox.Show("El servidor cerró la conexión inesperadamente.");
                         break;
                     }
                     else
