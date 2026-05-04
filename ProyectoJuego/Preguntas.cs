@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Mysqlx.Datatypes.Scalar.Types;
 
 namespace ProyectoJuego
 {
@@ -201,7 +202,7 @@ namespace ProyectoJuego
             listaPreguntas.Clear();
 
             // Usamos la IP y puerto que acabamos de depurar, y le concatenamos el ID de la categoría
-            string urlApi = $"http://10.36.144.135:11000/preguntas/{idCategoriaSeleccionada}";
+            string urlApi = $"http://{Form1.IP_SERVIDOR}:{Form1.PUERTO}/preguntas/{idCategoriaSeleccionada}";
 
             try
             {
@@ -241,7 +242,7 @@ namespace ProyectoJuego
         private async Task GuardarPuntajeEnServidor()
         {
             // Ojo: Usando el puerto 11000 como lo tienes configurado
-            string urlApi = "http://10.36.144.135:11000/guardar_puntaje";
+            tring urlApi = $"http://{Form1.IP_SERVIDOR}:{Form1.PUERTO}/guardar_puntaje";
 
             // Empaquetamos los datos del juego actual
             UsuarioPuntaje datosJuego = new UsuarioPuntaje
