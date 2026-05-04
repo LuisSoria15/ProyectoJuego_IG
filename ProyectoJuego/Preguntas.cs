@@ -242,7 +242,7 @@ namespace ProyectoJuego
         private async Task GuardarPuntajeEnServidor()
         {
             // Ojo: Usando el puerto 11000 como lo tienes configurado
-            tring urlApi = $"http://{Form1.IP_SERVIDOR}:{Form1.PUERTO}/guardar_puntaje";
+            string urlApi = $"http://{Form1.IP_SERVIDOR}:{Form1.PUERTO}/guardar_puntaje";
 
             // Empaquetamos los datos del juego actual
             UsuarioPuntaje datosJuego = new UsuarioPuntaje

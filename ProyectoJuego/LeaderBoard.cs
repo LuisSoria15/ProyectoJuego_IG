@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -74,9 +75,54 @@ namespace ProyectoJuego
 
         private void LeaderBoard_Load(object sender, EventArgs e)
         {
-            // Apenas entra, muestra el mensaje de espera
-            MostrarMensajeEspera();
-            _ = EscucharServidor();
+            if (desdeInicio == 1)
+            {
+                // Venimos del inicio: Consultamos la BD global y no esperamos a nadie
+                await CargarLeaderboardGlobal();
+            }
+            else
+            {
+                // Apenas entra, muestra el mensaje de espera
+                MostrarMensajeEspera();
+                _ = EscucharServidor();
+            }
+        }
+
+        private async Task CargarLeaderboardGlobal()
+        {
+            string urlApi = $"http://{Form1.IP_SERVIDOR}:{Form1.PUERTO}/leaderboard";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    HttpResponseMessage respuesta = await client.GetAsync(urlApi);
+                    respuesta.EnsureSuccessStatusCode();
+
+                    string jsonString = await respuesta.Content.ReadAsStringAsync();
+
+                    // Leemos la lista que nos mandó Python
+                    dynamic listaGlobal = JsonConvert.DeserializeObject<List<dynamic>>(jsonString);
+
+                    dgvLeaderboard.Rows.Clear(); // Limpiamos la tabla por si acaso
+
+                    // Llenamos la tabla con los mejores jugadores
+                    if (listaGlobal != null)
+                    {
+                        foreach (var jugador in listaGlobal)
+                        {
+                            dgvLeaderboard.Rows.Add(jugador.nombre.ToString(), jugador.puntaje.ToString());
+                        }
+                    }
+
+                    // Hacemos visible la tabla
+                    dgvLeaderboard.Visible = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar el Leaderboard global: " + ex.Message);
+            }
         }
 
         private void MostrarMensajeEspera()

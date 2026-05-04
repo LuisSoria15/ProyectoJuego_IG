@@ -27,7 +27,7 @@ namespace ProyectoJuego
         public System.Net.WebSockets.ClientWebSocket wsCliente { get; set; }
         public System.Threading.CancellationTokenSource cancelToken { get; set; }
 
-        public static string IP_SERVIDOR = "10.17.217.135";
+        public static string IP_SERVIDOR = "10.220.96.135";
 
         public static string PUERTO = "11000";
         public int IdJugadorActual { get; set; }
