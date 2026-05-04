@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -18,14 +19,37 @@ namespace ProyectoJuego
         {
             InitializeComponent();
             this.formPrincipal = formPrincipal;
+            ConfigurarDiseño();
+        }
+
+        // ==========================================
+        // CONFIGURACIÓN VISUAL
+        // ==========================================
+        private void ConfigurarDiseño()
+        {
+            this.ControlBox = false; // Adiós a la tachita para salir
+            this.Text = "";
+            this.BackColor = Color.FromArgb(142, 148, 255); // Color moradito de tu juego
+            this.StartPosition = FormStartPosition.CenterScreen;
+
+            lblEstado.BackColor = Color.Transparent;
+            lblEstado.TextAlign = ContentAlignment.MiddleCenter;
+
+            try
+            {
+                lblEstado.Font = FontsManager.GetFipps(12);
+                lstJugadores.Font = FontsManager.GetFipps(10);
+            }
+            catch { }
+
+            lstJugadores.BorderStyle = BorderStyle.FixedSingle;
+            lstJugadores.BackColor = Color.White;
         }
 
         private async void SalaEspera_LoadAsync(object sender, EventArgs e)
         {
-
             lblEstado.Text = "Conectando al servidor...";
             await ConectarASala();
-
         }
 
         private async Task ConectarASala()
@@ -37,25 +61,23 @@ namespace ProyectoJuego
 
             try
             {
-                // 1. Abrimos el túnel
                 await wsCliente.ConnectAsync(serverUri, cancelToken.Token);
-
-                // 2. ¡EL TRUCO! Primero nos ponemos a escuchar en segundo plano
                 _ = EscucharServidor();
 
-                // 3. Y AHORA SÍ, le gritamos nuestro nombre al servidor
                 string miNombre = formPrincipal.NombreJugadorActual;
                 byte[] bytesNombre = Encoding.UTF8.GetBytes(miNombre);
                 await wsCliente.SendAsync(new ArraySegment<byte>(bytesNombre), WebSocketMessageType.Text, true, cancelToken.Token);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error conectando a la sala: " + ex.Message);
-                this.Close(); // Si falla, nos salimos
+                // REEMPLAZO DEL MESSAGE BOX DE ERROR
+                // Mostramos el error en el label, esperamos 3 segundos y regresamos a la pantalla anterior
+                lblEstado.Text = "Error de conexión.\nRegresando...";
+                await Task.Delay(3000);
+                this.Close();
             }
         }
 
-        // Este método vive en segundo plano escuchando todo lo que mande Python
         private async Task EscucharServidor()
         {
             byte[] buffer = new byte[2048];
@@ -73,7 +95,6 @@ namespace ProyectoJuego
                         string mensajeJson = Encoding.UTF8.GetString(buffer, 0, result.Count);
                         bool soltarTunel = ProcesarMensaje(mensajeJson);
 
-                        // Si el juego ya inició, rompemos este ciclo para que Categorias use el WebSocket
                         if (soltarTunel) break;
                     }
                 }
@@ -95,43 +116,42 @@ namespace ProyectoJuego
                     {
                         lstJugadores.Items.Add(jugador.ToString());
                     }
-                    lblEstado.Text = $"Esperando jugadores ({datos.jugadores.Count}/2)...";
+                    lblEstado.Text = $"Esperando jugadores ({datos.jugadores.Count}/4)...";
                 });
                 return false;
             }
             else if (accion == "iniciar_juego")
             {
-                this.Invoke((MethodInvoker)delegate
+                // Usamos un Action asíncrono para poder hacer una pausa sin congelar la pantalla
+                this.Invoke(new Action(async () =>
                 {
-                    // 1. Guardamos el túnel en Form1 para no perderlo
                     formPrincipal.wsCliente = this.wsCliente;
                     formPrincipal.cancelToken = this.cancelToken;
 
-                    MessageBox.Show(datos.mensaje.ToString());
+                    // REEMPLAZO DEL MESSAGE BOX DE INICIO
+                    // Escribimos el mensaje que manda Python ("¡Listos, comienza el Kahoot!") en la pantalla
+                    lblEstado.Text = datos.mensaje.ToString();
 
+                    // Hacemos una pausa de 1.5 segundos para que el jugador alcance a leerlo
+                    await Task.Delay(1500);
+
+                    // Cambiamos de pantalla fluidamente
                     Categorias ventana = new Categorias(formPrincipal);
                     ventana.Show();
                     this.Close();
-                });
-                return true; // Le avisa al While que se detenga
+                }));
+                return true;
             }
             return false;
         }
 
-        // Modifica tu evento FormClosing para que no corte el internet al pasar de ventana:
         private async void SalaEspera_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // Solo cerramos internet si el jugador le dio a la X roja
             if (formPrincipal.wsCliente == null && wsCliente != null && wsCliente.State == WebSocketState.Open)
             {
                 cancelToken.Cancel();
                 await wsCliente.CloseAsync(WebSocketCloseStatus.NormalClosure, "Saliendo", CancellationToken.None);
             }
         }
-
-
-       
-
-
     }
 }
