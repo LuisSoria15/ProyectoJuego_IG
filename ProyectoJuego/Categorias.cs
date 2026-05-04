@@ -86,7 +86,7 @@ namespace ProyectoJuego
                                 // 1. Cerramos el mensajito de "Esperando..."
                                 if (ventanaEspera != null) ventanaEspera.Close();
 
-                                MessageBox.Show($"¡El sistema ha elegido la categoría {catGanadora}!");
+                                //MessageBox.Show($"¡El sistema ha elegido la categoría {catGanadora}!");
 
                                 // 2. Ahora sí, ¡a las preguntas!
                                 Preguntas ventana = new Preguntas(catGanadora, formPrincipal);

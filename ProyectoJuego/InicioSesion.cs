@@ -2,19 +2,19 @@
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Net.Http; // Para peticiones web
+using System.Net.Http;
 using Newtonsoft.Json;
-using System.Drawing; // Para procesar JSON
+using System.Drawing;
 
 namespace ProyectoJuego
 {
     public partial class InicioSesion : Form
     {
         private Form1 formPrincipal;
-
-        // Estas variables se las pasaremos al Form1
-
         private Point mouseLoc;
+
+        // 1. Declaramos nuestro nuevo Label para los mensajes
+        private Label lblMensaje;
 
         public InicioSesion(Form1 formPrincipal)
         {
@@ -37,19 +37,36 @@ namespace ProyectoJuego
             // --- ESTILO Y TAMAÑO DEL TEXTBOX ---
             txtUsername.Font = FontsManager.GetFipps(12);
             txtUsername.Width = 320;
-
             txtUsername.BorderStyle = BorderStyle.None;
-
             txtUsername.Location = new Point((this.ClientSize.Width - txtUsername.Width) / 2, 115);
-
-            //txtUsername.BorderStyle = BorderStyle.FixedSingle;
             txtUsername.TextAlign = HorizontalAlignment.Center;
 
+            // --- CONFIGURACIÓN DEL LABEL DE MENSAJES ---
+            lblMensaje = new Label();
+            lblMensaje.AutoSize = false;
+            lblMensaje.Width = this.ClientSize.Width;
+            lblMensaje.Height = 25;
+            // Lo ponemos un poco más abajo de la caja de texto
+            lblMensaje.Location = new Point(0, txtUsername.Bottom + 15);
+            lblMensaje.TextAlign = ContentAlignment.MiddleCenter;
+            lblMensaje.BackColor = Color.Transparent; // Para que no tape tu fondo morado
+            try
+            {
+                lblMensaje.Font = FontsManager.GetFipps(8); // Letra más pequeña para mensajes
+            }
+            catch
+            {
+                lblMensaje.Font = new Font("Arial", 10, FontStyle.Bold);
+            }
+            lblMensaje.Text = ""; // Inicia vacío
+            this.Controls.Add(lblMensaje); // Lo agregamos a la ventana
+
             // --- ESTILO Y TAMAÑO DEL BOTÓN JUGAR ---
-            btnJugar.Text = "JUGAR"; 
+            btnJugar.Text = "JUGAR";
             btnJugar.Font = FontsManager.GetFipps(12);
             btnJugar.Size = new Size(180, 65);
-            btnJugar.Location = new Point((this.ClientSize.Width - btnJugar.Width) / 2, txtUsername.Bottom + 25);
+            // Empujamos el botón hacia abajo para hacerle espacio al Label
+            btnJugar.Location = new Point((this.ClientSize.Width - btnJugar.Width) / 2, lblMensaje.Bottom + 5);
 
             btnJugar.FlatStyle = FlatStyle.Flat;
             btnJugar.FlatAppearance.BorderSize = 4;
@@ -79,25 +96,20 @@ namespace ProyectoJuego
             e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
             StringFormat formato = new StringFormat { Alignment = StringAlignment.Center };
 
-            // ¡AQUÍ ESTÁ LA MAGIA! Cambiamos el 65 por 85 para subir el texto y separarlo de la caja
             int yPos = txtUsername.Location.Y - 85;
             Rectangle rect = new Rectangle(0, yPos, this.ClientSize.Width, 60);
 
             using (Brush bBorde = new SolidBrush(Color.Black))
             using (Brush bTexto = new SolidBrush(Color.White))
             {
-                // Sombras/Contorno
                 for (int x = -3; x <= 3; x += 3)
                     for (int y = -3; y <= 3; y += 3)
                         if (x != 0 || y != 0) e.Graphics.DrawString(texto, fuente, bBorde, new Rectangle(rect.X + x, rect.Y + y, rect.Width, rect.Height), formato);
 
-                // Texto principal
                 e.Graphics.DrawString(texto, fuente, bTexto, rect, formato);
             }
 
-            // --- DIBUJAR EL BORDE REDONDEADO DEL TEXTBOX ---
             int radio = 20;
-
             Rectangle cajaFondo = new Rectangle(txtUsername.Left - 10, txtUsername.Top - 10, txtUsername.Width + 20, txtUsername.Height + 20);
 
             System.Drawing.Drawing2D.GraphicsPath ruta = new System.Drawing.Drawing2D.GraphicsPath();
@@ -138,34 +150,38 @@ namespace ProyectoJuego
 
         private void InicioSesion_MouseMove(object sender, MouseEventArgs e)
         {
-            // Código para arrastrar la ventana sin bordes
             if (e.Button == MouseButtons.Left)
                 this.Location = new Point(this.Location.X + (e.X - mouseLoc.X), this.Location.Y + (e.Y - mouseLoc.Y));
         }
 
         #endregion
-        // --------------------------
 
         #region Base de Datos y API
 
-        // Hacemos el botón async
+        // 2. Método auxiliar para pintar mensajes fácilmente
+        private void MostrarMensaje(string mensaje, Color color)
+        {
+            lblMensaje.Text = mensaje;
+            lblMensaje.ForeColor = color;
+        }
+
         private async void btnJugar_Click(object sender, EventArgs e)
         {
+            lblMensaje.Text = ""; // Limpiamos cualquier mensaje anterior
             string username = txtUsername.Text.Trim();
 
             if (string.IsNullOrEmpty(username))
             {
-                MessageBox.Show("Por favor, ingresa un nombre de usuario.");
+                // REEMPLAZO 1: Validación de campo vacío
+                MostrarMensaje("INGRESA UN NOMBRE", Color.Red);
                 return;
             }
 
-            // Desactivamos el botón mientras se conecta para evitar doble clic
             btnJugar.Enabled = false;
+            MostrarMensaje("CONECTANDO...", Color.White); // Le avisamos al jugador que está cargando
 
-            // IP del hotspot y la nueva ruta
             string urlApi = $"http://{Form1.IP_SERVIDOR}:{Form1.PUERTO}/registro";
 
-            // Empaquetamos la petición
             PeticionRegistro solicitud = new PeticionRegistro { username = username };
             string jsonEnvio = JsonConvert.SerializeObject(solicitud);
             StringContent contenido = new StringContent(jsonEnvio, Encoding.UTF8, "application/json");
@@ -174,30 +190,29 @@ namespace ProyectoJuego
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    // Hacemos la consulta al servidor
                     HttpResponseMessage respuesta = await client.PostAsync(urlApi, contenido);
                     respuesta.EnsureSuccessStatusCode();
 
-                    // Leemos y decodificamos el JSON
                     string jsonRespuesta = await respuesta.Content.ReadAsStringAsync();
-                    //MessageBox.Show("Esto me mandó Python:\n\n" + jsonRespuesta);
                     RespuestaRegistro resultado = JsonConvert.DeserializeObject<RespuestaRegistro>(jsonRespuesta);
 
                     if (resultado.existe)
                     {
-                        // El servidor detectó que ya está registrado
-                        MessageBox.Show($"El usuario \"{username}\" ya existe, ingresa otro nombre!");
+                        // REEMPLAZO 2: El usuario ya existe
+                        MostrarMensaje("EL USUARIO YA EXISTE", Color.Red);
                         txtUsername.Text = "";
                     }
                     else
                     {
-                        // ¡Registro exitoso! Guardamos las variables
+                        // REEMPLAZO 3: Registro exitoso
+                        MostrarMensaje("¡REGISTRADO!", Color.LimeGreen);
+
                         formPrincipal.IdJugadorActual = resultado.id_usuario;
                         formPrincipal.NombreJugadorActual = username;
 
-                        MessageBox.Show(resultado.mensaje);
+                        // Esperamos 1 segundo para que el jugador alcance a leer "¡REGISTRADO!"
+                        await Task.Delay(1000);
 
-                        // Pasamos a la SALA DE ESPERA
                         SalaEspera ventanaSala = new SalaEspera(formPrincipal);
                         ventanaSala.Show();
                         this.Close();
@@ -207,20 +222,14 @@ namespace ProyectoJuego
             }
             catch (Exception ex)
             {
+                lblMensaje.Text = ""; // Ocultamos el mensaje si sale el MessageBox de error crítico
                 MessageBox.Show("Error al conectar con la API: " + ex.Message);
             }
             finally
             {
-                // Volvemos a activar el botón pase lo que pase
                 btnJugar.Enabled = true;
             }
         }
         #endregion
-        /*private void btnCerrar_Click(object sender, EventArgs e)
-        {
-            btnCerrar.Top -= 4;
-            formPrincipal.Show();
-            this.Close();
-        }*/
     }
 }
