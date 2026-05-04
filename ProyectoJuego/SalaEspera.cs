@@ -57,7 +57,7 @@ namespace ProyectoJuego
             wsCliente = new ClientWebSocket();
             cancelToken = new CancellationTokenSource();
 
-            Uri serverUri = new Uri("ws://10.17.217.135:11000/ws/sala");
+            Uri serverUri = new Uri($"ws://{Form1.IP_SERVIDOR}:{Form1.PUERTO}/ws/sala");
 
             try
             {

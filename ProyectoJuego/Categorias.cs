@@ -123,7 +123,7 @@ namespace ProyectoJuego
         // 2. Método para jalar las categorías y ponerlas en los botones
         private async Task CargarCategoriasEnBotones()
         {
-            string urlApi = "http://10.36.144.135:11000/categorias";
+            string urlApi = $"http://{Form1.IP_SERVIDOR}:{Form1.PUERTO}/categorias";
 
             try
             {

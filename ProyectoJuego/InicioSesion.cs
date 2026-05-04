@@ -163,7 +163,7 @@ namespace ProyectoJuego
             btnJugar.Enabled = false;
 
             // IP del hotspot y la nueva ruta
-            string urlApi = "http://10.36.144.135:11000/registro";
+            string urlApi = $"http://{Form1.IP_SERVIDOR}:{Form1.PUERTO}/registro";
 
             // Empaquetamos la petición
             PeticionRegistro solicitud = new PeticionRegistro { username = username };
