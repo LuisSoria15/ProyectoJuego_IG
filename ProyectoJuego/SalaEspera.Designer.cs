@@ -35,7 +35,7 @@
             // lblEstado
             // 
             this.lblEstado.AutoSize = true;
-            this.lblEstado.Location = new System.Drawing.Point(197, 35);
+            this.lblEstado.Location = new System.Drawing.Point(23, 20);
             this.lblEstado.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblEstado.Name = "lblEstado";
             this.lblEstado.Size = new System.Drawing.Size(44, 16);
@@ -46,10 +46,10 @@
             // 
             this.lstJugadores.FormattingEnabled = true;
             this.lstJugadores.ItemHeight = 16;
-            this.lstJugadores.Location = new System.Drawing.Point(190, 121);
-            this.lstJugadores.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lstJugadores.Location = new System.Drawing.Point(26, 90);
+            this.lstJugadores.Margin = new System.Windows.Forms.Padding(2);
             this.lstJugadores.Name = "lstJugadores";
-            this.lstJugadores.Size = new System.Drawing.Size(88, 52);
+            this.lstJugadores.Size = new System.Drawing.Size(414, 180);
             this.lstJugadores.TabIndex = 1;
             // 
             // SalaEspera
@@ -61,7 +61,7 @@
             this.Controls.Add(this.lstJugadores);
             this.Controls.Add(this.lblEstado);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "SalaEspera";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "SalaEspera";

@@ -23,6 +23,7 @@ namespace ProyectoJuego
         private Image imagenEstrella;
 
         private DataGridView dgvLeaderboard;
+         private int desdeInicio = 0; // 0 = no se sabe, 1 = desde inicio, 2 = desde sala de espera
 
         private class Estrella
         {
@@ -31,13 +32,14 @@ namespace ProyectoJuego
             public int Tamaño;
             public float Balanceo;
         }
-        public LeaderBoard(Form1 formPrincipal)
+        public LeaderBoard(Form1 formPrincipal, int inicio)
         {
             InitializeComponent();
             this.formPrincipal = formPrincipal;
 
             this.Size = formPrincipal.Size;
             this.BackColor = formPrincipal.BackColor;
+            desdeInicio = inicio;
 
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.None;
@@ -73,7 +75,7 @@ namespace ProyectoJuego
             timerAparicion.Start();
         }
 
-        private void LeaderBoard_Load(object sender, EventArgs e)
+        private async void LeaderBoard_Load(object sender, EventArgs e)
         {
             if (desdeInicio == 1)
             {

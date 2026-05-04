@@ -118,7 +118,7 @@ namespace ProyectoJuego
         private void pictureBox2_Click(object sender, EventArgs e)
         {
             pictureBox2.Top -= 4;
-            LeaderBoard ventana = new LeaderBoard(this);
+            LeaderBoard ventana = new LeaderBoard(this, 1);
             ventana.Show();
             this.Hide();
         }

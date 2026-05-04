@@ -329,7 +329,7 @@ namespace ProyectoJuego
                 await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesFin), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
 
                 // 3. Pasamos al LeaderBoard
-                LeaderBoard ventana = new LeaderBoard(formPrincipal);
+                LeaderBoard ventana = new LeaderBoard(formPrincipal, 1);
                 ventana.Show();
                 this.Close();
                 return;
