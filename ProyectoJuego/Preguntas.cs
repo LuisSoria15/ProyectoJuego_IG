@@ -201,7 +201,7 @@ namespace ProyectoJuego
             listaPreguntas.Clear();
 
             // Usamos la IP y puerto que acabamos de depurar, y le concatenamos el ID de la categoría
-            string urlApi = $"http://10.17.217.135:11000/preguntas/{idCategoriaSeleccionada}";
+            string urlApi = $"http://10.36.144.135:11000/preguntas/{idCategoriaSeleccionada}";
 
             try
             {
@@ -241,7 +241,7 @@ namespace ProyectoJuego
         private async Task GuardarPuntajeEnServidor()
         {
             // Ojo: Usando el puerto 11000 como lo tienes configurado
-            string urlApi = "http://10.17.217.135:11000/guardar_puntaje";
+            string urlApi = "http://10.36.144.135:11000/guardar_puntaje";
 
             // Empaquetamos los datos del juego actual
             UsuarioPuntaje datosJuego = new UsuarioPuntaje
