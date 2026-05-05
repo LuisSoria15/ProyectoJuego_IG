@@ -26,7 +26,8 @@ namespace ProyectoJuego
         {
             InitializeComponent();
             this.formPrincipal = formPrincipal;
-            this.Size = formPrincipal.Size;
+            this.Size = new Size(formPrincipal.Width, formPrincipal.Height + 120);
+            this.StartPosition = FormStartPosition.CenterScreen;
 
             lblTitulo.Font = FontsManager.GetFipps(20); 
             lblTitulo.AutoSize = false;
@@ -38,7 +39,6 @@ namespace ProyectoJuego
 
             lblTitulo.Paint += new PaintEventHandler(lblTitulo_Paint);
 
-
             this.Opacity = 0.0;
 
             Timer timerAparicion = new Timer();
@@ -48,6 +48,7 @@ namespace ProyectoJuego
 
             // Llamamos al método al cargar el form
             //CargarCategoriasEnBotones();
+            AcomodarCuadricula();
         }
 
         private async void Categorias_Load(object sender, EventArgs e)
@@ -632,6 +633,56 @@ namespace ProyectoJuego
                 timer.Dispose();
             }
         }
+        // ==========================================
+        // ACOMODO PERFECTO DE LA CUADRÍCULA
+        // ==========================================
+        private void AcomodarCuadricula()
+        {
+            // 1. Calculamos el centro de la pantalla
+            int centroX = this.ClientSize.Width / 2;
 
+            // 2. Definimos distancias
+            int ancho = picBoxAnimales.Width; // Tomamos el ancho de una imagen como base
+            int espacioX = 40; // Espacio de separación horizontal
+
+            // Alturas (Y) de cada fila (si se empalman, puedes subir o bajar estos números)
+            int fila1Y = 130;
+            int fila2Y = 280;
+            int fila3Y = 430;
+
+            // --- FILA 1 (3 opciones) ---
+            picBoxJuegos.Location = new Point(centroX - (ancho / 2), fila1Y);
+            picBoxAnimales.Location = new Point(picBoxJuegos.Left - espacioX - ancho, fila1Y);
+            picBoxPaises.Location = new Point(picBoxJuegos.Right + espacioX, fila1Y);
+
+            // --- FILA 2 (2 opciones) ---
+            picBoxPeliculas.Location = new Point(centroX - ancho - (espacioX / 2), fila2Y);
+            picBoxSeries.Location = new Point(centroX + (espacioX / 2), fila2Y);
+
+            // --- FILA 3 (2 opciones) ---
+            picBoxCanciones.Location = new Point(centroX - ancho - (espacioX / 2), fila3Y);
+            picBoxMarcas.Location = new Point(centroX + (espacioX / 2), fila3Y);
+
+            // --- CENTRAR LOS TEXTOS PERFECTAMENTE SOBRE SU IMAGEN ---
+            CentrarLabel(nomCateg1, picBoxAnimales);
+            CentrarLabel(nomCateg2, picBoxJuegos);
+            CentrarLabel(nomCateg5, picBoxPaises);
+
+            CentrarLabel(nomCateg3, picBoxPeliculas);
+            CentrarLabel(nomCateg6, picBoxSeries);
+
+            CentrarLabel(nomCateg4, picBoxCanciones);
+            CentrarLabel(nomCateg7, picBoxMarcas);
+        }
+
+        private void CentrarLabel(Label lbl, PictureBox pic)
+        {
+            lbl.AutoSize = false;
+            lbl.Width = pic.Width + 40; // Le damos margen para textos largos
+            lbl.Height = 25;
+            // Lo ponemos justo al centro y 25 píxeles arriba de la foto
+            lbl.Location = new Point(pic.Left - 20, pic.Top - 25);
+            lbl.TextAlign = ContentAlignment.MiddleCenter;
+        }
     }
 }

@@ -30,10 +30,22 @@ namespace ProyectoJuego
             this.ControlBox = false; // Adiós a la tachita para salir
             this.Text = "";
             this.BackColor = Color.FromArgb(142, 148, 255); // Color moradito de tu juego
+
+            this.Size = new Size(600, 450);
             this.StartPosition = FormStartPosition.CenterScreen;
 
             lblEstado.BackColor = Color.Transparent;
+            lblEstado.AutoSize = false; // Lo desactivamos para centrar el texto bien
+            lblEstado.Size = new Size(this.ClientSize.Width, 60);
+            lblEstado.Location = new Point(0, 70); // Lo ponemos arribita
             lblEstado.TextAlign = ContentAlignment.MiddleCenter;
+
+            // --- 3. ESTIRAMOS LA CAJA BLANCA ---
+            lstJugadores.Size = new Size(400, 200); // 200 de alto da espacio para los 4 jugadores
+            // Centramos la caja usando matemáticas
+            lstJugadores.Location = new Point((this.ClientSize.Width - lstJugadores.Width) / 2, 140);
+            lstJugadores.BorderStyle = BorderStyle.FixedSingle;
+            lstJugadores.BackColor = Color.White;
 
             try
             {
@@ -41,9 +53,6 @@ namespace ProyectoJuego
                 lstJugadores.Font = FontsManager.GetFipps(10);
             }
             catch { }
-
-            lstJugadores.BorderStyle = BorderStyle.FixedSingle;
-            lstJugadores.BackColor = Color.White;
         }
 
         private async void SalaEspera_LoadAsync(object sender, EventArgs e)
