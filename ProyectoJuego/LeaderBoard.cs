@@ -168,7 +168,7 @@ namespace ProyectoJuego
 
                         if (datos != null && datos.accion == "mostrar_ganador")
                         {
-                            // Armamos el texto ANTES de tocar la interfaz
+                            // Armamos el texto antes de tocar la interfaz
                             string mensajeGanador;
                             if ((bool)datos.empate)
                             {
@@ -184,10 +184,10 @@ namespace ProyectoJuego
                                 if (ventanaEspera != null) ventanaEspera.Close();
                             });
 
-                            // 2. Mostramos el ganador (esto pausa 3 segundos)
+                            // Mostramos el ganador (con pausa de 3 segundos)
                             await AnunciarGanadorTemporal(mensajeGanador);
 
-                            // 3. Llenamos y mostramos la tabla con los resultados <--- NUEVO
+                            // 3. Llenamos y mostramos la tabla con los resultados 
                             this.Invoke((MethodInvoker)delegate
                             {
                                 dgvLeaderboard.Rows.Clear(); // Limpiamos por si acaso
@@ -209,7 +209,6 @@ namespace ProyectoJuego
             }
             catch (Exception ex)
             {
-                // ¡AQUÍ ESTÁ LA MAGIA! Si algo falla, ahora sí te saldrá una alerta
                 MessageBox.Show("Error crítico en la sala de resultados: " + ex.Message);
             }
         }
@@ -254,7 +253,7 @@ namespace ProyectoJuego
             // Centramos la tabla en la pantalla, un poco más abajo del título
             dgvLeaderboard.Location = new Point((this.ClientSize.Width - 400) / 2, 120);
 
-            // Configuraciones visuales para que parezca de juego y no de Excel
+            // Configuraciones visuales 
             dgvLeaderboard.BackgroundColor = this.BackColor;
             dgvLeaderboard.BorderStyle = BorderStyle.None;
             dgvLeaderboard.AllowUserToAddRows = false;
@@ -269,7 +268,7 @@ namespace ProyectoJuego
             dgvLeaderboard.DefaultCellStyle.ForeColor = Color.White;
             dgvLeaderboard.DefaultCellStyle.SelectionBackColor = Color.Gold;
             dgvLeaderboard.DefaultCellStyle.SelectionForeColor = Color.Black;
-            // Puedes cambiar "Arial" por FontsManager.GetFipps(10) si quieres la fuente pixelada
+
             dgvLeaderboard.DefaultCellStyle.Font = new Font("Arial", 12, FontStyle.Bold);
             dgvLeaderboard.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
@@ -402,12 +401,12 @@ namespace ProyectoJuego
             timerEstrellas.Stop();
             pbCerrar.Top -= 4;
 
-            // --- ¡NUEVO!: CORTAMOS LA CONEXIÓN ANTES DE IRNOS ---
+            // --- CORTAMOS LA CONEXIÓN ANTES DE IRNOS ---
             if (formPrincipal.wsCliente != null && formPrincipal.wsCliente.State == System.Net.WebSockets.WebSocketState.Open)
             {
                 try
                 {
-                    // Cancelamos la escucha y cerramos el túnel amablemente
+                    // Cancelamos la escucha y cerramos el túnel 
                     formPrincipal.cancelToken.Cancel();
                     await formPrincipal.wsCliente.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "Fin de partida", System.Threading.CancellationToken.None);
                 }

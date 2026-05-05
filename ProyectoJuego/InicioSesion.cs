@@ -13,7 +13,7 @@ namespace ProyectoJuego
         private Form1 formPrincipal;
         private Point mouseLoc;
 
-        // 1. Declaramos nuestro nuevo Label para los mensajes
+        // Declaramos nuestro nuevo Label para los mensajes
         private Label lblMensaje;
 
         public InicioSesion(Form1 formPrincipal)
@@ -49,7 +49,7 @@ namespace ProyectoJuego
             // Lo ponemos un poco más abajo de la caja de texto
             lblMensaje.Location = new Point(0, txtUsername.Bottom + 15);
             lblMensaje.TextAlign = ContentAlignment.MiddleCenter;
-            lblMensaje.BackColor = Color.Transparent; // Para que no tape tu fondo morado
+            lblMensaje.BackColor = Color.Transparent; // Para que no tape el fondo morado
             try
             {
                 lblMensaje.Font = FontsManager.GetFipps(8); // Letra más pequeña para mensajes
@@ -158,7 +158,7 @@ namespace ProyectoJuego
 
         #region Base de Datos y API
 
-        // 2. Método auxiliar para pintar mensajes fácilmente
+        // Método auxiliar para pintar mensajes fácilmente
         private void MostrarMensaje(string mensaje, Color color)
         {
             lblMensaje.Text = mensaje;

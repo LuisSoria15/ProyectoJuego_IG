@@ -27,9 +27,9 @@ namespace ProyectoJuego
         // ==========================================
         private void ConfigurarDiseño()
         {
-            this.ControlBox = false; // Adiós a la tachita para salir
+            this.ControlBox = false; 
             this.Text = "";
-            this.BackColor = Color.FromArgb(142, 148, 255); // Color moradito de tu juego
+            this.BackColor = Color.FromArgb(142, 148, 255); // Color moradito del juego
 
             this.Size = new Size(600, 450);
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -40,7 +40,7 @@ namespace ProyectoJuego
             lblEstado.Location = new Point(0, 70); // Lo ponemos arribita
             lblEstado.TextAlign = ContentAlignment.MiddleCenter;
 
-            // --- 3. ESTIRAMOS LA CAJA BLANCA ---
+            // --- ESTIRAMOS LA CAJA BLANCA ---
             lstJugadores.Size = new Size(400, 200); // 200 de alto da espacio para los 4 jugadores
             // Centramos la caja usando matemáticas
             lstJugadores.Location = new Point((this.ClientSize.Width - lstJugadores.Width) / 2, 140);
@@ -138,7 +138,7 @@ namespace ProyectoJuego
                     formPrincipal.cancelToken = this.cancelToken;
 
                     // REEMPLAZO DEL MESSAGE BOX DE INICIO
-                    // Escribimos el mensaje que manda Python ("¡Listos, comienza el Kahoot!") en la pantalla
+                    // Escribimos el mensaje que manda Python ("¡Listos, comienza el Juego!") en la pantalla
                     lblEstado.Text = datos.mensaje.ToString();
 
                     // Hacemos una pausa de 1.5 segundos para que el jugador alcance a leerlo

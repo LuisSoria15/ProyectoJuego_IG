@@ -34,10 +34,10 @@ namespace ProyectoJuego
 
         //Variables para la barra de tiempo
         private Timer timerTiempo;
-        private int tiempoMaximo = 150; //equivale a 15 segundos, modificarlo para el tiempo requerido
+        private int tiempoMaximo = 150; //equivale a 15 segundos
         private int tiempoActual = 100;
         private PictureBox pbBarraTiempo;
-        //
+        
         private Random rng = new Random();
             
         public Preguntas(int idCategoria, Form1 formPrincipal)
@@ -72,20 +72,20 @@ namespace ProyectoJuego
 
         private void ConfigurarControlesDeTextoCustom()
         {
-            // 1. Asignar el PictureBox como padre del Label
+            // Asignar el PictureBox como padre del Label
             label1.Parent = opcion1;
             label2.Parent = opcion2;
             label3.Parent = opcion3;
             label4.Parent = opcion4;
 
-            // 2. Asegurar que el fondo del Label sea transparente al PictureBox
+            // Asegurar que el fondo del Label sea transparente al PictureBox
             label1.BackColor = Color.Transparent;
             label2.BackColor = Color.Transparent;
             label3.BackColor = Color.Transparent;
             label4.BackColor = Color.Transparent;
 
    
-            // Desactivamos AutoSize para controlar nosotros el tamaño
+            // Desactivamos AutoSize para controlar el tamaño
             label1.AutoSize = false;
             label2.AutoSize = false;
             label3.AutoSize = false;
@@ -108,7 +108,7 @@ namespace ProyectoJuego
 
         private void ConfigurarDisenoInicial()
         {
-            // Configurar Label de Score (Dibujo personalizado)
+            // Configurar Label de Score 
             lblScore.Font = FontsManager.GetFipps(14);
             lblScore.AutoSize = false;
             lblScore.Size = new Size(300, 60);
@@ -117,7 +117,7 @@ namespace ProyectoJuego
             lblScore.ForeColor = Color.Transparent; // Se dibuja en el evento Paint
             lblScore.Paint += lblScore_Paint;
 
-            // Configurar Label de Pregunta (Dibujo personalizado)
+            // Configurar Label de Pregunta 
             pregunta.Font = FontsManager.GetFipps(10);
             pregunta.AutoSize = false;
             pregunta.Size = new Size(this.ClientSize.Width - 100, 100);
@@ -210,19 +210,19 @@ namespace ProyectoJuego
                 {
                     // 1. Pedimos los datos al servidor Python
                     HttpResponseMessage respuesta = await client.GetAsync(urlApi);
-                    respuesta.EnsureSuccessStatusCode(); // Verifica que no haya error 404 o 500
+                    respuesta.EnsureSuccessStatusCode(); 
 
                     // 2. Leemos el texto JSON
                     string jsonString = await respuesta.Content.ReadAsStringAsync();
                     //MessageBox.Show("Esto me mandó Python:\n\n" + jsonString);
 
-                    // Opcional: Descomenta esta línea si quieres ver el JSON en pantalla antes de convertirlo
+                  
                     // MessageBox.Show("JSON Recibido:\n" + jsonString);
 
-                    // 3. LA MAGIA: Convertimos el texto anidado directamente a tu lista de objetos
+                    // 3. Convertimos el texto anidado directamente a tu lista de objetos
                     listaPreguntas = JsonConvert.DeserializeObject<List<PreguntaJuego>>(jsonString);
 
-                    // 4. Si llegaron preguntas, las revolvemos tal como lo hacías antes
+                    // 4. Si llegaron preguntas, las revolvemos tal como se hacía antes
                     if (listaPreguntas != null && listaPreguntas.Count > 0)
                     {
                         MezclarPreguntas(listaPreguntas);
@@ -241,19 +241,19 @@ namespace ProyectoJuego
 
         private async Task GuardarPuntajeEnServidor()
         {
-            // Ojo: Usando el puerto 11000 como lo tienes configurado
+           
             string urlApi = $"http://{Form1.IP_SERVIDOR}:{Form1.PUERTO}/guardar_puntaje";
 
             // Empaquetamos los datos del juego actual
             UsuarioPuntaje datosJuego = new UsuarioPuntaje
             {
-                id_usuario = formPrincipal.IdJugadorActual, // Jala el nombre que guardaste en el Form1
+                id_usuario = formPrincipal.IdJugadorActual, // Jala el nombre que se tiene en el Form1
                 puntaje = puntosActuales,
                 id_categoria = idCategoriaSeleccionada
             };
 
             string jsonEnvio = JsonConvert.SerializeObject(datosJuego);
-            // Asegúrate de tener 'using System.Text;' arriba, o usa System.Text.Encoding.UTF8
+
             StringContent contenido = new StringContent(jsonEnvio, System.Text.Encoding.UTF8, "application/json");
 
             try
@@ -266,7 +266,7 @@ namespace ProyectoJuego
                     string jsonRespuesta = await respuesta.Content.ReadAsStringAsync();
                     EnvioPuntaje resultado = JsonConvert.DeserializeObject<EnvioPuntaje>(jsonRespuesta);
 
-                    // Si el servidor falla internamente, te avisará
+                    // Si el servidor falla internamente, avisará
                     if (resultado.estatus != "exito")
                     {
                         MessageBox.Show("Error del servidor al guardar puntaje: " + resultado.mensaje);
@@ -314,7 +314,7 @@ namespace ProyectoJuego
             {
                 this.Enabled = false;
 
-                // 1. Guardamos en BD (Esto ya lo tenías)
+                // 1. Guardamos en BD 
                 await GuardarPuntajeEnServidor();
 
                 // 2. Le avisamos a la Sala en vivo que ya terminamos y cuántos puntos hicimos
@@ -506,7 +506,7 @@ namespace ProyectoJuego
             picReproducir.Tag = url + "|" + esCorrecta.ToString();
         }
 
-        // Este evento es para ESCUCHAR (Asígnalo al evento Click de tus 4 botones de audio)
+        // Este evento es para ESCUCHAR 
         private void EscucharAudio_MouseMove(object sender, EventArgs e)
         {
             Control control = (Control)sender;
@@ -695,7 +695,7 @@ namespace ProyectoJuego
                 this.Location = new Point(this.Location.X + (e.X - mouseLoc.X), this.Location.Y + (e.Y - mouseLoc.Y));
         }
 
-        // Efectos del botón cerrar (Asegúrate que los nombres coincidan con tus recursos)
+        // Efectos del botón cerrar 
         private void pbCerrar_MouseEnter(object sender, EventArgs e) { pbCerrar.Image = Properties.Resources.cerrar_resplandor; Cursor = Cursors.Hand; }
         private void pbCerrar_MouseLeave(object sender, EventArgs e) { pbCerrar.Image = Properties.Resources.cerrar_normal; }
 

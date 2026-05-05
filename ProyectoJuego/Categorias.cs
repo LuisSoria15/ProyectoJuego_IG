@@ -46,8 +46,6 @@ namespace ProyectoJuego
             timerAparicion.Tick += TimerAparicion_Tick;
             timerAparicion.Start();
 
-            // Llamamos al método al cargar el form
-            //CargarCategoriasEnBotones();
             AcomodarCuadricula();
         }
 
@@ -66,7 +64,7 @@ namespace ProyectoJuego
                 {
                     var result = await formPrincipal.wsCliente.ReceiveAsync(new ArraySegment<byte>(buffer), formPrincipal.cancelToken.Token);
 
-                    // ¡Faltaba esta protección vital!
+                    // Protegemos contra mensajes nulos o vacíos
                     if (result.MessageType == WebSocketMessageType.Close)
                     {
                         await formPrincipal.wsCliente.CloseAsync(WebSocketCloseStatus.NormalClosure, "", formPrincipal.cancelToken.Token);
@@ -84,12 +82,10 @@ namespace ProyectoJuego
 
                             this.Invoke((MethodInvoker)delegate
                             {
-                                // 1. Cerramos el mensajito de "Esperando..."
+                                // 1. Cerramos el mensaje de espera (si es que sigue abierto)
                                 if (ventanaEspera != null) ventanaEspera.Close();
 
-                                //MessageBox.Show($"¡El sistema ha elegido la categoría {catGanadora}!");
-
-                                // 2. Ahora sí, ¡a las preguntas!
+                                // 2. Pasamos a la ventana de preguntas, enviándole la categoría ganadora
                                 Preguntas ventana = new Preguntas(catGanadora, formPrincipal);
                                 ventana.Show();
                                 this.Close();
@@ -135,7 +131,6 @@ namespace ProyectoJuego
                     respuesta.EnsureSuccessStatusCode();
 
                     string jsonString = await respuesta.Content.ReadAsStringAsync();
-                    //MessageBox.Show("Esto me mandó Python:\n\n" + jsonString);
                     List<CategoriaAPI> listaCategorias = JsonConvert.DeserializeObject<List<CategoriaAPI>>(jsonString);
 
                     // 1. Metemos tus controles en el orden exacto de los IDs de la base de datos
@@ -182,7 +177,7 @@ namespace ProyectoJuego
 
                 nombreImagen = nombreImagen.Trim();
 
-                //Armamos la ruta
+                // Armamos la ruta
                 string rutaAbsoluta = Path.Combine(Application.StartupPath, "Recursos", "Imagenes", nombreImagen);
 
                 // Verificamos si existe físicamente
@@ -319,16 +314,16 @@ namespace ProyectoJuego
         {
             this.Enabled = false;
 
-            // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
+            // Asignameos el número real de la categoría a la que le dio clic (en este caso, "Animales" es la categoría 1 en la base de datos)
             int idCategoriaElegida = 1;
 
-            // 3. Mandamos el voto a Python en JSON
+            // Mandamos el voto a Python en JSON
             var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
             string jsonVoto = JsonConvert.SerializeObject(voto);
             byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
             await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
 
-            // 4. Mostramos el mensaje flotante
+            // Mostramos el mensaje flotante
             MostrarMensajeEspera();
         }
         
@@ -361,16 +356,13 @@ namespace ProyectoJuego
         {
             this.Enabled = false;
 
-            // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
             int idCategoriaElegida = 2;
 
-            // 3. Mandamos el voto a Python en JSON
             var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
             string jsonVoto = JsonConvert.SerializeObject(voto);
             byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
             await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
 
-            // 4. Mostramos el mensaje flotante
             MostrarMensajeEspera();
         }
         private void picBoxJuegos_MouseUp(object sender, MouseEventArgs e)
@@ -404,16 +396,13 @@ namespace ProyectoJuego
         {
             this.Enabled = false;
 
-            // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
             int idCategoriaElegida = 5;
 
-            // 3. Mandamos el voto a Python en JSON
             var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
             string jsonVoto = JsonConvert.SerializeObject(voto);
             byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
             await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
 
-            // 4. Mostramos el mensaje flotante
             MostrarMensajeEspera();
         }
 
@@ -448,16 +437,13 @@ namespace ProyectoJuego
         {
             this.Enabled = false;
 
-            // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
             int idCategoriaElegida = 3;
 
-            // 3. Mandamos el voto a Python en JSON
             var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
             string jsonVoto = JsonConvert.SerializeObject(voto);
             byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
             await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
 
-            // 4. Mostramos el mensaje flotante
             MostrarMensajeEspera();
         }
 
@@ -492,16 +478,13 @@ namespace ProyectoJuego
         {
             this.Enabled = false;
 
-            // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
             int idCategoriaElegida = 6;
 
-            // 3. Mandamos el voto a Python en JSON
             var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
             string jsonVoto = JsonConvert.SerializeObject(voto);
             byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
             await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
 
-            // 4. Mostramos el mensaje flotante
             MostrarMensajeEspera();
         }
 
@@ -536,16 +519,13 @@ namespace ProyectoJuego
         {
             this.Enabled = false;
 
-            // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
             int idCategoriaElegida = 4;
 
-            // 3. Mandamos el voto a Python en JSON
             var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
             string jsonVoto = JsonConvert.SerializeObject(voto);
             byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
             await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
 
-            // 4. Mostramos el mensaje flotante
             MostrarMensajeEspera();
         }
 
@@ -580,16 +560,13 @@ namespace ProyectoJuego
         {
             this.Enabled = false;
 
-            // 2. (¡Importante!) Asigna aquí el número real de la categoría a la que le dio clic
             int idCategoriaElegida = 7;
 
-            // 3. Mandamos el voto a Python en JSON
             var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
             string jsonVoto = JsonConvert.SerializeObject(voto);
             byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
             await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
 
-            // 4. Mostramos el mensaje flotante
             MostrarMensajeEspera();
         }
 
@@ -645,7 +622,7 @@ namespace ProyectoJuego
             int ancho = picBoxAnimales.Width; // Tomamos el ancho de una imagen como base
             int espacioX = 40; // Espacio de separación horizontal
 
-            // Alturas (Y) de cada fila (si se empalman, puedes subir o bajar estos números)
+            // Alturas (Y) de cada fila 
             int fila1Y = 130;
             int fila2Y = 280;
             int fila3Y = 430;

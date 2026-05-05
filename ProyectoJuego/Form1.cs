@@ -11,8 +11,7 @@ using System.Windows.Forms;
 namespace ProyectoJuego
 {
     public partial class Form1 : Form
-    {
-        //private int indiceColor = 0;    
+    {  
         private int offsetColor = 0;
 
         private Size tamanoOriginalBoton;
@@ -23,13 +22,16 @@ namespace ProyectoJuego
 
         private Point mouseLoc;
 
-        // En Form1.cs agrega estas variables:
+        // Variables para la conexión WebSocket
         public System.Net.WebSockets.ClientWebSocket wsCliente { get; set; }
         public System.Threading.CancellationTokenSource cancelToken { get; set; }
 
+        // Variables para almacenar la información del jugador
         public static string IP_SERVIDOR = "10.220.96.135";
 
         public static string PUERTO = "11000";
+
+        // Variables para almacenar la información del jugador
         public int IdJugadorActual { get; set; }
         public string NombreJugadorActual { get; set; }
 
@@ -67,11 +69,6 @@ namespace ProyectoJuego
 
         }
 
-        private void FormMenu_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void FormMenu_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -98,12 +95,7 @@ namespace ProyectoJuego
         {
             pictureBox1.Top -= 4;
 
-            //Categorias ventana = new Categorias(this);
-            //ventana.Show();
-            //this.Hide();
-
-            
-            // 1. Abrimos el formulario de inicio de sesión como "Dialog"
+            // Abrimos el formulario de inicio de sesión como "Dialog"
             InicioSesion formLogin = new InicioSesion(this);
             formLogin.Show();
             this.Hide();
@@ -129,14 +121,6 @@ namespace ProyectoJuego
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            /*lblTitulo.ForeColor = paleta[indiceColor];
-
-            indiceColor++;
-
-            if (indiceColor >= paleta.Length)
-            {
-                indiceColor = 0;
-            }*/
             offsetColor++;
             lblTitulo.Invalidate();
         }

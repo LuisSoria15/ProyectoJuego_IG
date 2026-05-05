@@ -125,7 +125,6 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Load += new System.EventHandler(this.FormMenu_Load);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormMenu_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FormMenu_MouseMove);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();

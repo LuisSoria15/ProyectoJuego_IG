@@ -12,8 +12,8 @@ namespace ProyectoJuego
     }
 
 
-    
-public class OpcionJuego
+    // --- CLASES PARA EL JUEGO ---
+    public class OpcionJuego
     {
         public int id { get; set; }
         public int pregunta_id { get; set; }
@@ -37,6 +37,7 @@ public class OpcionJuego
         public string nombre { get; set; }
         public string IMAGEN { get; set; }
     }
+
     // --- CLASES PARA LA API ---
     public class PeticionRegistro
     {
