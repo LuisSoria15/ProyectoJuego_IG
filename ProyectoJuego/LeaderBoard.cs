@@ -397,10 +397,30 @@ namespace ProyectoJuego
             }
         }
 
-        private void pbCerrar_Click(object sender, EventArgs e)
+        private async void pbCerrar_Click(object sender, EventArgs e)
         {
             timerEstrellas.Stop();
             pbCerrar.Top -= 4;
+
+            // --- ¡NUEVO!: CORTAMOS LA CONEXIÓN ANTES DE IRNOS ---
+            if (formPrincipal.wsCliente != null && formPrincipal.wsCliente.State == System.Net.WebSockets.WebSocketState.Open)
+            {
+                try
+                {
+                    // Cancelamos la escucha y cerramos el túnel amablemente
+                    formPrincipal.cancelToken.Cancel();
+                    await formPrincipal.wsCliente.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "Fin de partida", System.Threading.CancellationToken.None);
+                }
+                catch { } // Lo ignoramos si por alguna razón ya se había cerrado
+                finally
+                {
+                    // Limpiamos la memoria para que el siguiente juego empiece en limpio
+                    formPrincipal.wsCliente.Dispose();
+                    formPrincipal.wsCliente = null;
+                }
+            }
+            // ----------------------------------------------------
+
             formPrincipal.Show();
             this.Close();
         }
