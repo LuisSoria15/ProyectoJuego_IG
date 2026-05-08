@@ -51,9 +51,8 @@ namespace ProyectoJuego
 
         private async void Categorias_Load(object sender, EventArgs e)
         {
-            await CargarCategoriasDesdeServidor();
-
-
+            await CargarCategoriasEnBotones();
+            
         }
 
         // Esta función atrapa la decisión del servidor
@@ -109,46 +108,69 @@ namespace ProyectoJuego
 
 
         // 2. Método para jalar las categorías y ponerlas en los botones
-        private async Task CargarCategoriasDesdeServidor()
+        private async Task CargarCategoriasEnBotones()
         {
             try
             {
-                // 1. Pedir categorías a Python por el túnel TCP
+                // 1. Pedimos las categorías a Python por el túnel TCP (Adiós HttpClient)
                 var peticion = new { accion = "obtener_categorias" };
                 await Form1.escritorTCP.WriteLineAsync(JsonConvert.SerializeObject(peticion));
                 await Form1.escritorTCP.FlushAsync();
 
-                // 2. Leer la respuesta
+                // 2. Esperamos la respuesta exacta
                 string jsonRespuesta = await Form1.lectorTCP.ReadLineAsync();
-                if (jsonRespuesta == null) return;
+
+                if (jsonRespuesta == null) return; // Si el servidor se apaga
 
                 dynamic resultado = JsonConvert.DeserializeObject(jsonRespuesta);
 
+                // 3. Verificamos que el servidor nos mandó las categorías bien
                 if (resultado.accion == "respuesta_categorias" && resultado.estatus == "exito")
                 {
-                    // 3. Modificamos la pantalla usando Invoke
+                    // Convertimos la parte de "datos" a tu clase original para que el resto de tu código fluya igual
+                    string jsonDatos = JsonConvert.SerializeObject(resultado.datos);
+                    List<CategoriaAPI> listaCategorias = JsonConvert.DeserializeObject<List<CategoriaAPI>>(jsonDatos);
+
+                    // 4. Actualizamos la interfaz visual usando Invoke para evitar choques entre hilos
                     this.Invoke((MethodInvoker)delegate
                     {
-                        var listaCategorias = resultado.datos;
+                        // Metemos tus controles en el orden exacto de los IDs de la base de datos
+                        PictureBox[] misPictureBoxes = { picBoxAnimales, picBoxJuegos, picBoxPeliculas, picBoxCanciones, picBoxPaises, picBoxSeries, picBoxMarcas };
+                        Label[] misLabels = { nomCateg1, nomCateg2, nomCateg3, nomCateg4, nomCateg5, nomCateg6, nomCateg7 };
 
-                        // Aquí asignamos los textos de la BD a tus labels visuales
-                        // (Ajusta esto si tus labels tienen otros nombres)
-                        if (listaCategorias.Count > 0) nomCateg1.Text = listaCategorias[0].nombre.ToString();
-                        if (listaCategorias.Count > 1) nomCateg2.Text = listaCategorias[1].nombre.ToString();
-                        if (listaCategorias.Count > 2) nomCateg3.Text = listaCategorias[2].nombre.ToString();
-                        if (listaCategorias.Count > 3) nomCateg4.Text = listaCategorias[3].nombre.ToString();
-                        if (listaCategorias.Count > 4) nomCateg5.Text = listaCategorias[4].nombre.ToString();
-                        if (listaCategorias.Count > 5) nomCateg6.Text = listaCategorias[5].nombre.ToString();
+                        // Recorremos la lista usando un simple for
+                        // (Usamos Math.Min para que el programa no falle si la BD devuelve más o menos de 7)
+                        int limite = Math.Min(listaCategorias.Count, misPictureBoxes.Length);
+
+                        for (int i = 0; i < limite; i++)
+                        {
+                            var cat = listaCategorias[i]; // Sacamos la categoría actual
+
+                            misPictureBoxes[i].Text = cat.nombre;
+
+                            try
+                            {
+                                misLabels[i].Text = cat.nombre.ToUpperInvariant();
+                                misLabels[i].Font = FontsManager.GetFipps(7);
+                                misLabels[i].BackColor = Color.Transparent;
+                                misLabels[i].TextAlign = ContentAlignment.MiddleCenter;
+                                misLabels[i].BringToFront();
+                            }
+                            catch { }
+
+                            // Enviamos la imagen y el PictureBox correspondiente
+                            CargarImagenCategoria(cat.IMAGEN, misPictureBoxes[i]);
+                        }
                     });
                 }
                 else
                 {
-                    MessageBox.Show("Hubo un problema al cargar las categorías desde la BD.");
+                    MessageBox.Show("Hubo un error interno en el servidor al cargar las categorías.");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al conectar con el servidor TCP: " + ex.Message);
+                MessageBox.Show("Error al conectar con el servidor del juego: " + ex.Message);
             }
         }
 
