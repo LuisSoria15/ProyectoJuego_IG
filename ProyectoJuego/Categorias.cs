@@ -69,40 +69,17 @@ namespace ProyectoJuego
 
                     if (datos.accion == "resultado_votacion")
                     {
-                        int categoriaGanadora = datos.categoria_ganadora;
-
-                        // 1. DIBUJAR EL MENSAJE EN PANTALLA
                         this.Invoke((MethodInvoker)delegate
                         {
-                            Label lbl = new Label();
-                            // ¡Ojo al signo $ para que inyecte el número!
-                            lbl.Text = $"¡Todos votaron! La categoría elegida es la {categoriaGanadora}";
-                            lbl.ForeColor = Color.White;
+                            int categoriaGanadora = datos.categoria_ganadora;
+                            MessageBox.Show($"¡Todos votaron! La categoría elegida es la {categoriaGanadora}");
 
-                            // Te sugiero ponerle un fondo sólido para que tape las categorías de atrás
-                            lbl.BackColor = Color.Black;
-                            lbl.Dock = DockStyle.Fill;
-                            lbl.TextAlign = ContentAlignment.MiddleCenter;
-                            lbl.Font = new Font("Arial", 16, FontStyle.Bold);
-
-                            // ¡Esta línea es vital para que el Label se imprima en la ventana!
-                            this.Controls.Add(lbl);
-                            lbl.BringToFront();
-                        });
-
-                        // 2. HACER LA PAUSA MÁGICA DE 3 SEGUNDOS
-                        // Nota cómo va exactamente entre los dos Invoke
-                        await Task.Delay(3000);
-
-                        // 3. CAMBIAR DE PANTALLA DESPUÉS DE LA ESPERA
-                        this.Invoke((MethodInvoker)delegate
-                        {
+                            // Pasamos a la ventana de Preguntas con la categoría ganadora
                             Preguntas ventana = new Preguntas(categoriaGanadora, formPrincipal);
                             ventana.Show();
                             this.Close();
                         });
-
-                        break; // Dejamos de escuchar porque ya nos fuimos de la ventana
+                        break; // Dejamos de escuchar
                     }
                 }
             }
