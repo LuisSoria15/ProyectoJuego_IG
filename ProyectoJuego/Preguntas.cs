@@ -200,42 +200,32 @@ namespace ProyectoJuego
         private async Task CargarTodasLasPreguntasDesdeAPI()
         {
             listaPreguntas.Clear();
-
-            // Usamos la IP y puerto que acabamos de depurar, y le concatenamos el ID de la categoría
-            string urlApi = $"http://{Form1.IP_SERVIDOR}:{Form1.PUERTO}/preguntas/{idCategoriaSeleccionada}";
-
             try
             {
-                using (HttpClient client = new HttpClient())
+                // Pedimos las preguntas por el tubo TCP
+                var peticion = new { accion = "obtener_preguntas", categoria_id = idCategoriaSeleccionada };
+                await Form1.escritorTCP.WriteLineAsync(JsonConvert.SerializeObject(peticion));
+                await Form1.escritorTCP.FlushAsync();
+
+                // Esperamos la respuesta
+                string jsonRespuesta = await Form1.lectorTCP.ReadLineAsync();
+                dynamic resultado = JsonConvert.DeserializeObject(jsonRespuesta);
+
+                if (resultado.accion == "respuesta_preguntas" && resultado.estatus == "exito")
                 {
-                    // 1. Pedimos los datos al servidor Python
-                    HttpResponseMessage respuesta = await client.GetAsync(urlApi);
-                    respuesta.EnsureSuccessStatusCode(); 
+                    // Convertimos la lista cruda a nuestra clase PreguntaJuego
+                    string jsonDatos = JsonConvert.SerializeObject(resultado.datos);
+                    listaPreguntas = JsonConvert.DeserializeObject<List<PreguntaJuego>>(jsonDatos);
 
-                    // 2. Leemos el texto JSON
-                    string jsonString = await respuesta.Content.ReadAsStringAsync();
-                    //MessageBox.Show("Esto me mandó Python:\n\n" + jsonString);
-
-                  
-                    // MessageBox.Show("JSON Recibido:\n" + jsonString);
-
-                    // 3. Convertimos el texto anidado directamente a tu lista de objetos
-                    listaPreguntas = JsonConvert.DeserializeObject<List<PreguntaJuego>>(jsonString);
-
-                    // 4. Si llegaron preguntas, las revolvemos tal como se hacía antes
                     if (listaPreguntas != null && listaPreguntas.Count > 0)
-                    {
                         MezclarPreguntas(listaPreguntas);
-                    }
                     else
-                    {
                         MessageBox.Show("No se encontraron preguntas para esta categoría.");
-                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al descargar preguntas del servidor: " + ex.Message);
+                MessageBox.Show("Error al descargar preguntas: " + ex.Message);
             }
         }
 
@@ -314,21 +304,20 @@ namespace ProyectoJuego
             {
                 this.Enabled = false;
 
-                // 1. Guardamos en BD 
-                await GuardarPuntajeEnServidor();
-
-                // 2. Le avisamos a la Sala en vivo que ya terminamos y cuántos puntos hicimos
+                // Le mandamos TODOS los datos a Python de un solo golpe para que él guarde en MySQL y nos ponga en la tabla final
                 var datosFin = new
                 {
                     accion = "terminar_juego",
                     nombre = formPrincipal.NombreJugadorActual,
-                    puntaje = puntosActuales
+                    puntaje = puntosActuales,
+                    id_usuario = formPrincipal.IdJugadorActual,
+                    id_categoria = idCategoriaSeleccionada
                 };
-                string jsonFin = JsonConvert.SerializeObject(datosFin);
-                byte[] bytesFin = Encoding.UTF8.GetBytes(jsonFin);
-                await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesFin), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
 
-                // 3. Pasamos al LeaderBoard
+                await Form1.escritorTCP.WriteLineAsync(JsonConvert.SerializeObject(datosFin));
+                await Form1.escritorTCP.FlushAsync();
+
+                // Pasamos al LeaderBoard indicando que acabamos de jugar (0)
                 LeaderBoard ventana = new LeaderBoard(formPrincipal, 0);
                 ventana.Show();
                 this.Close();

@@ -57,8 +57,14 @@ namespace ProyectoJuego
 
         private async void SalaEspera_LoadAsync(object sender, EventArgs e)
         {
-            lblEstado.Text = "Conectando al servidor...";
-            await ConectarASala();
+            lblEstado.Text = "Conectando a la sala...";
+
+            // Avisamos al servidor que entramos
+            var peticion = new { accion = "entrar_sala", nombre = formPrincipal.NombreJugadorActual };
+            await Form1.escritorTCP.WriteLineAsync(JsonConvert.SerializeObject(peticion));
+            await Form1.escritorTCP.FlushAsync();
+
+            _ = EscucharServidor();
         }
 
         private async Task ConectarASala()
@@ -89,78 +95,46 @@ namespace ProyectoJuego
 
         private async Task EscucharServidor()
         {
-            byte[] buffer = new byte[2048];
             try
             {
-                while (wsCliente.State == WebSocketState.Open)
+                while (Form1.clienteTCP.Connected)
                 {
-                    WebSocketReceiveResult result = await wsCliente.ReceiveAsync(new ArraySegment<byte>(buffer), cancelToken.Token);
-                    if (result.MessageType == WebSocketMessageType.Close)
-                    {
-                        await wsCliente.CloseAsync(WebSocketCloseStatus.NormalClosure, "", cancelToken.Token);
-                    }
-                    else
-                    {
-                        string mensajeJson = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                        bool soltarTunel = ProcesarMensaje(mensajeJson);
+                    // ReadLineAsync detiene el programa aquí hasta que Python nos mande algo
+                    string jsonLlegada = await Form1.lectorTCP.ReadLineAsync();
+                    if (jsonLlegada == null) break; // Si es null, el servidor se apagó
 
-                        if (soltarTunel) break;
+                    dynamic datos = JsonConvert.DeserializeObject(jsonLlegada);
+                    string accion = datos.accion;
+
+                    if (accion == "actualizar_sala")
+                    {
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            lstJugadores.Items.Clear();
+                            foreach (var jugador in datos.jugadores)
+                            {
+                                lstJugadores.Items.Add(jugador.ToString());
+                            }
+                            // OJO: Aquí le pones 2 o 3 dependiendo de cuántos jugadores configuraron
+                            lblEstado.Text = $"Esperando jugadores ({datos.jugadores.Count}/2)...";
+                        });
+                    }
+                    else if (accion == "iniciar_juego")
+                    {
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            MessageBox.Show(datos.mensaje.ToString());
+                            Categorias ventana = new Categorias(formPrincipal);
+                            ventana.Show();
+                            this.Close();
+                        });
+                        break; // Dejamos de escuchar en esta ventana para que escuche la siguiente
                     }
                 }
             }
-            catch (Exception) { }
+            catch { }
         }
 
-        private bool ProcesarMensaje(string json)
-        {
-            dynamic datos = JsonConvert.DeserializeObject(json);
-            string accion = datos.accion;
-
-            if (accion == "actualizar_sala")
-            {
-                this.Invoke((MethodInvoker)delegate
-                {
-                    lstJugadores.Items.Clear();
-                    foreach (var jugador in datos.jugadores)
-                    {
-                        lstJugadores.Items.Add(jugador.ToString());
-                    }
-                    lblEstado.Text = $"Esperando jugadores ({datos.jugadores.Count}/4)...";
-                });
-                return false;
-            }
-            else if (accion == "iniciar_juego")
-            {
-                // Usamos un Action asíncrono para poder hacer una pausa sin congelar la pantalla
-                this.Invoke(new Action(async () =>
-                {
-                    formPrincipal.wsCliente = this.wsCliente;
-                    formPrincipal.cancelToken = this.cancelToken;
-
-                    // REEMPLAZO DEL MESSAGE BOX DE INICIO
-                    // Escribimos el mensaje que manda Python ("¡Listos, comienza el Juego!") en la pantalla
-                    lblEstado.Text = datos.mensaje.ToString();
-
-                    // Hacemos una pausa de 1.5 segundos para que el jugador alcance a leerlo
-                    await Task.Delay(1500);
-
-                    // Cambiamos de pantalla fluidamente
-                    Categorias ventana = new Categorias(formPrincipal);
-                    ventana.Show();
-                    this.Close();
-                }));
-                return true;
-            }
-            return false;
-        }
-
-        private async void SalaEspera_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (formPrincipal.wsCliente == null && wsCliente != null && wsCliente.State == WebSocketState.Open)
-            {
-                cancelToken.Cancel();
-                await wsCliente.CloseAsync(WebSocketCloseStatus.NormalClosure, "Saliendo", CancellationToken.None);
-            }
-        }
+        
     }
 }

@@ -52,50 +52,38 @@ namespace ProyectoJuego
         private async void Categorias_Load(object sender, EventArgs e)
         {
             await CargarCategoriasEnBotones();
-            _ = EscucharServidor();
+            
         }
 
-        private async Task EscucharServidor()
+        // Esta función atrapa la decisión del servidor
+        private async Task EscucharVotacion()
         {
-            byte[] buffer = new byte[2048];
             try
             {
-                while (formPrincipal.wsCliente.State == System.Net.WebSockets.WebSocketState.Open)
+                while (Form1.clienteTCP.Connected)
                 {
-                    var result = await formPrincipal.wsCliente.ReceiveAsync(new ArraySegment<byte>(buffer), formPrincipal.cancelToken.Token);
+                    string jsonLlegada = await Form1.lectorTCP.ReadLineAsync();
+                    if (jsonLlegada == null) break;
 
-                    // Protegemos contra mensajes nulos o vacíos
-                    if (result.MessageType == WebSocketMessageType.Close)
-                    {
-                        await formPrincipal.wsCliente.CloseAsync(WebSocketCloseStatus.NormalClosure, "", formPrincipal.cancelToken.Token);
-                        break;
-                    }
-                    else
-                    {
-                        string json = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                        dynamic datos = JsonConvert.DeserializeObject(json);
+                    dynamic datos = JsonConvert.DeserializeObject(jsonLlegada);
 
-                        // Como datos es dinámico, verificamos que no sea nulo
-                        if (datos != null && datos.accion == "resultado_votacion")
+                    if (datos.accion == "resultado_votacion")
+                    {
+                        this.Invoke((MethodInvoker)delegate
                         {
-                            int catGanadora = datos.categoria_ganadora;
+                            int categoriaGanadora = datos.categoria_ganadora;
+                            MessageBox.Show($"¡Todos votaron! La categoría elegida es la {categoriaGanadora}");
 
-                            this.Invoke((MethodInvoker)delegate
-                            {
-                                // 1. Cerramos el mensaje de espera (si es que sigue abierto)
-                                if (ventanaEspera != null) ventanaEspera.Close();
-
-                                // 2. Pasamos a la ventana de preguntas, enviándole la categoría ganadora
-                                Preguntas ventana = new Preguntas(catGanadora, formPrincipal);
-                                ventana.Show();
-                                this.Close();
-                            });
-                            break; // Dejamos de escuchar
-                        }
+                            // Pasamos a la ventana de Preguntas con la categoría ganadora
+                            Preguntas ventana = new Preguntas(categoriaGanadora, formPrincipal);
+                            ventana.Show();
+                            this.Close();
+                        });
+                        break; // Dejamos de escuchar
                     }
                 }
             }
-            catch { }
+            catch (Exception ex) { MessageBox.Show("Error en la votación: " + ex.Message); }
         }
 
         private void MostrarMensajeEspera()
@@ -314,15 +302,16 @@ namespace ProyectoJuego
         {
             this.Enabled = false;
 
-            // Asignameos el número real de la categoría a la que le dio clic (en este caso, "Animales" es la categoría 1 en la base de datos)
-            int idCategoriaElegida = 1;
+            // 1. Mandamos el voto por el socket
+            var peticion = new { accion = "votar", id_categoria = 1 }; // Cambia el 1 por el ID que le toque a cada PictureBox
+            await Form1.escritorTCP.WriteLineAsync(JsonConvert.SerializeObject(peticion));
+            await Form1.escritorTCP.FlushAsync();
 
-            // Mandamos el voto a Python en JSON
-            var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
-            string jsonVoto = JsonConvert.SerializeObject(voto);
-            byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
-            await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
+            // 2. Aquí podrías mostrar un letrerito de "Esperando a los demás..."
+            // MostrarMensajeEspera(); // (Si tienes una función que muestre un form morado temporal)
 
+            // 3. Nos ponemos a escuchar quién ganó
+            _ = EscucharVotacion();
             // Mostramos el mensaje flotante
             MostrarMensajeEspera();
         }
@@ -356,13 +345,16 @@ namespace ProyectoJuego
         {
             this.Enabled = false;
 
-            int idCategoriaElegida = 2;
+            // 1. Mandamos el voto por el socket
+            var peticion = new { accion = "votar", id_categoria = 2 }; // Cambia el 1 por el ID que le toque a cada PictureBox
+            await Form1.escritorTCP.WriteLineAsync(JsonConvert.SerializeObject(peticion));
+            await Form1.escritorTCP.FlushAsync();
 
-            var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
-            string jsonVoto = JsonConvert.SerializeObject(voto);
-            byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
-            await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
+            // 2. Aquí podrías mostrar un letrerito de "Esperando a los demás..."
+            // MostrarMensajeEspera(); // (Si tienes una función que muestre un form morado temporal)
 
+            // 3. Nos ponemos a escuchar quién ganó
+            _ = EscucharVotacion();
             MostrarMensajeEspera();
         }
         private void picBoxJuegos_MouseUp(object sender, MouseEventArgs e)
@@ -396,12 +388,16 @@ namespace ProyectoJuego
         {
             this.Enabled = false;
 
-            int idCategoriaElegida = 5;
+            // 1. Mandamos el voto por el socket
+            var peticion = new { accion = "votar", id_categoria = 5 }; // Cambia el 1 por el ID que le toque a cada PictureBox
+            await Form1.escritorTCP.WriteLineAsync(JsonConvert.SerializeObject(peticion));
+            await Form1.escritorTCP.FlushAsync();
 
-            var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
-            string jsonVoto = JsonConvert.SerializeObject(voto);
-            byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
-            await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
+            // 2. Aquí podrías mostrar un letrerito de "Esperando a los demás..."
+            // MostrarMensajeEspera(); // (Si tienes una función que muestre un form morado temporal)
+
+            // 3. Nos ponemos a escuchar quién ganó
+            _ = EscucharVotacion();
 
             MostrarMensajeEspera();
         }
@@ -437,13 +433,16 @@ namespace ProyectoJuego
         {
             this.Enabled = false;
 
-            int idCategoriaElegida = 3;
+            // 1. Mandamos el voto por el socket
+            var peticion = new { accion = "votar", id_categoria = 3 }; // Cambia el 1 por el ID que le toque a cada PictureBox
+            await Form1.escritorTCP.WriteLineAsync(JsonConvert.SerializeObject(peticion));
+            await Form1.escritorTCP.FlushAsync();
 
-            var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
-            string jsonVoto = JsonConvert.SerializeObject(voto);
-            byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
-            await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
+            // 2. Aquí podrías mostrar un letrerito de "Esperando a los demás..."
+            // MostrarMensajeEspera(); // (Si tienes una función que muestre un form morado temporal)
 
+            // 3. Nos ponemos a escuchar quién ganó
+            _ = EscucharVotacion();
             MostrarMensajeEspera();
         }
 
@@ -478,13 +477,16 @@ namespace ProyectoJuego
         {
             this.Enabled = false;
 
-            int idCategoriaElegida = 6;
+            // 1. Mandamos el voto por el socket
+            var peticion = new { accion = "votar", id_categoria = 6 }; // Cambia el 1 por el ID que le toque a cada PictureBox
+            await Form1.escritorTCP.WriteLineAsync(JsonConvert.SerializeObject(peticion));
+            await Form1.escritorTCP.FlushAsync();
 
-            var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
-            string jsonVoto = JsonConvert.SerializeObject(voto);
-            byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
-            await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
+            // 2. Aquí podrías mostrar un letrerito de "Esperando a los demás..."
+            // MostrarMensajeEspera(); // (Si tienes una función que muestre un form morado temporal)
 
+            // 3. Nos ponemos a escuchar quién ganó
+            _ = EscucharVotacion();
             MostrarMensajeEspera();
         }
 
@@ -519,12 +521,16 @@ namespace ProyectoJuego
         {
             this.Enabled = false;
 
-            int idCategoriaElegida = 4;
+            // 1. Mandamos el voto por el socket
+            var peticion = new { accion = "votar", id_categoria = 1 }; // Cambia el 1 por el ID que le toque a cada PictureBox
+            await Form1.escritorTCP.WriteLineAsync(JsonConvert.SerializeObject(peticion));
+            await Form1.escritorTCP.FlushAsync();
 
-            var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
-            string jsonVoto = JsonConvert.SerializeObject(voto);
-            byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
-            await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
+            // 2. Aquí podrías mostrar un letrerito de "Esperando a los demás..."
+            // MostrarMensajeEspera(); // (Si tienes una función que muestre un form morado temporal)
+
+            // 3. Nos ponemos a escuchar quién ganó
+            _ = EscucharVotacion();
 
             MostrarMensajeEspera();
         }
@@ -560,13 +566,16 @@ namespace ProyectoJuego
         {
             this.Enabled = false;
 
-            int idCategoriaElegida = 7;
+            // 1. Mandamos el voto por el socket
+            var peticion = new { accion = "votar", id_categoria = 7 }; // Cambia el 1 por el ID que le toque a cada PictureBox
+            await Form1.escritorTCP.WriteLineAsync(JsonConvert.SerializeObject(peticion));
+            await Form1.escritorTCP.FlushAsync();
 
-            var voto = new { accion = "votar", id_categoria = idCategoriaElegida };
-            string jsonVoto = JsonConvert.SerializeObject(voto);
-            byte[] bytesVoto = Encoding.UTF8.GetBytes(jsonVoto);
-            await formPrincipal.wsCliente.SendAsync(new ArraySegment<byte>(bytesVoto), System.Net.WebSockets.WebSocketMessageType.Text, true, formPrincipal.cancelToken.Token);
+            // 2. Aquí podrías mostrar un letrerito de "Esperando a los demás..."
+            // MostrarMensajeEspera(); // (Si tienes una función que muestre un form morado temporal)
 
+            // 3. Nos ponemos a escuchar quién ganó
+            _ = EscucharVotacion();
             MostrarMensajeEspera();
         }
 

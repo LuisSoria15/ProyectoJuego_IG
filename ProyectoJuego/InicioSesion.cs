@@ -167,63 +167,43 @@ namespace ProyectoJuego
 
         private async void btnJugar_Click(object sender, EventArgs e)
         {
-            lblMensaje.Text = ""; // Limpiamos cualquier mensaje anterior
             string username = txtUsername.Text.Trim();
-
-            if (string.IsNullOrEmpty(username))
-            {
-                // REEMPLAZO 1: Validación de campo vacío
-                MostrarMensaje("INGRESA UN NOMBRE", Color.Red);
-                return;
-            }
+            if (string.IsNullOrEmpty(username)) return;
 
             btnJugar.Enabled = false;
-            MostrarMensaje("CONECTANDO...", Color.White); // Le avisamos al jugador que está cargando
-
-            string urlApi = $"http://{Form1.IP_SERVIDOR}:{Form1.PUERTO}/registro";
-
-            PeticionRegistro solicitud = new PeticionRegistro { username = username };
-            string jsonEnvio = JsonConvert.SerializeObject(solicitud);
-            StringContent contenido = new StringContent(jsonEnvio, Encoding.UTF8, "application/json");
 
             try
             {
-                using (HttpClient client = new HttpClient())
+                // 1. Enviamos la petición de registro
+                var peticion = new { accion = "registro", username = username };
+                string jsonEnvio = JsonConvert.SerializeObject(peticion);
+                await Form1.escritorTCP.WriteLineAsync(jsonEnvio);
+                await Form1.escritorTCP.FlushAsync(); // Flush empuja el texto por el tubo
+
+                // 2. Esperamos la respuesta exacta
+                string jsonRespuesta = await Form1.lectorTCP.ReadLineAsync();
+                dynamic resultado = JsonConvert.DeserializeObject(jsonRespuesta);
+
+                if (resultado.existe == true)
                 {
-                    HttpResponseMessage respuesta = await client.PostAsync(urlApi, contenido);
-                    respuesta.EnsureSuccessStatusCode();
+                    MostrarMensaje($"¡El usuario {username} ya existe, usa otro!", Color.Red);
+                    txtUsername.Text = "";
+                }
+                else
+                {
+                    formPrincipal.IdJugadorActual = resultado.id_usuario;
+                    formPrincipal.NombreJugadorActual = username;
+                    MessageBox.Show(resultado.mensaje.ToString());
 
-                    string jsonRespuesta = await respuesta.Content.ReadAsStringAsync();
-                    RespuestaRegistro resultado = JsonConvert.DeserializeObject<RespuestaRegistro>(jsonRespuesta);
-
-                    if (resultado.existe)
-                    {
-                        // REEMPLAZO 2: El usuario ya existe
-                        MostrarMensaje("EL USUARIO YA EXISTE", Color.Red);
-                        txtUsername.Text = "";
-                    }
-                    else
-                    {
-                        // REEMPLAZO 3: Registro exitoso
-                        MostrarMensaje("¡REGISTRADO!", Color.LimeGreen);
-
-                        formPrincipal.IdJugadorActual = resultado.id_usuario;
-                        formPrincipal.NombreJugadorActual = username;
-
-                        // Esperamos 1 segundo para que el jugador alcance a leer "¡REGISTRADO!"
-                        await Task.Delay(1000);
-
-                        SalaEspera ventanaSala = new SalaEspera(formPrincipal);
-                        ventanaSala.Show();
-                        this.Close();
-                        formPrincipal.Hide();
-                    }
+                    // Pasamos a Sala de Espera
+                    SalaEspera ventana = new SalaEspera(formPrincipal);
+                    ventana.Show();
+                    this.Close();
                 }
             }
             catch (Exception ex)
             {
-                lblMensaje.Text = ""; // Ocultamos el mensaje si sale el MessageBox de error crítico
-                MessageBox.Show("Error al conectar con la API: " + ex.Message);
+                MessageBox.Show("Error de red: " + ex.Message);
             }
             finally
             {

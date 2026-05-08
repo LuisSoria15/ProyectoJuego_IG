@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net.Sockets;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace ProyectoJuego
 {
@@ -22,14 +25,15 @@ namespace ProyectoJuego
 
         private Point mouseLoc;
 
-        // Variables para la conexión WebSocket
-        public System.Net.WebSockets.ClientWebSocket wsCliente { get; set; }
-        public System.Threading.CancellationTokenSource cancelToken { get; set; }
+        // --- EL NUEVO CORAZÓN DE LA RED ---
+        public static TcpClient clienteTCP;
+        public static StreamReader lectorTCP;
+        public static StreamWriter escritorTCP;
 
         // Variables para almacenar la información del jugador
         public static string IP_SERVIDOR = "10.220.96.135";
 
-        public static string PUERTO = "11000";
+        public static int PUERTO = 11000;
 
         // Variables para almacenar la información del jugador
         public int IdJugadorActual { get; set; }
@@ -40,6 +44,7 @@ namespace ProyectoJuego
         {
             
             InitializeComponent();
+            ConectarAlServidorTCP();
             lblTitulo.Font = FontsManager.GetFipps(24);
 
             lblTitulo.AutoSize = true;
@@ -62,7 +67,22 @@ namespace ProyectoJuego
             timerAparicion.Tick += TimerAparicion_Tick;
             timerAparicion.Start();
         }
-        
+
+        private void ConectarAlServidorTCP()
+        {
+            try
+            {
+                clienteTCP = new TcpClient(IP_SERVIDOR, PUERTO);
+                // StreamReader y StreamWriter nos dejan leer y mandar textos fácilmente con "WriteLine"
+                lectorTCP = new StreamReader(clienteTCP.GetStream(), Encoding.UTF8);
+                escritorTCP = new StreamWriter(clienteTCP.GetStream(), Encoding.UTF8);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo conectar al servidor: " + ex.Message);
+            }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             Close();

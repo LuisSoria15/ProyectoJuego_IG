@@ -92,39 +92,26 @@ namespace ProyectoJuego
 
         private async Task CargarLeaderboardGlobal()
         {
-            string urlApi = $"http://{Form1.IP_SERVIDOR}:{Form1.PUERTO}/leaderboard";
-
             try
             {
-                using (HttpClient client = new HttpClient())
+                var peticion = new { accion = "pedir_leaderboard" };
+                await Form1.escritorTCP.WriteLineAsync(JsonConvert.SerializeObject(peticion));
+                await Form1.escritorTCP.FlushAsync();
+
+                string jsonLlegada = await Form1.lectorTCP.ReadLineAsync();
+                dynamic resultado = JsonConvert.DeserializeObject(jsonLlegada);
+
+                if (resultado.accion_respuesta == "leaderboard_listo")
                 {
-                    HttpResponseMessage respuesta = await client.GetAsync(urlApi);
-                    respuesta.EnsureSuccessStatusCode();
-
-                    string jsonString = await respuesta.Content.ReadAsStringAsync();
-
-                    // Leemos la lista que nos mandó Python
-                    dynamic listaGlobal = JsonConvert.DeserializeObject<List<dynamic>>(jsonString);
-
-                    dgvLeaderboard.Rows.Clear(); // Limpiamos la tabla por si acaso
-
-                    // Llenamos la tabla con los mejores jugadores
-                    if (listaGlobal != null)
+                    dgvLeaderboard.Rows.Clear();
+                    foreach (var jugador in resultado.datos)
                     {
-                        foreach (var jugador in listaGlobal)
-                        {
-                            dgvLeaderboard.Rows.Add(jugador.nombre.ToString(), jugador.puntaje.ToString());
-                        }
+                        dgvLeaderboard.Rows.Add(jugador.nombre.ToString(), jugador.puntaje.ToString());
                     }
-
-                    // Hacemos visible la tabla
                     dgvLeaderboard.Visible = true;
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al cargar el Leaderboard global: " + ex.Message);
-            }
+            catch (Exception ex) { MessageBox.Show("Error al cargar Leaderboard: " + ex.Message); }
         }
 
         private void MostrarMensajeEspera()
@@ -148,69 +135,43 @@ namespace ProyectoJuego
 
         private async Task EscucharServidor()
         {
-            byte[] buffer = new byte[2048];
             try
             {
-                while (formPrincipal.wsCliente.State == System.Net.WebSockets.WebSocketState.Open)
+                while (Form1.clienteTCP.Connected)
                 {
-                    var result = await formPrincipal.wsCliente.ReceiveAsync(new ArraySegment<byte>(buffer), formPrincipal.cancelToken.Token);
+                    string jsonLlegada = await Form1.lectorTCP.ReadLineAsync();
+                    if (jsonLlegada == null) break;
 
-                    if (result.MessageType == System.Net.WebSockets.WebSocketMessageType.Close)
-                    {
-                        await formPrincipal.wsCliente.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "", formPrincipal.cancelToken.Token);
-                        MessageBox.Show("El servidor cerró la conexión inesperadamente.");
-                        break;
-                    }
-                    else
-                    {
-                        string json = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                        dynamic datos = JsonConvert.DeserializeObject(json);
+                    dynamic datos = JsonConvert.DeserializeObject(jsonLlegada);
 
-                        if (datos != null && datos.accion == "mostrar_ganador")
+                    if (datos.accion == "mostrar_ganador")
+                    {
+                        string mensajeGanador;
+                        if ((bool)datos.empate)
+                            mensajeGanador = $"¡Es un EMPATE con {datos.puntaje_ganador} puntos!";
+                        else
+                            mensajeGanador = $"¡El ganador es {datos.ganador} con {datos.puntaje_ganador} puntos!";
+
+                        this.Invoke((MethodInvoker)delegate { if (ventanaEspera != null) ventanaEspera.Close(); });
+
+                        // Mostramos ganador temporal (pausa 3 segundos)
+                        await AnunciarGanadorTemporal(mensajeGanador);
+
+                        // Llenamos la tablita
+                        this.Invoke((MethodInvoker)delegate
                         {
-                            // Armamos el texto antes de tocar la interfaz
-                            string mensajeGanador;
-                            if ((bool)datos.empate)
+                            dgvLeaderboard.Rows.Clear();
+                            foreach (var jugador in datos.resultados)
                             {
-                                mensajeGanador = $"¡Es un EMPATE con {datos.puntaje_ganador} puntos!";
+                                dgvLeaderboard.Rows.Add(jugador.nombre.ToString(), jugador.puntaje.ToString());
                             }
-                            else
-                            {
-                                mensajeGanador = $"¡El ganador es {datos.ganador} con {datos.puntaje_ganador} puntos!";
-                            }
-
-                            this.Invoke((MethodInvoker)delegate
-                            {
-                                if (ventanaEspera != null) ventanaEspera.Close();
-                            });
-
-                            // Mostramos el ganador (con pausa de 3 segundos)
-                            await AnunciarGanadorTemporal(mensajeGanador);
-
-                            // 3. Llenamos y mostramos la tabla con los resultados 
-                            this.Invoke((MethodInvoker)delegate
-                            {
-                                dgvLeaderboard.Rows.Clear(); // Limpiamos por si acaso
-
-                                // Recorremos el arreglo "resultados" que mandó Python
-                                foreach (var jugador in datos.resultados)
-                                {
-                                    // Agregamos una fila con el nombre y el puntaje
-                                    dgvLeaderboard.Rows.Add(jugador.nombre.ToString(), jugador.puntaje.ToString());
-                                }
-
-                                dgvLeaderboard.Visible = true; // Hacemos visible la tabla
-                            });
-
-                            break;
-                        }
+                            dgvLeaderboard.Visible = true;
+                        });
+                        break;
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error crítico en la sala de resultados: " + ex.Message);
-            }
+            catch (Exception ex) { MessageBox.Show("Error en la sala de resultados: " + ex.Message); }
         }
 
         private async Task AnunciarGanadorTemporal(string mensaje)
@@ -401,24 +362,7 @@ namespace ProyectoJuego
             timerEstrellas.Stop();
             pbCerrar.Top -= 4;
 
-            // --- CORTAMOS LA CONEXIÓN ANTES DE IRNOS ---
-            if (formPrincipal.wsCliente != null && formPrincipal.wsCliente.State == System.Net.WebSockets.WebSocketState.Open)
-            {
-                try
-                {
-                    // Cancelamos la escucha y cerramos el túnel 
-                    formPrincipal.cancelToken.Cancel();
-                    await formPrincipal.wsCliente.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "Fin de partida", System.Threading.CancellationToken.None);
-                }
-                catch { } // Lo ignoramos si por alguna razón ya se había cerrado
-                finally
-                {
-                    // Limpiamos la memoria para que el siguiente juego empiece en limpio
-                    formPrincipal.wsCliente.Dispose();
-                    formPrincipal.wsCliente = null;
-                }
-            }
-            // ----------------------------------------------------
+            
 
             formPrincipal.Show();
             this.Close();
