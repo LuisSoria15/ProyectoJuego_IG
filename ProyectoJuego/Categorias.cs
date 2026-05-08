@@ -106,34 +106,40 @@ namespace ProyectoJuego
             ventanaEspera.Show(this);
         }
 
+
+
         // 2. Método para jalar las categorías y ponerlas en los botones
         private async Task CargarCategoriasDesdeServidor()
         {
             try
             {
-                // 1. Le pedimos las categorías a Python por el túnel TCP
+                // 1. Pedir categorías a Python por el túnel TCP
                 var peticion = new { accion = "obtener_categorias" };
                 await Form1.escritorTCP.WriteLineAsync(JsonConvert.SerializeObject(peticion));
                 await Form1.escritorTCP.FlushAsync();
 
-                // 2. Esperamos a que Python nos conteste con la lista
+                // 2. Leer la respuesta
                 string jsonRespuesta = await Form1.lectorTCP.ReadLineAsync();
-                
-                if (jsonRespuesta == null) return; // Por si se desconectó
+                if (jsonRespuesta == null) return;
 
                 dynamic resultado = JsonConvert.DeserializeObject(jsonRespuesta);
 
-                // 3. Verificamos que sea la respuesta correcta
                 if (resultado.accion == "respuesta_categorias" && resultado.estatus == "exito")
                 {
-                    // ¡AQUÍ ADENTRO VA TU LÓGICA VISUAL!
-                    // Extraes "resultado.datos" y llenas tus labels y pictureboxes
-                    // como ya lo hacías antes. Por ejemplo:
-                    
-                    // var listaCat = resultado.datos;
-                    // label1.Text = listaCat[0].nombre;
-                    // label2.Text = listaCat[1].nombre;
-                    // etc...
+                    // 3. Modificamos la pantalla usando Invoke
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        var listaCategorias = resultado.datos;
+
+                        // Aquí asignamos los textos de la BD a tus labels visuales
+                        // (Ajusta esto si tus labels tienen otros nombres)
+                        if (listaCategorias.Count > 0) nomCateg1.Text = listaCategorias[0].nombre.ToString();
+                        if (listaCategorias.Count > 1) nomCateg2.Text = listaCategorias[1].nombre.ToString();
+                        if (listaCategorias.Count > 2) nomCateg3.Text = listaCategorias[2].nombre.ToString();
+                        if (listaCategorias.Count > 3) nomCateg4.Text = listaCategorias[3].nombre.ToString();
+                        if (listaCategorias.Count > 4) nomCateg5.Text = listaCategorias[4].nombre.ToString();
+                        if (listaCategorias.Count > 5) nomCateg6.Text = listaCategorias[5].nombre.ToString();
+                    });
                 }
                 else
                 {
