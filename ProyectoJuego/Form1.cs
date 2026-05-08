@@ -74,8 +74,9 @@ namespace ProyectoJuego
             {
                 clienteTCP = new TcpClient(IP_SERVIDOR, PUERTO);
                 // StreamReader y StreamWriter nos dejan leer y mandar textos fácilmente con "WriteLine"
-                lectorTCP = new StreamReader(clienteTCP.GetStream(), Encoding.UTF8);
-                escritorTCP = new StreamWriter(clienteTCP.GetStream(), Encoding.UTF8);
+                // El 'false' le dice a C# que NO mande los bytes invisibles (BOM)
+                lectorTCP = new StreamReader(clienteTCP.GetStream(), new System.Text.UTF8Encoding(false));
+                escritorTCP = new StreamWriter(clienteTCP.GetStream(), new System.Text.UTF8Encoding(false));
             }
             catch (Exception ex)
             {
