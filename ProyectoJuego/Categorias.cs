@@ -51,8 +51,9 @@ namespace ProyectoJuego
 
         private async void Categorias_Load(object sender, EventArgs e)
         {
-            await CargarCategoriasEnBotones();
-            
+            await CargarCategoriasDesdeServidor();
+
+
         }
 
         // Esta función atrapa la decisión del servidor
@@ -106,53 +107,42 @@ namespace ProyectoJuego
         }
 
         // 2. Método para jalar las categorías y ponerlas en los botones
-        private async Task CargarCategoriasEnBotones()
+        private async Task CargarCategoriasDesdeServidor()
         {
-            string urlApi = $"http://{Form1.IP_SERVIDOR}:{Form1.PUERTO}/categorias";
-
             try
             {
-                using (HttpClient client = new HttpClient())
+                // 1. Le pedimos las categorías a Python por el túnel TCP
+                var peticion = new { accion = "obtener_categorias" };
+                await Form1.escritorTCP.WriteLineAsync(JsonConvert.SerializeObject(peticion));
+                await Form1.escritorTCP.FlushAsync();
+
+                // 2. Esperamos a que Python nos conteste con la lista
+                string jsonRespuesta = await Form1.lectorTCP.ReadLineAsync();
+                
+                if (jsonRespuesta == null) return; // Por si se desconectó
+
+                dynamic resultado = JsonConvert.DeserializeObject(jsonRespuesta);
+
+                // 3. Verificamos que sea la respuesta correcta
+                if (resultado.accion == "respuesta_categorias" && resultado.estatus == "exito")
                 {
-                    HttpResponseMessage respuesta = await client.GetAsync(urlApi);
-
-                    respuesta.EnsureSuccessStatusCode();
-
-                    string jsonString = await respuesta.Content.ReadAsStringAsync();
-                    List<CategoriaAPI> listaCategorias = JsonConvert.DeserializeObject<List<CategoriaAPI>>(jsonString);
-
-                    // 1. Metemos tus controles en el orden exacto de los IDs de la base de datos
-                    PictureBox[] misPictureBoxes = { picBoxAnimales, picBoxJuegos, picBoxPeliculas, picBoxCanciones, picBoxPaises, picBoxSeries, picBoxMarcas };
-                    Label[] misLabels = { nomCateg1, nomCateg2, nomCateg3, nomCateg4, nomCateg5, nomCateg6, nomCateg7 };
-
-                    // 2. Recorremos la lista usando un simple for
-                    // (Usamos Math.Min para que el programa no falle si la base de datos devuelve más o menos de 7 categorías)
-                    int limite = Math.Min(listaCategorias.Count, misPictureBoxes.Length);
-
-                    for (int i = 0; i < limite; i++)
-                    {
-                        var cat = listaCategorias[i]; // Sacamos la categoría actual
-
-                        misPictureBoxes[i].Text = cat.nombre;
-
-                        try
-                        {
-                            misLabels[i].Text = cat.nombre.ToUpperInvariant();
-                            misLabels[i].Font = FontsManager.GetFipps(7);
-                            misLabels[i].BackColor = Color.Transparent;
-                            misLabels[i].TextAlign = ContentAlignment.MiddleCenter;
-                            misLabels[i].BringToFront();
-                        }
-                        catch { }
-
-                        // Enviamos la imagen y el PictureBox correspondiente
-                        CargarImagenCategoria(cat.IMAGEN, misPictureBoxes[i]);
-                    }
+                    // ¡AQUÍ ADENTRO VA TU LÓGICA VISUAL!
+                    // Extraes "resultado.datos" y llenas tus labels y pictureboxes
+                    // como ya lo hacías antes. Por ejemplo:
+                    
+                    // var listaCat = resultado.datos;
+                    // label1.Text = listaCat[0].nombre;
+                    // label2.Text = listaCat[1].nombre;
+                    // etc...
+                }
+                else
+                {
+                    MessageBox.Show("Hubo un problema al cargar las categorías desde la BD.");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al conectar con el servidor del juego: " + ex.Message);
+                MessageBox.Show("Error al conectar con el servidor TCP: " + ex.Message);
             }
         }
 
