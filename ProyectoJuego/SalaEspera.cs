@@ -123,7 +123,7 @@ namespace ProyectoJuego
                     {
                         this.Invoke((MethodInvoker)delegate
                         {
-                            MessageBox.Show(datos.mensaje.ToString());
+                            //MessageBox.Show(datos.mensaje.ToString());
                             Categorias ventana = new Categorias(formPrincipal);
                             ventana.Show();
                             this.Close();

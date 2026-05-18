@@ -193,7 +193,7 @@ namespace ProyectoJuego
                 {
                     formPrincipal.IdJugadorActual = resultado.id_usuario;
                     formPrincipal.NombreJugadorActual = username;
-                    MessageBox.Show(resultado.mensaje.ToString());
+                    //MessageBox.Show(resultado.mensaje.ToString());
 
                     // Pasamos a Sala de Espera
                     SalaEspera ventana = new SalaEspera(formPrincipal);

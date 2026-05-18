@@ -72,7 +72,7 @@ namespace ProyectoJuego
                         this.Invoke((MethodInvoker)delegate
                         {
                             int categoriaGanadora = datos.categoria_ganadora;
-                            MessageBox.Show($"¡Todos votaron! La categoría elegida es la {categoriaGanadora}");
+                            //MessageBox.Show($"¡Todos votaron! La categoría elegida es la {categoriaGanadora}");
 
                             // Pasamos a la ventana de Preguntas con la categoría ganadora
                             Preguntas ventana = new Preguntas(categoriaGanadora, formPrincipal);
